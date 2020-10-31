@@ -40,7 +40,6 @@ function App() {
       >
         <Lights/>
         <RotatingBox
-          args={[1, transformBoxZ, 1]}
           transformBoxZ={transformBoxZ}
           onClick={() => dispatch(showUserInterface('SHOW_UI'))}
         />
@@ -90,7 +89,7 @@ const RotatingBox = ({onClick, args, transformBoxZ})=> {
   return (
       <>
         <Box
-          args={args}
+          args={boxSize ? [2,2,2]: [1,1,1]}
           position={[0, transformBoxZ, 0]}
           ref={box}
           castShadow
@@ -101,7 +100,7 @@ const RotatingBox = ({onClick, args, transformBoxZ})=> {
             
             cast
             attach="material" 
-            color={boxSize ? 'white': "lightblue"}
+            color={"lightblue"}
           />
         </Box>
       </>
@@ -114,10 +113,10 @@ const Floor = () => {
       <mesh
         onClick={()=> console.log("click")} 
         receiveShadow 
-        rotation={[-Math.PI / 2, 0, 0]} 
+        rotation={[-Math.PI / 2, 0, Math.PI / 4]} 
         position={[0, -3, 0]}
       >
-        <planeBufferGeometry attach='geometry' args={[100, 100]}/>
+        <planeBufferGeometry attach='geometry' args={[10, 10]}/>
         <meshStandardMaterial opacity={1} attach='material'/>
       </mesh>
     </>

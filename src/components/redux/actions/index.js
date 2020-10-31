@@ -1,8 +1,10 @@
-import {SHOW_UI, HIDE_UI} from './types'
+import {SHOW_UI, HIDE_UI, INCREASE, DECREASE} from './types'
 
-export const increment = () => {
+export const transform = (name) => {
+    console.log("inside tranform");
+    console.log("action is " + name);
     return {
-        type: 'INCREMENT'
+        type: name === 'INCREASE' ? INCREASE : DECREASE
     };
 };
 

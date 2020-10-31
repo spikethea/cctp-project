@@ -3,7 +3,7 @@ import "../App.css";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import { increment } from './redux/actions';
+import { transform } from './redux/actions';
 
 
 //pages
@@ -37,8 +37,8 @@ const UserInterface = () => {
             <Router>
             <div className="ui-container">
                 <p>Counter {counter}</p>
-                <button onClick={() => dispatch(increment())}>+</button>
-                <button>-</button>
+                <button onClick={() => dispatch(transform('INCREASE'))}>+</button>
+                <button onClick={() => dispatch(transform('DECREASE'))}>-</button>
                 <ul className="pages">
                     <Link to="/homepage"><li className="page-item">Homepage</li></Link>
                     <Link to="/challenges"><li className="page-item">Challenges</li></Link>
