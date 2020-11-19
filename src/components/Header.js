@@ -15,8 +15,7 @@ const Header = () => {
             <header className={styles.header}>
                 <h3>CCTP Project</h3>
                 <div className={styles.experience}>
-                    <p>LV 3</p>
-                    <p>EXP: 34/50</p>
+                {!showUI ? <p onClick={() => dispatch(showUserInterface('SHOW_UI'))}>HOME</p>: null}
                 </div>
                 
                 {showUI ? <button onClick={() => dispatch(showUserInterface('HIDE_UI'))} className={styles.exit}>X</button> : null}

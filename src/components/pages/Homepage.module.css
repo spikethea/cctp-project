@@ -11,6 +11,7 @@
 
 .menu {
     position: relative;
+    display: flex;
     margin: 2rem;
     max-height: 65vh;
     overflow: auto;
@@ -20,8 +21,8 @@
     position: fixed;
     border-radius: 1rem;
     width: calc(100vw - 2rem);
-    height: 72.5vh;
-    top: 9rem;
+    height: 23em;
+    top: 14rem;
     left: 0;
     align-items: center;
     justify-content: center;
@@ -38,17 +39,29 @@
 
 .item {
     border-radius: 0.6rem;
-    display: flex;
-    justify-content: space-between;
     background: #ffae00;
     margin-bottom: 1.5rem;
     padding: 1rem;
+    margin: 0.5em;
+}
+
+.inner {
+    display: flex;
+    justify-content: space-between;
 }
 
 .item h3 {
     color: black;
 }
 
-.item:active {
+.item:active img {
     height: 10em;
+}
+
+/*Media Queries*/
+
+@media only screen and (min-width: 768px) {
+    .menushadow {
+        display: none;
+    }
 }

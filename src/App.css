@@ -10,7 +10,14 @@ body,
 #root {
   width: 100%;
   height: 100%;
-
+  
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 
 /*Main Section*/
@@ -32,7 +39,7 @@ body,
   justify-content: center;
   
   
-  z-index: 1;
+  z-index: 3;
 }
 
 .pages {
@@ -49,4 +56,56 @@ body,
   border-radius: 0.2rem;
 }
 
+.background {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.20);
+  z-index: 4;
+}
+
+.infobox {
+  width: 20rem;
+  top:30%;
+  left:50%;
+  margin: -50px -50px -50px -10rem;
+  position:absolute;
+  background-color:white;
+  z-index:5;
+  border-radius:1em;
+  padding:3em;
+  -webkit-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
+}
+
+.infobox p {
+  margin-top: 3em;
+}
+
+.infobox button {
+  border-radius: 2em;
+  background-color: black;
+  color: white;
+  margin-top: 4em;
+  padding: 1em;
+}
+
 /*Media Queries*/
+
+@media only screen and (min-width: 768px) {
+  .infobox {
+    width: 20rem;
+    top:30%;
+    left:0%;
+    margin-left: 2em;
+  }
+}
+
+/*Transitions*/
+
+.infobox:active {
+  transition: width 2s, height 2s, transform 2s;
+}

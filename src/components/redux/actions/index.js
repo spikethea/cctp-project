@@ -1,4 +1,4 @@
-import {SHOW_UI, HIDE_UI, INCREASE, DECREASE} from './types'
+import {SHOW_UI, HIDE_UI, INCREASE, DECREASE, POPUP_INFO, HIDE_INFO} from './types'
 
 export const transform = (name) => {
     console.log("inside tranform");
@@ -14,3 +14,27 @@ export const showUserInterface = (name) => {
         type: name === 'SHOW_UI' ? SHOW_UI : HIDE_UI
     };
 };
+
+export const showInfo = (tagName) => {
+    console.log("displaying infobox " + tagName);
+    return {
+        type: POPUP_INFO,
+        payload: tagName
+    }
+}
+
+export const infoBox = (tagName) => {
+    console.log("displaying infobox " + tagName);
+    return {
+        type: HIDE_INFO,
+        payload: tagName
+    }
+}
+
+export const getBadge = (tagName) => {
+    console.log("displaying infobox " + tagName);
+    return {
+        type: HIDE_INFO,
+        payload: tagName
+    }
+}
