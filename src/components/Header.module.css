@@ -2,6 +2,12 @@
     width: 100vw;
     position: fixed;
     z-index: 3;
+    background: rgba(0,0,0,0.50);
+}
+
+.experienceContainer {
+    color: white;
+    font-weight: bold;
 }
 
 
@@ -21,4 +27,19 @@
 .exit {
     background: #ff0000;
     width: 2em;
+}
+
+.home {
+    width: 2em;
+    height: 2em;
+}
+
+.notifications {
+    position: relative;
+    left: 100%;
+    top: -20%;
+    border-radius: 50%;
+    background-color: tomato;
+    width: 1.3em;
+    z-index: 6;
 }

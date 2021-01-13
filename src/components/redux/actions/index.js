@@ -1,4 +1,5 @@
-import {SHOW_UI, HIDE_UI, INCREASE, DECREASE, POPUP_INFO, HIDE_INFO} from './types'
+import allergyReducer from '../reducers/allergies';
+import {SHOW_UI, HIDE_UI, INCREASE, DECREASE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY} from './types'
 
 export const transform = (name) => {
     console.log("inside tranform");
@@ -23,7 +24,7 @@ export const showInfo = (tagName) => {
     }
 }
 
-export const infoBox = (tagName) => {
+export const closeInfoBox = (tagName) => {
     console.log("displaying infobox " + tagName);
     return {
         type: HIDE_INFO,
@@ -31,10 +32,42 @@ export const infoBox = (tagName) => {
     }
 }
 
-export const getBadge = (tagName) => {
-    console.log("displaying infobox " + tagName);
+export const getBadge = (badgeName) => {
+    console.log("Acquired Badge " + badgeName);
     return {
-        type: HIDE_INFO,
-        payload: tagName
+        type: GET_BADGE,
+        payload: badgeName
+    }
+}
+
+export const hideBadge = (badgeName) => {
+    console.log("Hiding Current Badge ");
+    return {
+        type: HIDE_BADGE,
+        payload: badgeName
+    }
+}
+
+export const selectStage = (stageID) => {
+    console.log("Loading Stage " + stageID)
+    return {
+        type: SELECT_STAGE,
+        payload: stageID
+    }
+}
+
+export const clearNotifications = () => {
+    console.log("clearing notifications")
+    return {
+        type: CLEAR_NOTIFICATIONS
+    }
+}
+
+export const allergyQuantity = (allergyName, action) => {
+    console.log("changing allergy quantity of " + allergyName);
+    console.log("action is " + action);
+    return {
+        type: action === "increase" ? INCREASE_ALLERGY_QUANTITY : DECREASE_ALLERGY_QUANITITY,
+        payload: allergyName,
     }
 }

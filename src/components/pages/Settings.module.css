@@ -1,0 +1,16 @@
+.leaderboard {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background: black;
+    border: 1px solid white;
+    margin: 0em 1em 0em 1em;
+}
+
+.row {
+    border: 1px solid white;
+}
+
+.column {
+    border: 1px solid white;
+}

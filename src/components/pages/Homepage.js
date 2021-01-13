@@ -1,52 +1,120 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from  './Homepage.module.css';
-import map from './images/map.jpg';
 
-const Homepage = ({onClick}) => {
+//Level Images
 
-    const stages = [
-        {
-           name: "Health and Safety",
-           tagname:"healthAndSafety",
-           id:1,
-           exp:3
-        },
-        {
-            name: "Coffee Machine",
-            tagname:"healthAndSafety",
-            id:2,
-            exp:5
-         },
-    ]
+//Redux
+import { selectStage } from '../redux/actions';
 
-    const listItems = stages.map ((stage)=> 
-            <Item key={stage.id} onClick={onClick} stagename={stage.name} exp={stage.exp} id={stage.id}/>
+const Homepage = () => {
+    
+    const info = useSelector(state => state.info);
+    const dispatch = useDispatch();
+
+    const stages = info.stages;
+    
+
+    const stageList = stages.map ((stage)=> 
+            <Stage key={stage.id} onClick={()=> {
+                dispatch(selectStage(stage.id))
+
+            }} img={stage.img} stagename={stage.name} exp={stage.exp} id={stage.id+1}/>
     )
 
     return (
         <>
-                <h1>Stages</h1>
-                <div className={styles.menu}>
-                    {listItems}
-                    <div className={styles.menushadow}></div>
-                    
-                    
-                    
-                </div>
-            <h1>Badges</h1>
+            <div onClick={() =>dispatch(selectStage(null))} className={styles.overworld}>
+                <h4>Return to Overworld</h4>
+            </div>
+            <h3 className={styles.subtitle} style={{margin:"0.5em"}}>Stages</h3>
+            <div className={styles.menu}>
+                {stageList} 
+                </div><div className={styles.menushadow}></div>
+            <h3 className={styles.subtitle}>Badges</h3>
+            <Badges/>
+            <div className={styles.levelInfo}>
+                <h4>Level Information</h4>
+                <p>{info.activeStage.description}</p>
+            </div>
         </>
     )
 }
 
+const Stage = ({onClick, stagename, exp, id, img}) => {
 
-const Item = ({onClick, stagename, exp, id}) => {
+    const info = useSelector(state => state.info);
+
+    console.log(info.exp + " "  + exp);
+
+    console.log(img);
+
+    if (info.exp >= exp) {
+        return (
+            <div onClick={onClick} className={styles.item}>
+                <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
+                <div className={styles.inner}>
+                    <h4>Stage {id}: {stagename}</h4>
+                    <p>LVL {exp}</p>
+                </div>
+            </div>
+        )
+    } else 
+
+    
+
     return (
-        <div onClick={onClick} className={styles.item}>
-            <img style={{height:"15em"}} alt="Map of the Stage" src={map}></img>
+        <div className={styles.itemLocked}>
+            <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
             <div className={styles.inner}>
                 <h4>Stage {id}: {stagename}</h4>
                 <p>LVL {exp}</p>
             </div>
+        </div>
+        
+    )
+}
+
+
+const Badges = () => {
+
+    const info = useSelector(state => state.info);
+
+    const badges = info.badges;
+
+    
+
+    let acquiredBadges = []
+    
+    Object.keys(badges).forEach(function(item) {
+        if(badges[item].displaying) {
+            acquiredBadges.push(badges[item]);
+        }
+        console.log(acquiredBadges);
+    });
+
+    const badgeInfo = () => {
+        return (
+            <>
+            </>
+        )
+    }
+
+    const AcquiredBadgesList = acquiredBadges.map ((badge, index)=> {
+        console.log(badge.image);
+        return (
+        <div key={index}  className={styles.badge}>
+            <img src={badge.image} alt="Achievement"/>
+            <p  onClick={badgeInfo}>{badge.title}</p>
+        </div>
+        )
+        
+    }
+    )
+
+    return (
+        <div className={styles.badgesContainer}>
+            {AcquiredBadgesList}
         </div>
     )
 }

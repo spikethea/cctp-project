@@ -8,7 +8,7 @@ import { transform } from './redux/actions';
 
 //pages
 import Homepage from './pages/Homepage';
-import Challenges from './pages/Challenges';
+import Leaderboard from './pages/Leaderboard';
 
 
 
@@ -41,7 +41,7 @@ const UserInterface = () => {
                 <button onClick={() => dispatch(transform('DECREASE'))}>-</button>
                 <ul className="pages">
                     <Link to="/homepage"><li className="page-item">Homepage</li></Link>
-                    <Link to="/challenges"><li className="page-item">Challenges</li></Link>
+                    <Link to="/leaderboard"><li className="page-item">Leaderboard</li></Link>
                     <Link to="/profile"><li className="page-item">Profile</li></Link>
                     <Link to="/settings"><li className="page-item">Settings</li></Link>
                 </ul>
@@ -49,7 +49,7 @@ const UserInterface = () => {
                 <Switch>
                     <Route path="/" exact component={Homepage}/>
                     <Route path="/homepage" component={Homepage}/>
-                    <Route path="/challenges" component={Challenges}/>
+                    <Route path="/Leaderboard" component={Leaderboard}/>
                     <Route path="/homepage" component={Homepage}/>
                     <Route path="/homepage" component={Homepage}/>
                 </Switch>

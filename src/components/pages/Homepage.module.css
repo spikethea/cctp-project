@@ -9,29 +9,43 @@
     margin: 2rem;
 }
 
+.subtitle {
+    color: white;
+
+}
+
+.overworld {
+    background-color: #ffae00;
+    border: 5px solid white;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1.8em;
+}
+
 .menu {
     position: relative;
     display: flex;
-    margin: 2rem;
+    margin: 1rem;
     max-height: 65vh;
     overflow: auto;
+    border-radius: 2rem;
 }
 
 .menushadow {
-    position: fixed;
+    position: absolute;
     border-radius: 1rem;
     width: calc(100vw - 2rem);
-    height: 23em;
-    top: 14rem;
+    height: 20em;
+    top: 15rem;
     left: 0;
     align-items: center;
     justify-content: center;
     
     
-    -webkit-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.2);
-    -moz-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.2);
-    box-shadow: inset 0px 0px 25px 0px rgba(0,0,0,0.1);
-    z-index: 5;
+    -webkit-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.4);
+    -moz-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.4);
+    box-shadow: inset 0px 0px 25px 0px rgba(0, 0, 0, 0.4);
+    z-index: 8;
     pointer-events: none;
     margin-left: 1rem;
     margin-right: 1rem;
@@ -57,6 +71,60 @@
 .item:active img {
     height: 10em;
 }
+
+.itemLocked {
+    border-radius: 0.6rem;
+    background: #4d3400;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    margin: 0.5em;
+}
+
+    .itemLocked img {
+        filter: brightness(50%);
+    }
+
+    .itemLocked h4 {
+        color: white;
+    }
+
+    .itemLocked p {
+        color: white;
+        font-weight: bold;
+    }
+
+.badgesContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.badge {
+    padding: .5em;
+}
+
+.badge img {
+    width: 3em;
+}
+
+.badge p {
+    font-weight: bold;
+    color: white;
+}
+
+.levelInfo {
+    color: rgb(24, 24, 24);
+    background-color: white;
+    border: 2px solid black;
+    margin: 2em;
+    padding: 1em;
+}
+
+.levelInfo p {
+    padding: 2em;
+}
+
+
 
 /*Media Queries*/
 

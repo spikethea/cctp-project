@@ -8,3 +8,14 @@ export const POPUP_INFO = 'POPUP_INFO';
 export const HIDE_INFO = 'HIDE_INFO';
 
 export const GET_BADGE = 'GET_BADGE';
+export const SHOW_BADGE = 'SHOW_BADGE';
+export const HIDE_BADGE = 'HIDE_BADGE';
+
+export const SELECT_STAGE = 'SELECT_STAGE';
+
+export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
+
+//Allergies Stage
+
+export const DECREASE_ALLERGY_QUANITITY = "DECREASE_ALLERGY_QUANTITY";
+export const INCREASE_ALLERGY_QUANTITY = "INCREASE_ALLERGY_QUANTITY";
