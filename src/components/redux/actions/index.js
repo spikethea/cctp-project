@@ -1,4 +1,3 @@
-import allergyReducer from '../reducers/allergies';
 import {SHOW_UI, HIDE_UI, INCREASE, DECREASE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY} from './types'
 
 export const transform = (name) => {

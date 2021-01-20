@@ -16,28 +16,60 @@ const Tutorial = () => {
         case 1:
           return (
             <>
-            <animated.div style={props} className={styles.container}>
-              <h1>Welcome to MyHospitality</h1>
-              <p>To navigate around this app, </p>
-              <div className={styles.inner}>
-                <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
-                <button onClick={() => setPressed(true)}>Close and Continue</button>
-              </div>
-            </animated.div>
-            {!pressed? <animated.div style={backgroundProps} className="background"></animated.div>: null}
-            </>
+              <animated.div style={props} className={styles.container}>
+                <div>
+                  <h1>Welcome to MyHospitality</h1>
+                </div>
+                <div className={styles.inner}>
+                  <p>To navigate around this app, </p>
+                  <div className={styles.buttonContainer}>
+                    <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
+                    <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
+                  </div>
+                </div>
+                
+              </animated.div>
+              {!pressed? <animated.div style={backgroundProps} className="background"></animated.div>: null}
+              </>
+          );
+          case 2:
+          return (
+            <>
+              <animated.div style={props} className={styles.container}>
+                <div>
+                  <h1>Confused?</h1>
+                </div>
+                <div className={styles.inner}>
+                  <p>To navigate around this app, </p>
+                  <p>To navigate around this app, </p>
+                  <p>To navigate around this app, </p>
+                  <p>To navigate around this app, </p>
+                  <div className={styles.buttonContainer}>
+                    <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
+                    <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
+                  </div>
+                </div>
+                
+              </animated.div>
+              {!pressed? <animated.div style={backgroundProps} className="background"></animated.div>: null}
+              </>
           );
           default:
             return (
               <>
               <animated.div style={props} className={styles.container}>
-                <h1>Tutorial</h1>
-                <p>If you have never used this training app before, it is extremely reccommended that you take this tutorial</p>
-                <p>This tutorial will take you through the basics of how to nativate and use this application</p>
-                <div className={styles.inner}>
-                  <button onClick={() => setCurrentPage(currentPage + 1)}>Play Tutorial?</button>
-                  <button onClick={() => setPressed(true)}>Close and Continue</button>
+                <div>
+                  <h1>Tutorial</h1>
                 </div>
+                <div className={styles.inner}>
+                  <p>If you have never used this training app before, it is extremely recommended that you take this tutorial</p>
+                <p>This tutorial will take you through the basics of how to nativate and use this application</p>
+                  <div className={styles.buttonContainer}>
+                    <button onClick={() => setCurrentPage(currentPage + 1)}>Play Tutorial?</button>
+                    <button onClick={() => setPressed(true)}>Close and Continue</button>
+                  </div>
+                </div>
+                
               </animated.div>
               {!pressed? <animated.div style={backgroundProps} className="background"></animated.div>: null}
               </>

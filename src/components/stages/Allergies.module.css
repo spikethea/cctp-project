@@ -2,13 +2,45 @@
     background: white;
     position: fixed;
     bottom: 0;
-    width:100%;
     border-radius: 0.5em 0.5em 0em 0em;
-    z-index: 3;
+    z-index: 2;
+    width: 100%;
 }
+
+.scrollbar {
+    position: fixed;
+    left:0%;
+    top:0%;
+    width:100vw;
+    background-color:rgba(0,0,0,0);
+    overflow-y:scroll;
+    z-index: 1;
+}
+
+.timer {
+    background: rgb(245, 55, 55);
+    position: fixed;
+    z-index: 3;
+    top: 20%;
+    left: calc(50% - 1em);
+    color: white;
+    width: 5em;
+    height: 5em;
+    border-radius: 5em;
+    border: solid 5px white;
+  }
+
+  .timer h1 {
+      position: relative;
+      top: 20%;
+  }
 
 .title {
     margin: 0.5em;
+}
+
+label {
+    display: flex;
 }
 
 .item {
@@ -34,4 +66,50 @@ display: flex;
 .submit {
     padding: 1em;
     margin: 2em;
+}
+
+.scrollDown {
+    margin: 3.5em 1em 1em 1em;
+    padding: 1em;
+    background-color: #349eeb;
+    border-radius: 1em;
+    border: 5px solid #0f344e;
+    display: inline-block;
+    font-weight: bold;
+    color: whitesmoke;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.StartMenu {
+    position: absolute;
+    bottom: 150px;
+    left: calc(50% - 3em);
+}
+
+/* Media Queries */
+
+@media only screen and (min-width: 1200px) {
+
+    .container {
+        right: 60%;
+        min-width: 350px;
+        width: 30vw;
+    }
+    
+  }
+
+
+@media only screen and (max-width: 1199px) {
+    .inner {
+    overflow: scroll;
+    height: 30vh;
+    }
+
 }

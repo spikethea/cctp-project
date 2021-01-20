@@ -4,14 +4,14 @@ import React, {useRef, useState, useCallback, useEffect, Suspense} from 'react';
 //import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
-import {Box, Html, OrbitControls, draco} from 'drei';
+import {Box, Html, Stats} from 'drei';
 
 import { a } from '@react-spring/three';
 
-import { useSelector, useDispatch, Provider } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 
 //Redux
-import { showUserInterface, showInfo, getBadge } from '../redux/actions';
+import { getBadge } from '../redux/actions';
 
 
 const HealthAndSafety = () => {
@@ -20,13 +20,9 @@ const HealthAndSafety = () => {
     const transformBoxZ = useSelector(state => state.counter);
     
     console.log(window.innerHeight);
-    
-  
-    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
     return (
-      <>        
+      <>
         <Canvas
         style={{position:"fixed", left:"0%", top:"0%"}}
         className={"canvas"}
@@ -41,6 +37,11 @@ const HealthAndSafety = () => {
             transformBoxZ={transformBoxZ}
             dispatch={dispatch}
             onHover={console.log("reached")}
+            />
+            <Stats
+              showPanel={0} // Start-up panel (default=0)
+              className="stats" // Optional className to add to the stats container dom element
+               // All stats.js props are valid
             />
             <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
               <Kitchen/>

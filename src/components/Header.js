@@ -26,13 +26,13 @@ const Header = () => {
     return (
         <div ref={container} className={styles.container}>
             <header  className={styles.header}>
-        <h3>MyHospitality
+        <h3>ServiceLearn
             {(info.notifications > 0) ? <p onClick={()=> {
                 dispatch(showUserInterface('SHOW_UI'))
                 dispatch(clearNotifications());
             }} className={styles.notifications}>&nbsp; {info.notifications}</p>: null}
         </h3>
-        <div className={styles.experienceContainer}>LV:{info.exp} EXP {info.points}</div>
+        <div className={styles.experienceContainer}>LV:{info.exp} Skill Points: {info.points}</div>
                 <div className={styles.experience}>
                 {!showUI ? <img className={styles.home} src={Home} alt="Home Button" onClick={() => {
                     dispatch(showUserInterface('SHOW_UI'));

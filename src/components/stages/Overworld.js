@@ -3,11 +3,9 @@ import React, {useRef, useState, Suspense} from 'react';
 //Packages
 import { useSelector, useDispatch } from 'react-redux';
 import { Canvas, useFrame, useLoader } from 'react-three-fiber'
-import {Box, Html, PerspectiveCamera, draco} from 'drei';
+import {Box, Html, Sky} from 'drei';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-
-import { a } from '@react-spring/three';
 //Redux
 import { showUserInterface, showInfo, getBadge } from '../redux/actions';
 
@@ -16,27 +14,24 @@ const Overworld = () => {
     const dispatch = useDispatch();
     const counter = useSelector(state => state.counter);
 
-    const [cameraPos, setCameraPos] = useState([0, 100, 250]);
-    const [cameraFov, setCameraFov] = useState(10);
-
-
-    
-    
-
-
     return (
 
         <Canvas
         colorManagement 
-        camera={{position: cameraPos, fov: cameraFov, rotation:[0, 0, 0]}}
+        camera={{position: [0, 70, 250], fov: 10, rotation:[0, 0, 0]}}
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
         >
+          <Sky
+          inclination={0.1}
+          />
           <Scene counter={counter} dispatch={dispatch}/>
       
       </Canvas>
     )
 }
+
+
 
 const Scene = ({dispatch, counter})=> {
 
@@ -46,19 +41,18 @@ const Scene = ({dispatch, counter})=> {
     mesh.current.rotation.y += 0.01
   })
 
-  const [sceneRot, setSceneRot] = useState(Math.PI/4);
+  const [sceneRot, setSceneRot] = useState(0);
 
   return (
-    <group ref={mesh} rotation-y={sceneRot}>
+    <group ref={mesh} position={[2, 0, -10]}  rotation-y={sceneRot}>
 
       <Lights/>
       <RotatingBox
-      transformBoxZ={counter}
-      onHover={() => dispatch(showUserInterface('SHOW_UI'))}
+        transformBoxZ={counter}
       />
-      <Person position={[5, -1, 5]} color={[20, 20, 255]} onClick={()=> dispatch(showInfo("fireExtinguisher")) }/>
+      <Person position={[5, -1, 5]} color={[20, 20, 255]} onClick={()=> dispatch(showInfo("puddle")) }/>
       <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
-        <Floor/>
+        <Floor onClick={()=> dispatch(showInfo("homeButton"))}/>
       </Suspense>
     </group>
   )
@@ -91,19 +85,19 @@ const Lights = () => {
   
 //Meshes
 
-const Floor = () => {
+const Floor = ({onClick}) => {
 
   const gltf = useLoader(GLTFLoader, "assets/models/stadium.glb");
 
   console.log(gltf);
 
   return (
-        <primitive position={[0, -2, -10]} object={gltf.scene} />
+        <primitive onClick={onClick} position={[0, -2, -10]} object={gltf.scene} />
   )
 }
 
 
-const RotatingBox = ({transformBoxZ})=> {
+const RotatingBox = ({transformBoxZ, onClick})=> {
   
     const box = useRef();
 
@@ -120,10 +114,10 @@ const RotatingBox = ({transformBoxZ})=> {
         <>
           <Box
             args={boxSize ? [2,2,2]: [1,1,1]}
-            position={[0, transformBoxZ, 0]}
+            position={[0, 5, 0]}
             ref={box}
             castShadow
-            onClick={()=> setBoxSize(true)}//cant get onClick Working at all, drei or R3F
+            onClick={onClick}//cant get onClick Working at all, drei or R3F
           >
             <meshStandardMaterial 
               

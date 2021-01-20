@@ -21,26 +21,63 @@ body,
 }
 
 /*Landing Page*/
-
-section {
-  padding: 3em
-}
-
 .landing-page {
   text-align: center;
+  background: rgb(243, 241, 240);
 }
 
+/*Title*/
+
+.landing-page h1 {
+  font-weight: bold;
+  padding: 1em;
+}
+
+
+.landing-page section {
+  flex-direction: column;
+  display: flex;
+  height: 80vh;
+  justify-content: space-between;
+  padding: 2em;
+  margin:auto;
+  
+}
+
+.landing-page section ul {
+  padding: 2em;
+  line-height: 350%;
+
+}
+
+.landing-page footer {
+  display: flex;
+  justify-content: center;
+  background: rgb(136, 136, 136);
+  padding: 2em 2em 10em 2em;
+  color: white;
+}
+
+.landing-page footer p {
+  align-items: center;
+  margin-right: 2em;
+  
+}
+
+.landing-page footer a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
 .intro {
-  background: rgb(218, 218, 218);
+  
+  
 }
 
   .intro img {
     width: 100%;
-  }
-  /*Title*/
-  .intro h1 {
-    padding-bottom: 2em;
-
   }
 
   .intro h2 {
@@ -59,11 +96,6 @@ section {
   background: #fdf3f3;
 }
 
-  .explanation ul {
-    padding: 2em;
-    line-height: 200%;
-  }
-
 
 /*Main Section*/
 
@@ -75,7 +107,7 @@ section {
 
 .badge-container {
   position: fixed;
-  z-index: 3;
+  z-index: 6;
   top: 20%;
   left: calc(50% - 2.5em);
 }
@@ -122,7 +154,7 @@ section {
   width: 100vw;
   height: 100vh;
   background: rgba(0,0,0,0.20);
-  z-index: 2;
+  z-index: 3;
 }
 
 .infobox {
@@ -152,15 +184,53 @@ section {
   padding: 1em;
 }
 
+
+.quiz-container {
+  position: fixed;
+  background-color: whitesmoke;
+  top: 50%;
+  left: 400px;
+  margin-top: -250px;
+  margin-left: -250px;
+  width: 500px;
+  height: 500px;
+  border-radius: 2em;
+  z-index: 5;
+}
+
+
+.quiz-container section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+  width: 90%;
+  height: 80%;
+  margin: 2em;
+}
+
 /*Media Queries*/
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1200px) {
+
   .infobox {
-    width: 20rem;
+    width: 30rem;
     top:30%;
     left:0%;
     margin-left: 2em;
   }
+  .ui-container {
+    width: 50vw;
+    max-height: 80vh;
+    height: unset;
+    top: 8.5vh;
+    right: 5vw;
+    outline: 5px solid black;
+  }
+
+  .landing-page section {
+    flex-direction: row;
+  }
+
 }
 
 /*Transitions*/

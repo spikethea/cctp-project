@@ -1,3 +1,8 @@
+.container {
+    display: grid;
+    
+}
+
 .exit button {
     border-radius: 50%;
     background: #ff0000;
@@ -15,7 +20,7 @@
 }
 
 .overworld {
-    background-color: #ffae00;
+    background-color: #ebe9e4;
     border: 5px solid white;
     border-radius: 1em;
     padding: 1em;
@@ -29,6 +34,7 @@
     max-height: 65vh;
     overflow: auto;
     border-radius: 2rem;
+    width: 90vw;
 }
 
 .menushadow {
@@ -53,7 +59,7 @@
 
 .item {
     border-radius: 0.6rem;
-    background: #ffae00;
+    background:  #ebe9e4;
     margin-bottom: 1.5rem;
     padding: 1rem;
     margin: 0.5em;
@@ -74,7 +80,7 @@
 
 .itemLocked {
     border-radius: 0.6rem;
-    background: #4d3400;
+    background: #4b4b4b;
     margin-bottom: 1.5rem;
     padding: 1rem;
     margin: 0.5em;
@@ -121,15 +127,25 @@
 }
 
 .levelInfo p {
-    padding: 2em;
+    padding: 1em;
 }
 
 
 
 /*Media Queries*/
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1200px) {
     .menushadow {
         display: none;
+    }
+
+    .menu {
+        width: 45vw;
+        
+    }
+
+
+    .container {
+        flex-direction: row;
     }
 }

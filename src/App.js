@@ -1,13 +1,9 @@
-import React, { Suspense, useRef, useState, useEffect } from 'react';
+import React, { Suspense, useRef, useState} from 'react';
 import './App.css';
 import goodEye from './assets/svg/badges/goodEye.svg'
 import Hospitality from './assets/images/hospitality'
 
 //Packages
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Canvas, useFrame, useLoader } from 'react-three-fiber'
-import {Box, Html, OrbitControls, draco} from 'drei';
 import {useSpring, animated} from 'react-spring';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,7 +17,7 @@ import StageSelector from './components/StageSelector';
 import Tutorial from './components/Tutorial';
 
 //Redux
-import { showUserInterface, showInfo, closeInfoBox, hideBadge } from './components/redux/actions';
+import { showUserInterface, closeInfoBox, hideBadge } from './components/redux/actions';
 
 //Main App Function
 function App() {
@@ -33,33 +29,38 @@ function App() {
     return (
     
     <div className="App">
-      <Suspense fallback={<Html><div className="loading">Loading...</div></Html>}>
+      <Suspense fallback={<div className="loading">Loading...</div>}>
         <Header />
         <UserInterface/>
         <InfoBox/>
         <BadgeNotification/>
         <Tutorial/>
+  
         <StageSelector/>
       </Suspense>
       
     </div>
   )} else return(
     <div className="landing-page">
+      <header>
+      <h1>ServiceLearn</h1>
+      </header>
         <section className="intro">
-          <h1>My Hospitality</h1>
-          <img src={Hospitality}/>
-          <h2>A Interactive Staff Training system design for Hospitality staff, by Hospitality staff</h2>
-          <p></p>
-          <button onClick={()=>setApp(true)}>Enter Training</button>
+          <div>
+            <img alt="Hospitality Staff" src={Hospitality}/>
+          </div>
+          <div>
+            <h2>A Interactive Staff Training system design for Hospitality staff, by Hospitality staff</h2>
+            <button onClick={()=>setApp(true)}>Enter Training</button>
+          </div>
         </section>
         <section className="explanation">
-          <h2>Why use MyHospitality?</h2>
+          <h2>Why use ServiceLearn</h2>
           <ul>
             <li>Teaches you wide variety of skills ready for work</li>
             <li>Designed to be an engaging experience </li>
             <li>Works cross-platform, on laptop, mobile or whiteboard etc.</li>
           </ul>
-          <p></p>
         </section>
         <section className="reviews">
           <h2>User Reviews</h2>
@@ -68,13 +69,56 @@ function App() {
             <li>Designed to be an engaging experience </li>
             <li>Works cross-platform, on laptop, mobile or whiteboard etc.</li>
           </ul>
-          <p></p>
         </section>
+        <footer>
+          <p>UWE Bristol</p>
+          <p>Made with ReactJS, Redux and react-three-fiber</p>
+          <p>Developed by <a href="http://quincegorerodney.panel.uwe.ac.uk/portfolio/">Quince Gore-Rodney</a></p>
+          <p>2020</p>
+        </footer>
     </div>
   );
 }
 
 //UI
+
+const QuizBox = ()=> {
+
+  const questions = [
+      {
+        name: "What is the time?",
+        answers: [
+          "7pm", 
+          "8pm",
+          "Funky Time",
+          "5am",
+        ]
+      },
+      {
+        name: "What is the time?",
+        answers: [
+          "7pm", 
+          "8pm",
+          "Funky Time",
+          "5am",
+        ]
+      },
+      
+    ]
+  
+
+  return (
+    <div className="quiz-container">
+        <h1>{questions[0].name}</h1>
+      <section>
+        <button>1:{questions[0].answers[0]}</button>
+        <button>2:{questions[0].answers[1]}</button>
+        <button>3:{questions[0].answers[2]}</button>
+        <button>4:{questions[0].answers[3]}</button>
+      </section>
+    </div>
+  )
+}
 
 const BadgeNotification = () => {
   
@@ -108,21 +152,23 @@ const BadgeNotification = () => {
 
 const InfoBox = ({onClick}) => {
 
-  const infoBox = useSelector(state => state.info);
+  const info = useSelector(state => state.info);
   const dispatch = useDispatch();
+
+  const props = useSpring({delay:{duration:800}, config:{duration: 250}, top: info.displayingInfo ? "20%": "40%", opacity: info.displayingInfo ? 1: 0})
 
   let container = useRef();
   
-  if (infoBox.displayingInfo) {
+  if (info.displayingInfo) {
     return (
       <>
-      <div className="infobox" ref={container}>
-        <h1>{infoBox.activeBox.title}</h1>
+      <animated.div style={props} className="infobox" ref={container}>
+        <h1>{info.activeBox.title}</h1>
         <p>
-          {infoBox.activeBox.description}
+          {info.activeBox.description}
         </p>
         <button onClick={()=> dispatch(closeInfoBox())}>Understand</button>
-      </div>
+      </animated.div>
       <div className="background"></div>
       </>
     )

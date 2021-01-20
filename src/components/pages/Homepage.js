@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from  './Homepage.module.css';
 
@@ -23,21 +23,27 @@ const Homepage = () => {
     )
 
     return (
-        <>
-            <div onClick={() =>dispatch(selectStage(null))} className={styles.overworld}>
-                <h4>Return to Overworld</h4>
-            </div>
-            <h3 className={styles.subtitle} style={{margin:"0.5em"}}>Stages</h3>
-            <div className={styles.menu}>
-                {stageList} 
-                </div><div className={styles.menushadow}></div>
-            <h3 className={styles.subtitle}>Badges</h3>
-            <Badges/>
-            <div className={styles.levelInfo}>
-                <h4>Level Information</h4>
-                <p>{info.activeStage.description}</p>
-            </div>
-        </>
+        <div className={styles.container}>
+            <button onClick={() =>dispatch(selectStage(0))} className={styles.overworld}>
+                <h4>Return to Home</h4>
+            </button>
+            
+            <section className={styles.stageSelect}>
+                <h3 className={styles.subtitle} style={{margin:"0.5em"}}>Stages</h3>
+                <div className={styles.menu}>
+                    {stageList} 
+                </div>
+                <div className={styles.menushadow}></div>
+            </section>
+            <section className={styles.badges}>
+                <h3 className={styles.subtitle}>Acheivement Badges</h3>
+                <Badges/>
+            </section>
+            <section className={styles.levelInfo}>
+                <h4>{info.stages[info.activeStage].name}</h4>
+                <p>{info.stages[info.activeStage].description}</p>
+            </section>
+        </div>
     )
 }
 

@@ -2,11 +2,16 @@
     width: 80%;
     max-width: 30em;
     top:15%;
+    height: 80%;
+    max-height: 30em;
     left:calc(10% + 0.5em);
     position:fixed;
     background-color:white;
-    z-index:3;
+    z-index:4;
     padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .container h1 {
@@ -18,15 +23,20 @@
     padding: 1em;
     color: #696969;
   }
-  
-  .container .inner {
+
+  .container .buttonContainer {
     display: flex;
     padding: 1em;
+    justify-content: space-evenly;
   }
-  
-  .container .inner button {
+
+  .buttonContainer button {
     padding: 1em;
     margin: 1em;
+  }
+  
+  .container .inner {
+    overflow-y: scroll;
   }
 
 .background {

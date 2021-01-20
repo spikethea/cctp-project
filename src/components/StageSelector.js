@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 //Redux
 import {useSelector} from 'react-redux';
 
@@ -12,30 +12,31 @@ const StageSelector = () => {
 
     const currentStage = useSelector(state => state.info.activeStage);
 
-    const stageSelect = currentStage.id
-
-    console.log(stageSelect);
-
-    const [stageLoad, setStageLoad] = useState(false);
-
+    console.log(currentStage);
     //useEffect(()=>setStageLoad(true), [currentStage])
 
-    
-      if (stageSelect === 0) {
-            return (
+    switch(currentStage) {
+      case 0:
+        console.log(currentStage);
+        return (
+          <Overworld/>
+          )
+      case 1:
+        console.log(currentStage);
+        return (
               <HealthAndSafety/>
             
-          )} 
-        else if (stageSelect === 1) {
-            return (
-            <Allergies/>
-        )
-      }
-     else return (
-      <Overworld/>
-      )
-    
-
+          )
+      case 2:
+        return (
+              <Allergies/>
+            
+          )
+      default:
+        return (
+          <Overworld/>
+          )
+    }
     
 }
 

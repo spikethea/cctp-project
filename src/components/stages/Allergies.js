@@ -1,11 +1,10 @@
-import React, {useRef, useState, useCallback, useEffect, Suspense} from 'react';
+import React, {useRef, useState, useEffect, Suspense} from 'react';
 import styles from './Allergies.module.css';
 
 //Packages
-import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
-import {Box, Html, OrbitControls, draco} from 'drei';
+import {Html, Stats} from 'drei';
 import {useSpring, animated} from 'react-spring';
 
 import { a } from '@react-spring/three';
@@ -19,46 +18,51 @@ const Allergies = () => {
 
     const dispatch = useDispatch();
     const transformBoxZ = useSelector(state => state.counter);
-    const scrollbar = useRef(null);
-
-    const allergyData = {
-      peanuts: 3,
-      vegan:5,
-      vegetarian:8,
-      dairy:10
-    }
-
-    /*allergyData.map ((allergy) => {
-      <Person position={[5,1,5]}/>
-    })*/
+    const state = useSelector(state => state.allergies);
     
 
-    const [scrollPosition, setScrollPosition] = useState(0)
-    console.log(window.innerHeight);
+    const scrollbar = useRef(null);
 
-    const [allergyIcons, setAllergyIcons] = useState(true);
+    const [scrollPosition, setScrollPosition] = useState(0)
+    const [gameState, setGameState] = useState(false)
+
+    const [currentAllergies, setCurrentAllergies] = useState([]);
+    const [peopleArray, setPeopleArray] = useState([])
+
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 50
     
     //tracking scroll position
 
-    const onScroll = ({}) => {
+    const onScroll = () => {
       const scrollTop = scrollbar.current.scrollTop
-      console.log("scrolling" + scrollTop)
-      console.log("scrollbar length " + scrollbar.current.scrollHeight)
       setScrollPosition((scrollTop/scrollbar.current.scrollHeight)* 1000);
-      console.log("scroll camera" + scrollPosition + "%")
+      console.log("scroll camera" + Math.floor(scrollPosition) + "%")
     }
-  
-    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 50
+
+    
+    //populating current allergies and people array
+    useEffect(()=> {
+      setPeopleArray([]);
+      setCurrentAllergies([]);
+      Object.keys(state.allergies).forEach(function(allergy) {
+        setCurrentAllergies(currentAllergies => [...currentAllergies, (state.allergies[allergy])]);
+        for(let i = 0; i < state.allergies[allergy].quantity; i++) {
+          setPeopleArray(peopleArray => [...peopleArray, (state.allergies[allergy])]);
+        }
+      });
+      console.log("current allergies calculated");
+    }, [state])
+
 
     return (
       <>
-        <div className="scrollbar" ref={scrollbar} onScroll={onScroll} style={{position:"fixed", left:"0%", top:"0%", width:`100vw`,height:`${vh}px`, backgroundColor:"rgba(0,0,0,0)", overflowY:"scroll", zIndex:"2"}}>
+        <div className={styles.scrollbar} ref={scrollbar} style={{height:`${vh}px`}} onScroll={onScroll}>
           <div style={{height:"500vh"}}>
-              <p style={{margin:"3.5em 1em 1em 1em",padding:"1em", backgroundColor:"#349eeb", borderRadius:"1em", border:"5px solid white"}}>Scroll down to Move the Camera!</p>
+              <p className={styles.scrollDown}>Scroll down to Move the Camera!</p>
           </div>
         </div>
-        <AllergyCounter dispatch={dispatch}/>
+        {gameState ? <AllergyCounter currentAllergies={currentAllergies} state={state} dispatch={dispatch}/> : <StartMenu/>}
+        <Timer gameState={gameState} setGameState={setGameState}/>
         <Canvas
         className={"canvas"}
         colorManagement 
@@ -67,23 +71,19 @@ const Allergies = () => {
         
         >
           <Camera 
-          position={[scrollPosition/20, 15, 25]}
+          position={[(scrollPosition/10)-20, 15, 45]}
           rotation={[-Math.PI / 8, 0, 0]}
           fov={70}
           />
-        
-            <Lights/>
-            <RotatingBox
-            transformBoxZ={transformBoxZ}
-            onClick={() => dispatch(showUserInterface('SHOW_UI'))}
-            onHover={console.log("reached")}
+            <Stats
+              showPanel={0} // Start-up panel (default=0)
+              className="stats" // Optional className to add to the stats container dom element
+               // All stats.js props are valid
             />
+            <Lights/>
             <Floor/>
-            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
-              <Person position={[1,1,1]}/>
-              <Person position={[5,1,5]}/>
-              <Person position={[18,1,3]}/>
-              <Person position={[34,1,7]}/>
+            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
+              <People peopleArray={peopleArray} state={state}/>
             </Suspense>
         {/* <OrbitControls/> */}
       </Canvas>
@@ -94,58 +94,108 @@ const Allergies = () => {
 
 //UI
 
+  const Timer = ({setGameState, gameState}) => {
+
+    let [countdown, setCountdown] = useState(15);
+    const props = useSpring({transform: gameState ? "scale(0)": "scale(1)"});
+
+    useEffect(() => {if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown -  1);
+      }, 1000);
+      //console.log("TICK")
+      } else setGameState(true);
+    })
 
 
-  const AllergyCounter = ({dispatch}) => {
+    return (
+      <animated.div style={props} className={styles.timer}>
+          <h1>{countdown}</h1>
+        </animated.div> 
+    )
+  }
 
-    const state = useSelector(state => state.allergies);
+  const StartMenu = ()=> {
+    return (
+      <div className={styles.StartMenu}>
+        <h3>Ready to Start?</h3>
+        <button>Start Task</button>
+      </div>
+    )
+  }
 
-    let currentAllergies = [];
+  const AllergyCounter = ({dispatch, state, currentAllergies}) => {
 
     const [display, setDisplay] = useState(true);
-    const props = useSpring({bottom: display? "0%": "-100%"})
+    const [allergyMap, setAllergyMap] = useState(new Map());
+
+    const props = useSpring({bottom: display ? "0vh": "-40vh"});
+
 
     const checkCount = () => {
-      console.log("check the count of allergies against the users input");
+      console.log("checking the count of allergies against the users input");
+      console.log(currentAllergies);
+      let i = 0;
+      let incorrect = 0
+      for (i = 0; i < currentAllergies.length; i++) {
+        if (currentAllergies[i].inputQuantity === currentAllergies[i].quantity) {
+          console.log(currentAllergies[i].name + " correct!");
+        } else {
+          incorrect++
+        }
+      }
 
-      
+      if (incorrect > 1) {
+        console.log("incorrect amount of allergies wrote down: " + incorrect  + "/" + currentAllergies.length);
+      } else {
+        console.log("correct!");
+
+      }
     }
 
+      let mappedAllergies = currentAllergies.map ((allergy, index) => {
 
-    Object.keys(state.allergies).forEach(function(allergy) {
-      console.log(state.allergies);
-      currentAllergies.push(state.allergies[allergy]);
-      console.log(currentAllergies);
-  });
+              return (
+                <div key={index} className={styles.item}>
+                    <label>
+                      <p style={{color:`${allergy.color}`, fontWeight:"bold", fontSize:"3em", lineHeight:"0.3em"}}>.</p>
+                      {allergy.tagName}
+                    </label>
+                    <div className={styles.itemInner}>
 
-  console.log("forEach done");
-
-  console.log(currentAllergies);
-
-    currentAllergies = currentAllergies.map ((allergy, index) => {
-
-        return (
-          <div key={index} className={styles.item}>
-              <label>{allergy.tagName}</label>
-              <div className={styles.itemInner}>
-                <p className={styles.quantity}>{allergy.inputQuantity}</p>
-                <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'decrease'))}>-</button>
-                <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'increase'))}>+</button>
-              </div>
-            </div>
-        )
-        
+                      <p className={styles.quantity}>{allergy.inputQuantity}</p>
+                      <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'decrease'))}>-</button>
+                      <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'increase'))}>+</button>
+                    </div>
+                  </div>
+              )
+              
       })
 
-    console.log("mapping done");
+    
 
       
     
 
     return (
       <animated.div style={props} className={styles.container}>
-        <h2 onClick={()=> setDisplay(false)}>Allergy List</h2>
-          {currentAllergies}
+        <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergy List</h2>
+          <div className={styles.inner}>
+          {currentAllergies.map((allergy, index) => (
+  <div key={index} className={styles.item}>
+      <label>
+        <p style={{color:`${allergy.color}`, fontWeight:"bold", fontSize:"3em", lineHeight:"0.3em"}}>.</p>
+        {allergy.tagName}
+      </label>
+      <div className={styles.itemInner}>
+
+        <p className={styles.quantity}>{allergy.inputQuantity}</p>
+        <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'decrease'))}>-</button>
+        <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'increase'))}>+</button>
+      </div>
+    </div>
+))}
+          </div>
         <button onClick={checkCount} className={styles.submit}>Confirm</button>
       </animated.div>
     )
@@ -194,38 +244,9 @@ const Lights = () => {
   }
   
 //Meshes
-const RotatingBox = ({transformBoxZ})=> {
-  
-    const box = useRef();
-  
-    const [boxSize, setBoxSize] = useState(false);  
-  
-    useFrame(()=>(
-      box.current.rotation.y = box.current.rotation.x += 0.01
-      )
-    )
-  
-    return (
-        <>
-          <Box
-            args={boxSize ? [2,2,2]: [1,1,1]}
-            position={[0, transformBoxZ, 0]}
-            ref={box}
-            castShadow
-            onClick={()=> setBoxSize(true)}//cant get onClick Working at all, drei or R3F
-          >
-            <meshStandardMaterial 
-              
-              cast
-              attach="material" 
-              color={"lightblue"}
-            />
-          </Box>
-        </>
-    )
-}
   
   const Floor = ({onClick}) => {
+
     return (
       <>
         <mesh
@@ -234,31 +255,53 @@ const RotatingBox = ({transformBoxZ})=> {
           rotation={[-Math.PI / 2, 0, 0]} 
           position={[0, -3, 0]}
         >
-          <planeBufferGeometry attach='geometry' args={[100, 20]}/>
-          <meshStandardMaterial color={"rgb(5, 68, 0)"} opacity={1} attach='material'/>
+          <planeBufferGeometry attach='geometry' args={[120, 50]}/>
+          <meshStandardMaterial color={"rgb(200, 200, 200)"} opacity={1} attach='material'/>
         </mesh>
       </>
     )
   }
 
+
+  const People = ({peopleArray}) => {
+   
+
+    return (
+      <>
+      {peopleArray.map((allergy, id)=> (
+        <Person key={id} color={allergy.color}/>
+        )
+      )}
+      </>
+    )
+  }
   
-  
-  const Person = ({onClick}) => {
+  const Person = ({color}) => {
 
     const {nodes} = useLoader(GLTFLoader, "assets/models/npc.glb");
     
     let person = useRef();
 
     const [bobbing, setBobbing] = useState(true);
+    const [delay, setDelay] = useState(Math.random()* 100);
 
     const [properties, setProperties] = useState({
-      position: [Math.random()*40, 1, Math.random() * 10], 
+      position: [(Math.random()*100) - 50, 1, Math.random() * 25], 
       color: [Math.floor(Math.random()*255), Math.floor(Math.random()*255), Math.floor(Math.random()*255)],
-      popup: false
+      popup: false,
       }
-    );  
-  
+    );
+
+    setTimeout(
+
     useFrame(()=> {
+
+      if (delay > 0) {
+        setDelay(delay - 1);
+      }
+
+      if (delay < 0) {
+
         if (person.current.position.y > 1.5) {
           
           setBobbing(false);
@@ -274,10 +317,8 @@ const RotatingBox = ({transformBoxZ})=> {
         } else {
           person.current.position.y -= 0.01;
         }
-
-
-        
-    })
+      } 
+    }), properties.delay) 
   
     return (
       <group>
@@ -292,9 +333,8 @@ const RotatingBox = ({transformBoxZ})=> {
                 scaleFactor={50}
             >
                 <p 
-                  onClick={onClick} 
-                  style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:"white", width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
-                >V</p>
+                  style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
+                > </p>
             </Html>
             <meshStandardMaterial 
                 attach="material" 
