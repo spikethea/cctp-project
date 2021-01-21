@@ -36,7 +36,7 @@ const Allergies = () => {
     const onScroll = () => {
       const scrollTop = scrollbar.current.scrollTop
       setScrollPosition((scrollTop/scrollbar.current.scrollHeight)* 1000);
-      console.log("scroll camera" + Math.floor(scrollPosition) + "%")
+      console.log("scroll camera " + Math.floor(scrollPosition/10) + " %")
     }
 
     
@@ -83,7 +83,7 @@ const Allergies = () => {
             <Lights/>
             <Floor/>
             <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
-              <People peopleArray={peopleArray} state={state}/>
+              <People gameState={gameState} peopleArray={peopleArray} state={state}/>
             </Suspense>
         {/* <OrbitControls/> */}
       </Canvas>
@@ -152,30 +152,6 @@ const Allergies = () => {
 
       }
     }
-
-      let mappedAllergies = currentAllergies.map ((allergy, index) => {
-
-              return (
-                <div key={index} className={styles.item}>
-                    <label>
-                      <p style={{color:`${allergy.color}`, fontWeight:"bold", fontSize:"3em", lineHeight:"0.3em"}}>.</p>
-                      {allergy.tagName}
-                    </label>
-                    <div className={styles.itemInner}>
-
-                      <p className={styles.quantity}>{allergy.inputQuantity}</p>
-                      <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'decrease'))}>-</button>
-                      <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'increase'))}>+</button>
-                    </div>
-                  </div>
-              )
-              
-      })
-
-    
-
-      
-    
 
     return (
       <animated.div style={props} className={styles.container}>
@@ -263,20 +239,20 @@ const Lights = () => {
   }
 
 
-  const People = ({peopleArray}) => {
+  const People = ({peopleArray, gameState}) => {
    
 
     return (
       <>
       {peopleArray.map((allergy, id)=> (
-        <Person key={id} color={allergy.color}/>
+        <Person gameState={gameState} key={id} color={allergy.color}/>
         )
       )}
       </>
     )
   }
   
-  const Person = ({color}) => {
+  const Person = ({gameState, color}) => {
 
     const {nodes} = useLoader(GLTFLoader, "assets/models/npc.glb");
     
@@ -332,9 +308,9 @@ const Lights = () => {
                 zIndexRange={[1, 0]}
                 scaleFactor={50}
             >
-                <p 
+                {!gameState? <p 
                   style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
-                > </p>
+                > </p>: null}
             </Html>
             <meshStandardMaterial 
                 attach="material" 

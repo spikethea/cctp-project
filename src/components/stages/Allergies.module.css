@@ -71,12 +71,12 @@ display: flex;
 .scrollDown {
     margin: 3.5em 1em 1em 1em;
     padding: 1em;
-    background-color: #349eeb;
+    background-color: #d7dde2;
     border-radius: 1em;
-    border: 5px solid #0f344e;
+    border: 5px solid #272749;
     display: inline-block;
     font-weight: bold;
-    color: whitesmoke;
+    color:grey;
 }
 
 .loading {

@@ -47,9 +47,6 @@ const Scene = ({dispatch, counter})=> {
     <group ref={mesh} position={[2, 0, -10]}  rotation-y={sceneRot}>
 
       <Lights/>
-      <RotatingBox
-        transformBoxZ={counter}
-      />
       <Person position={[5, -1, 5]} color={[20, 20, 255]} onClick={()=> dispatch(showInfo("puddle")) }/>
       <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
         <Floor onClick={()=> dispatch(showInfo("homeButton"))}/>
@@ -95,41 +92,6 @@ const Floor = ({onClick}) => {
         <primitive onClick={onClick} position={[0, -2, -10]} object={gltf.scene} />
   )
 }
-
-
-const RotatingBox = ({transformBoxZ, onClick})=> {
-  
-    const box = useRef();
-
-
-  
-    const [boxSize, setBoxSize] = useState(false);  
-  
-    useFrame(()=>(
-      box.current.rotation.y = box.current.rotation.x += 0.01
-      )
-    )
-  
-    return (
-        <>
-          <Box
-            args={boxSize ? [2,2,2]: [1,1,1]}
-            position={[0, 5, 0]}
-            ref={box}
-            castShadow
-            onClick={onClick}//cant get onClick Working at all, drei or R3F
-          >
-            <meshStandardMaterial 
-              
-              cast
-              attach="material" 
-              color={"lightblue"}
-            />
-          </Box>
-        </>
-    )
-}
-
   
 const Person = ({onClick, position, color}) => {
   

@@ -44,7 +44,8 @@ const allergyReducer = (state = initState, action) => {
 }
 
 const initState = {
-
+    started:false,
+    difficulty:1,
     allergies: {
         peanut: {
             name: "Peanut",

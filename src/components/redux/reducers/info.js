@@ -112,7 +112,7 @@ const initState = {
                     exp:0,
                     description:"This is the Overworld Map, Have a look around to see if you can find anything interesting",
                     activeLevel:0,
-                    levels: 0,
+                    levels: null,
                 },
                 {
                 name: "Health and Safety",
@@ -138,12 +138,12 @@ const initState = {
                 ]
             },
             {
-                name: "Allergy List",
+                name: "Allergen List",
                 tagname:"allergyLists",
                 id:2,
                 exp:2,
                 img:"../../assets/images/levels/allergies.jpg",
-                description:"Allergy testing is all about ensuring the get the correct details in a tight amount of space",
+                description:"Allergen lists are an important task, where you must the correct details of each customer to essential accuracy, in a tight amount of space. ensuring the customers get their dietal prefences and no potential allrgic reaction occurs.",
                 activeLevel:0,
                 levels: [
                     {

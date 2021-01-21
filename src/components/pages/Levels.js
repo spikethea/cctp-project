@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styles from  './Levels.module.css';
+import styles from  './UserInterface.module.css';
 
 const Levels = ()=> {
     return (

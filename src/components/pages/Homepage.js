@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styles from  './Homepage.module.css';
+import styles from  './UserInterface.module.css';
 
 //Level Images
 
@@ -88,7 +88,7 @@ const Badges = () => {
 
     const badges = info.badges;
 
-    
+    console.log("update");
 
     let acquiredBadges = []
     

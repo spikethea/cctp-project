@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from  './Leaderboard.module.css';
+import styles from  './UserInterface.module.css';
 
 const Leaderboard = () => {
     return (

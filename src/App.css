@@ -224,7 +224,7 @@ body,
     height: unset;
     top: 8.5vh;
     right: 5vw;
-    outline: 5px solid black;
+    border-radius: 3em;
   }
 
   .landing-page section {
