@@ -1,12 +1,4 @@
-import {SHOW_UI, HIDE_UI, INCREASE, DECREASE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY} from './types'
-
-export const transform = (name) => {
-    console.log("inside tranform");
-    console.log("action is " + name);
-    return {
-        type: name === 'INCREASE' ? INCREASE : DECREASE
-    };
-};
+import {SHOW_UI, HIDE_UI, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, ADD_POINTS} from './types'
 
 export const showUserInterface = (name) => {
     console.log("inside showUI");
@@ -68,5 +60,14 @@ export const allergyQuantity = (allergyName, action) => {
     return {
         type: action === "increase" ? INCREASE_ALLERGY_QUANTITY : DECREASE_ALLERGY_QUANITITY,
         payload: allergyName,
+    }
+}
+
+export const addPoints = (points) => {
+    console.log("adding " + points + "points")
+
+    return {
+        type: ADD_POINTS,
+        payload: points,
     }
 }

@@ -17,33 +17,35 @@ import { showUserInterface, allergyQuantity } from '../redux/actions';
 const Allergies = () => {
 
     const dispatch = useDispatch();
-    const transformBoxZ = useSelector(state => state.counter);
+
     const state = useSelector(state => state.allergies);
     
 
     const scrollbar = useRef(null);
 
-    const [scrollPosition, setScrollPosition] = useState(0)
-    const [gameState, setGameState] = useState(false)
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [gameState, setGameState] = useState(false);
 
     const [currentAllergies, setCurrentAllergies] = useState([]);
-    const [peopleArray, setPeopleArray] = useState([])
+    const [peopleArray, setPeopleArray] = useState([]);
 
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 50
     
     //tracking scroll position
 
     const onScroll = () => {
-      const scrollTop = scrollbar.current.scrollTop
-      setScrollPosition((scrollTop/scrollbar.current.scrollHeight)* 1000);
+      const scrollTop = scrollbar.current.scrollLeft
+      setScrollPosition((scrollTop/scrollbar.current.scrollWidth)* 1000);
       console.log("scroll camera " + Math.floor(scrollPosition/10) + " %")
     }
 
     
     //populating current allergies and people array
     useEffect(()=> {
+
       setPeopleArray([]);
       setCurrentAllergies([]);
+
       Object.keys(state.allergies).forEach(function(allergy) {
         setCurrentAllergies(currentAllergies => [...currentAllergies, (state.allergies[allergy])]);
         for(let i = 0; i < state.allergies[allergy].quantity; i++) {
@@ -55,12 +57,13 @@ const Allergies = () => {
 
 
     return (
-      <>
+      <>            
         <div className={styles.scrollbar} ref={scrollbar} style={{height:`${vh}px`}} onScroll={onScroll}>
-          <div style={{height:"500vh"}}>
-              <p className={styles.scrollDown}>Scroll down to Move the Camera!</p>
+          <div style={{width:"500vh"}}>
+              <p className={styles.scrollDown}>Scroll Horizontally to Move the Camera!</p>
           </div>
         </div>
+
         {gameState ? <AllergyCounter currentAllergies={currentAllergies} state={state} dispatch={dispatch}/> : <StartMenu/>}
         <Timer gameState={gameState} setGameState={setGameState}/>
         <Canvas
@@ -68,7 +71,6 @@ const Allergies = () => {
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
-        
         >
           <Camera 
           position={[(scrollPosition/10)-20, 15, 45]}
@@ -96,7 +98,7 @@ const Allergies = () => {
 
   const Timer = ({setGameState, gameState}) => {
 
-    let [countdown, setCountdown] = useState(15);
+    let [countdown, setCountdown] = useState(60);
     const props = useSpring({transform: gameState ? "scale(0)": "scale(1)"});
 
     useEffect(() => {if (countdown > 0) {
@@ -155,7 +157,9 @@ const Allergies = () => {
 
     return (
       <animated.div style={props} className={styles.container}>
-        <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergy List</h2>
+        <header>
+        <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergen List</h2>
+        </header>
           <div className={styles.inner}>
           {currentAllergies.map((allergy, index) => (
   <div key={index} className={styles.item}>
@@ -297,7 +301,6 @@ const Lights = () => {
     }), properties.delay) 
   
     return (
-      <group>
         <mesh 
           args={[1, 1, 1]}
           position={properties.position}
@@ -319,7 +322,6 @@ const Lights = () => {
             />
             
         </mesh>
-      </group>
     )
   }
 

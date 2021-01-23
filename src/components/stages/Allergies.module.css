@@ -2,7 +2,7 @@
     background: white;
     position: fixed;
     bottom: 0;
-    border-radius: 0.5em 0.5em 0em 0em;
+    border-radius: 0.5em 1em 0em 0em;
     z-index: 2;
     width: 100%;
 }
@@ -13,7 +13,7 @@
     top:0%;
     width:100vw;
     background-color:rgba(0,0,0,0);
-    overflow-y:scroll;
+    overflow-x:scroll;
     z-index: 1;
 }
 
@@ -22,7 +22,7 @@
     position: fixed;
     z-index: 3;
     top: 20%;
-    left: calc(50% - 1em);
+    left: calc(50% - 2.5em);
     color: white;
     width: 5em;
     height: 5em;
@@ -110,6 +110,15 @@ display: flex;
     .inner {
     overflow: scroll;
     height: 30vh;
+    
     }
 
+}
+
+@media (pointer: coarse) { 
+    .inner {
+        box-shadow: -1px -10px 30px 0px rgba(0,0,0,0.2) inset;
+        -webkit-box-shadow: -1px -10px 30px 0px rgba(0,0,0,0.2) inset;
+        -moz-box-shadow: -1px -10px 30px 0px rgba(0,0,0,0.2) inset;
+    }
 }

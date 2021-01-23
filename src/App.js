@@ -35,7 +35,7 @@ function App() {
         <InfoBox/>
         <BadgeNotification/>
         <Tutorial/>
-  
+        {/* <Quiz/> */}
         <StageSelector/>
       </Suspense>
       
@@ -82,7 +82,7 @@ function App() {
 
 //UI
 
-const QuizBox = ()=> {
+const Quiz = ()=> {
 
   const questions = [
       {
@@ -125,7 +125,7 @@ const BadgeNotification = () => {
   const info = useSelector(state => state.info);
   const dispatch = useDispatch();
 
-  const props = useSpring({delay:{duration:800}, config:{duration: 250}, top: info.displayingBadge ? "20%": "40%", opacity: info.displayingBadge ? 1: 0})
+  const props = useSpring({ config:{duration: 250}, delay:500, top: info.displayingBadge ? "20%": "40%", opacity: info.displayingBadge ? 1: 0})
 
   if (info.displayingBadge) {
     
@@ -136,18 +136,18 @@ const BadgeNotification = () => {
     dispatch(showUserInterface('SHOW_UI'));
   }
 
-  if (info.displayingBadge) {
 
-    
-    console.log(info.activeBadge.title);
     return (
       <animated.div style={props} onClick={handleClick} className="badge-container">
-        <h3>New Badge!</h3>
-        <img src={goodEye} alt="React Logo"/>
-        <p>{info.activeBadge.title}</p>
+        {info.displayingBadge ?
+        <>
+          <h3>New Badge!</h3>
+          <img src={goodEye} alt="React Logo"/>
+          <p>{info.activeBadge.title}</p>
+        </>
+        : null}
       </animated.div>
     )
-  } else return null
 }
 
 const InfoBox = ({onClick}) => {

@@ -125,30 +125,30 @@ body,
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,0.50);
-  color: rgb(0, 0, 0);
-  z-index: 5;
+  color: rgb(255, 255, 255);
+  z-index: 6;
   overflow-y: scroll;
-  padding-bottom: 5em;
 }
 
 
 .pages {
   display: flex;
   list-style-type: none;
-  align-items: center;
+  width: 100%;
+  overflow: auto;
   justify-content: center;
 }
 
 .page-item {
   margin-right: 0.5rem;
   padding: 0.5rem;
-  border-radius: 0.2rem;
+  border-radius: 0.2rem 0.2rem 0rem 0rem;
   font-weight: bold;
   color: white;
 }
 
 .background {
-  position: absolute;
+  position: fixed;
   top: 0%;
   left: 0%;
   width: 100vw;
@@ -164,7 +164,7 @@ body,
   margin: -50px -50px -50px -10rem;
   position:absolute;
   background-color:white;
-  z-index:3;
+  z-index:4;
   border-radius:1em;
   padding:3em;
   -webkit-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
@@ -195,7 +195,7 @@ body,
   width: 500px;
   height: 500px;
   border-radius: 2em;
-  z-index: 5;
+  z-index: 4;
 }
 
 

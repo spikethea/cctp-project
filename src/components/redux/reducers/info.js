@@ -5,7 +5,7 @@ const infoReducer = (state = initState, action) => {
             infoSelected = {...state.infoBox[action.payload]}
             console.log(action.payload);
             console.log(infoSelected);
-            //infoSelected.displaying = true;
+            infoSelected.displayed = true;
             return {
                 ...state,
                 displayingInfo:true,
@@ -20,8 +20,8 @@ const infoReducer = (state = initState, action) => {
             let initialNotifications = state.notifications;
             let initialDisplaying = false;
             infoSelected = {...state.badges[action.payload]};
-            if (!infoSelected.displaying) {
-                infoSelected.displaying = true;
+            if (!infoSelected.isAchieved) {
+                infoSelected.isAchieved = true;
                 initialDisplaying = true;
                 initialNotifications += 1;
             }
@@ -52,13 +52,28 @@ const infoReducer = (state = initState, action) => {
                 ...state,
                 notifications: 0,
             }
+        case 'ADD_POINTS':
+            let Points = 0;
+            let initalPoints = state.points;
+            let expLevel = state.exp;
+            if ((initalPoints + Points) < 1000) {
+                Points = state.points + action.payload;
+            } else {
+                expLevel += 1;
+                Points = (state.points + action.payload) - 1000;
+            }
+            return {
+                ...state,
+                points:state.points + Points,
+                exp: expLevel,
+            }
         default: 
             return state
     }
 }
 
 const initState = {
-    points: 0,
+    points: 32,
     exp: 2,
     notifications: 1,
     displayingInfo: false,
@@ -67,25 +82,25 @@ const initState = {
     activeBadge: {
 
     },
-    activeStage: 2,
+    activeStage: 1,
     infoBox:{
         homeButton:{
             tagname:"HomeButton",
             title:"Get Started",
             description:"To get started, press the home button and you can access your first task.",
-            displaying: false
+            displayed: true
         },
         fireExtinguisher:{
             tagname:"fireExtinguisher",
             title:"Fire Extinguisher",
             description:"This is a Fire Extinguisher, one the the most important health and safety items there is, accessible in every room. Only use them in emergencies.",
-            displaying: false
+            displayed: true
         },
         puddle:{
             tagname:"puddle",
             title:"Its a Puddle!",
-            description:"This is a Massive Health and Safety risk, if you see a puddle (which hasnt already been spotted) cover it with a sign immediately!",
-            displaying: false
+            description:"This is a Massive Health and Safety risk, if you see a puddle, cover it with a yellow warning sign immediately!",
+            displayed: false
         }
     },
     badges: {
@@ -100,24 +115,15 @@ const initState = {
             tagname:"oneHundredPercent",
             title:"100%",
             description:"You've 100% the stage!",
-            isAchieved: false,
+            isAchieved: true,
             image:"../../assets/svg/badges/100.svg"
         }
     },
     stages: [
                 {
-                    name: "Overworld Map",
-                    tagname:"overworldMap",
-                    id:0,
-                    exp:0,
-                    description:"This is the Overworld Map, Have a look around to see if you can find anything interesting",
-                    activeLevel:0,
-                    levels: null,
-                },
-                {
                 name: "Health and Safety",
                 tagname:"healthAndSafety",
-                id:1,
+                id:0,
                 exp:0,
                 img:"../../assets/images/levels/health_and_safety.jpg",
                 description:"This stage is all about managing your Health, and ensuring the safety of you are others around you when Maecenas a nunc ac velit ultrices gravida. Nunc scelerisque diam quis efficitur posuere. Cras id hendrerit libero, nec luctus turpis. Etiam non ullamcorper sem. Curabitur vel dui ligula. Mauris congue a augue at pulvinar. Quisque ut ultrices ante. Nulla interdum nisl dolor, sit amet lacinia lectus dictum id.",
@@ -140,7 +146,7 @@ const initState = {
             {
                 name: "Allergen List",
                 tagname:"allergyLists",
-                id:2,
+                id:1,
                 exp:2,
                 img:"../../assets/images/levels/allergies.jpg",
                 description:"Allergen lists are an important task, where you must the correct details of each customer to essential accuracy, in a tight amount of space. ensuring the customers get their dietal prefences and no potential allrgic reaction occurs.",
@@ -163,7 +169,7 @@ const initState = {
             {
                 name: "Customer Service",
                 tagname:"customerService",
-                id:3,
+                id:2,
                 exp:5,
                 img:"../../assets/images/levels/customer_service.jpg",
                 activeLevel:0,

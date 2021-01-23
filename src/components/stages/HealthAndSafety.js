@@ -11,18 +11,24 @@ import { a } from '@react-spring/three';
 import { useSelector, useDispatch} from 'react-redux';
 
 //Redux
-import { getBadge } from '../redux/actions';
+import { addPoints, getBadge } from '../redux/actions';
 
 
 const HealthAndSafety = () => {
 
     const dispatch = useDispatch();
-    const transformBoxZ = useSelector(state => state.counter);
-    
-    console.log(window.innerHeight);
+
+    const ref = useRef(null);
+
+    const [progress, setProgress] = useState(0);
 
     return (
+
       <>
+      <div style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}}>
+        <progress ref={ref} id="file" value={progress}  max="5"/>
+      </div>
+
         <Canvas
         style={{position:"fixed", left:"0%", top:"0%"}}
         className={"canvas"}
@@ -33,19 +39,16 @@ const HealthAndSafety = () => {
         >
           <Camera onScroll={console.log("scrolling")}/>
             <Lights/>
-            <RotatingBox
-            transformBoxZ={transformBoxZ}
-            dispatch={dispatch}
-            onHover={console.log("reached")}
-            />
+            <RotatingBox progress={progress} setProgress={setProgress} position={[-3, -1, -10]} dispatch={dispatch}/>
+            <RotatingBox progress={progress} setProgress={setProgress} position={[4, -0.5, -8]} dispatch={dispatch}/>
             <Stats
               showPanel={0} // Start-up panel (default=0)
               className="stats" // Optional className to add to the stats container dom element
                // All stats.js props are valid
             />
-            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
+            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"10%"}}>Loading...</Html>}>
               <Kitchen/>
-            </Suspense>
+    </Suspense>
             
         
       </Canvas>
@@ -127,7 +130,7 @@ const Kitchen = ()=> {
 
 }
 
-const RotatingBox = ({dispatch})=> {
+const RotatingBox = ({dispatch, position, progress, setProgress})=> {
   
     const box = useRef();
 
@@ -140,9 +143,14 @@ const RotatingBox = ({dispatch})=> {
     )
 
     const clickBox = () => {
-      setBoxSize(true);
-      console.log("clicked!")
-      dispatch(getBadge('goodEye'));
+      if(!boxSize) {
+        setProgress(progress + 1);
+        setBoxSize(true);
+        console.log("clicked!")
+        dispatch(getBadge('goodEye'));
+        dispatch(addPoints(200))
+      }
+
     }
 
 
@@ -150,8 +158,8 @@ const RotatingBox = ({dispatch})=> {
     return (
         <>
           <Box
-            args={boxSize ? [1,1,1]: [0.5, 0.5, 0.5]}
-            position={[3, -2, -10]}
+            args={boxSize ? [1,1,1]: [0.2, 0.2, 0.2]}
+            position={position}
             ref={box}
             castShadow
             onClick={clickBox}//cant get onClick Working at all, drei or R3F

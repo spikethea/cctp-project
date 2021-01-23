@@ -3,15 +3,27 @@ import styles from  './UserInterface.module.css';
 
 const Leaderboard = () => {
     return (
-    <>
-        <h2>Leaderboard</h2>
-        <div className={styles.leaderboard}>
-            <div className={styles.row}>QUINCE 650 Points</div>
-            <div className={styles.row}>ASFD 350 Points</div>
-            <div className={styles.row}>STAN 0 Points</div>
-            <div className={styles.row}>KHAN 1050 Points</div>
-        </div>
-    </>
+    <div className={styles.container}>
+        <table className={styles.leaderboard}>
+        <tbody>
+            <tr>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Age</th>
+            </tr>
+            <tr>
+                <td>Jill</td>
+                <td>Smith</td>
+                <td>50</td>
+            </tr>
+            <tr>
+                <td>Eve</td>
+                <td>Jackson</td>
+                <td>94</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
     )
 }
 

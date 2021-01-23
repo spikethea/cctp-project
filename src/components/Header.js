@@ -32,16 +32,15 @@ const Header = () => {
                 dispatch(clearNotifications());
             }} className={styles.notifications}>&nbsp; {info.notifications}</p>: null}
         </h3>
-        <div className={styles.experienceContainer}>LV:{info.exp} Skill Points: {info.points}</div>
-                <div className={styles.experience}>
-                {!showUI ? <img className={styles.home} src={Home} alt="Home Button" onClick={() => {
-                    dispatch(showUserInterface('SHOW_UI'));
-                    dispatch(clearNotifications());
-                }
-                    }/>: null}
-                </div>
+        <div className={styles.experience}>
+            {!showUI ? <img className={styles.home} src={Home} alt="Home Button" onClick={() => {
+                dispatch(showUserInterface('SHOW_UI'));
+                dispatch(clearNotifications());
+            }
+                }/>: null}
+            </div>
                 
-                {showUI ? <button onClick={() => dispatch(showUserInterface('HIDE_UI'))} className={styles.exit}>X</button> : null}
+            {showUI ? <button onClick={() => dispatch(showUserInterface('HIDE_UI'))} className={styles.exit}>X</button> : null}
             </header>
         </div>
     )

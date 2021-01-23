@@ -3,7 +3,7 @@ import React, {useRef, useState, Suspense} from 'react';
 //Packages
 import { useSelector, useDispatch } from 'react-redux';
 import { Canvas, useFrame, useLoader } from 'react-three-fiber'
-import {Box, Html, Sky} from 'drei';
+import {Box, Html, Sky, Stats} from 'drei';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 //Redux
@@ -22,6 +22,11 @@ const Overworld = () => {
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
         >
+          <Stats
+              showPanel={0} // Start-up panel (default=0)
+              className="stats" // Optional className to add to the stats container dom element
+               // All stats.js props are valid
+          />
           <Sky
           inclination={0.1}
           />
