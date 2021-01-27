@@ -49,9 +49,10 @@ const Tutorial = () => {
                     <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
                   </div>
                 </div>
-                {!pressed ? <div style={backgroundProps} className="background"></div> : null}
               </animated.div>
-              
+              <animated.div>
+              {!pressed ? <div style={backgroundProps} className="background"></div> : null}
+              </animated.div>
               </>
           );
           default:

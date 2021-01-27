@@ -15,12 +15,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showUserInterface, allergyQuantity } from '../redux/actions';
 
 const Allergies = () => {
-
+    // Redux
     const dispatch = useDispatch();
-
     const state = useSelector(state => state.allergies);
-    
+    const info = useSelector(state => state.info);
 
+    const showUI = info.displayingUI
+
+    //Hooks
     const scrollbar = useRef(null);
 
     const [scrollPosition, setScrollPosition] = useState(0);
@@ -64,13 +66,14 @@ const Allergies = () => {
           </div>
         </div>
 
-        {gameState ? <AllergyCounter currentAllergies={currentAllergies} state={state} dispatch={dispatch}/> : <StartMenu/>}
+        {gameState ? <AllergyCounter showUI={showUI} currentAllergies={currentAllergies} state={state} dispatch={dispatch}/> : <StartMenu/>}
         <Timer gameState={gameState} setGameState={setGameState}/>
         <Canvas
         className={"canvas"}
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
+        style={{filter: showUI ? "blur(5px)": "none" }}
         >
           <Camera 
           position={[(scrollPosition/10)-20, 15, 45]}
@@ -98,7 +101,7 @@ const Allergies = () => {
 
   const Timer = ({setGameState, gameState}) => {
 
-    let [countdown, setCountdown] = useState(60);
+    let [countdown, setCountdown] = useState(20);
     const props = useSpring({transform: gameState ? "scale(0)": "scale(1)"});
 
     useEffect(() => {if (countdown > 0) {
@@ -126,7 +129,7 @@ const Allergies = () => {
     )
   }
 
-  const AllergyCounter = ({dispatch, state, currentAllergies}) => {
+  const AllergyCounter = ({dispatch, currentAllergies, showUI}) => {
 
     const [display, setDisplay] = useState(true);
     const [allergyMap, setAllergyMap] = useState(new Map());
@@ -138,27 +141,29 @@ const Allergies = () => {
       console.log("checking the count of allergies against the users input");
       console.log(currentAllergies);
       let i = 0;
-      let incorrect = 0
+      let incorrect = 0;
+      let incorrectPeople = 0;
       for (i = 0; i < currentAllergies.length; i++) {
         if (currentAllergies[i].inputQuantity === currentAllergies[i].quantity) {
           console.log(currentAllergies[i].name + " correct!");
         } else {
           incorrect++
+          incorrectPeople += currentAllergies[i].quantity;
         }
       }
 
       if (incorrect > 1) {
-        console.log("incorrect amount of allergies wrote down: " + incorrect  + "/" + currentAllergies.length);
+        alert("incorrect! You got wrote down" + incorrect  + "/" + currentAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people had an averse allergic reaction today...");
       } else {
-        console.log("correct!");
+        alert("correct!");
 
       }
     }
 
     return (
-      <animated.div style={props} className={styles.container}>
+      <animated.div style={{filter: showUI ? "blur(5px)": "none", bottom: props.bottom}} className={styles.container}>
         <header>
-        <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergen List</h2>
+        <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergen List {display ? <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&gt;</span> : <span alt="expandable" style={{writingMode: "vertical-rl"}}>&lt;</span>}</h2>
         </header>
           <div className={styles.inner}>
           {currentAllergies.map((allergy, index) => (

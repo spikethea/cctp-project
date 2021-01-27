@@ -13,6 +13,9 @@ const Overworld = () => {
 
     const dispatch = useDispatch();
     const counter = useSelector(state => state.counter);
+    const info = useSelector(state => state.info);
+
+    const showUI = info.displayingUI
 
     return (
 
@@ -21,6 +24,7 @@ const Overworld = () => {
         camera={{position: [0, 70, 250], fov: 10, rotation:[0, 0, 0]}}
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
+        style={{filter: showUI ? "blur(5px)": "none" }}
         >
           <Stats
               showPanel={0} // Start-up panel (default=0)

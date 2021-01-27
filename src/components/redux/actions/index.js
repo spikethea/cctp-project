@@ -1,11 +1,19 @@
-import {SHOW_UI, HIDE_UI, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, ADD_POINTS} from './types'
+import {SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, ADD_POINTS} from './types'
 
 export const showUserInterface = (name) => {
     console.log("inside showUI");
     return {
-        type: name === 'SHOW_UI' ? SHOW_UI : HIDE_UI
+        type: name === 'SHOW_UI' ? SHOW_UI : HIDE_UI,
     };
 };
+
+export const switchPage = (page) => {
+    console.log("switching page to " + page);
+    return {
+        type: SWITCH_PAGE,
+        payload: page
+    }
+}
 
 export const showInfo = (tagName) => {
     console.log("displaying infobox " + tagName);

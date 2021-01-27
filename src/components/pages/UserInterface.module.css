@@ -1,3 +1,8 @@
+.container section {
+    border-top: 5px rgb(70, 70, 70) dotted;
+    margin: 1em;
+}
+
 .container {
     background: rgb(255,255,255, 0.2);
     padding: 1em 1em 3em 1em;
@@ -36,7 +41,7 @@
     max-height: 65vh;
     overflow: auto;
     border-radius: 2rem;
-    width: 90vw;
+    width: 85vw;
 }
 
 .menushadow {
@@ -44,7 +49,7 @@
     border-radius: 1rem;
     width: calc(100vw - 2rem);
     height: 20em;
-    top: 13rem;
+    top: 14.5rem;
     left: 0;
     align-items: center;
     justify-content: center;
@@ -104,13 +109,48 @@
 
 .badgesContainer {
     display: grid;
-    grid-gap: 0.2em;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr) )
 }
 
-.badge {
-    padding: .5em;
+    .badge {
+        padding: .5em;
+    }
+
+    .badge img {
+        width: 3em;
+    }
+
+    .badge p {
+        font-weight: bold;
+        color: white;
+    }
+
+.ArchiveBadgesContainer {
+    display: grid;
+    grid-gap: 0.2em;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr) )
 }
+
+    .archiveBadge {
+        margin:0.2em;
+        padding: 1em;
+        background: rgb(59, 59, 59);
+        
+    }
+    .archiveBadge img {
+        width: 3em;
+        
+    }
+
+    .archiveBadge h4 {
+        color: white;
+        font-weight:normal ;
+    }
+
+    .archiveBadge p {
+        color: rgb(161, 161, 161);
+        font-size: 0.8em;
+    }
 
 .description {
     position: fixed;
@@ -120,15 +160,6 @@
     background-color: rgb(63, 63, 63);
     border-radius: 1em;
     pointer-events: none;
-}
-
-.badge img {
-    width: 3em;
-}
-
-.badge p {
-    font-weight: bold;
-    color: white;
 }
 
 .levelInfo {
@@ -144,7 +175,8 @@
 
 .infoContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-gap: 0.5em;
 }
 
     .info {
@@ -152,12 +184,7 @@
         flex-direction: row;
         background: whitesmoke;
         border: solid 2px white;
-        margin: 1em;
         color: black;
-    }
-
-    .info h3 {
-        color: rgb(51, 51, 51);
     }
 
     .info figure {
@@ -165,26 +192,17 @@
         flex-direction: column;
     }
 
+    .info h3 {
+            color: rgb(51, 51, 51);
+    }
+
+    .info p {
+        font-size: 1em;
+        padding: 0.2em;
+    }
+
     .info img {
         height: 5em;
-    }
-
-.badgesContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr) )
-}
-
-    .badge {
-        padding: .5em;
-    }
-
-    .badge img {
-        width: 3em;
-    }
-
-    .badge p {
-        font-weight: bold;
-        color: white;
     }
 
 /*Leaderboard Page*/

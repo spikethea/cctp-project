@@ -6,7 +6,7 @@ import styles from  './UserInterface.module.css';
 //Level Images
 
 //Redux
-import { selectStage, showUserInterface } from '../redux/actions';
+import { selectStage, showUserInterface, switchPage } from '../redux/actions';
 
 const Homepage = () => {
     
@@ -22,17 +22,19 @@ const Homepage = () => {
             }} img={stage.img} stagename={stage.name} exp={stage.exp} id={stage.id+1}/>
     )
 
+    
     const { x, y } = useMousePosition();
+    
 
     return (
         <div className={styles.container}>
+
             <button onClick={() =>{
                 dispatch(selectStage(null))
                 dispatch(showUserInterface("HIDE_UI"))
                 }} className={styles.overworld}>
                 <h4>Return to Home</h4>
             </button>
-            
             <section className={styles.stageSelect}>
                 <h3 className={styles.subtitle}>Stages</h3>
                 <div className={styles.menu}>
@@ -42,11 +44,11 @@ const Homepage = () => {
             </section>
             <section className={styles.badges}>
                 <h3 className={styles.subtitle}>Acheivement Badges</h3>
-                <Badges x={x} y={y}/>
+                <Badges onClick={()=>dispatch(switchPage(2))} x={x} y={y}/>
             </section>
             <section className={styles.levelInfo}>
-                <h4>{info.activeStage? info.stages[info.activeStage].name: "Overworld"}</h4>
-                <p>{info.activeStage? info.stages[info.activeStage].description: "This is the Overworld Map, Have a look around to see if you can find anything interesting"}</p>
+                <h4>{info.activeStage? info.stages[info.activeStage-1].name: "Overworld"}</h4>
+                <p>{info.activeStage? info.stages[info.activeStage-1].description: "This is the Overworld Map, Have a look around to see if you can find anything interesting"}</p>
             </section>
         </div>
     )
@@ -54,15 +56,18 @@ const Homepage = () => {
 
 const useMousePosition = () => {
     const [mousePosition, setMousePosition] = useState({ x: null, y: null });
+    const touch = matchMedia('(hover: none)').matches;
   
     const updateMousePosition = ev => {
       setMousePosition({ x: ev.clientX, y: ev.clientY });
     };
   
     useEffect(() => {
-      window.addEventListener("mousemove", updateMousePosition);
+        if (!touch) {
+            window.addEventListener("mousemove", updateMousePosition);
   
       return () => window.removeEventListener("mousemove", updateMousePosition);
+        }
     }, []);
   
     return mousePosition;
@@ -71,10 +76,6 @@ const useMousePosition = () => {
 const Stage = ({onClick, stagename, exp, id, img}) => {
 
     const info = useSelector(state => state.info);
-
-    console.log(info.exp + " "  + exp);
-
-    console.log(img);
 
     if (info.exp >= exp) {
         return (
@@ -103,13 +104,11 @@ const Stage = ({onClick, stagename, exp, id, img}) => {
 }
 
 
-const Badges = ({x,y}) => {
+const Badges = ({x,y, onClick}) => {
     const [isShown, setIsShown] = useState(null);
 
     const info = useSelector(state => state.info);
     const badges = info.badges;
-
-    console.log(isShown);
 
     let acquiredBadges = []
     
@@ -117,7 +116,6 @@ const Badges = ({x,y}) => {
         if(badges[item].isAchieved) {
             acquiredBadges.push(badges[item]);
         }
-        console.log(acquiredBadges);
     });
 
     const acquiredBadgesList = acquiredBadges.map ((badge, index)=> {
@@ -131,11 +129,10 @@ const Badges = ({x,y}) => {
         </Link>
         )
         
-    }
-    )
+    })
 
     return (
-        <div onMouseLeave={() => setIsShown(null)} className={styles.badgesContainer}>
+        <div onClick={onClick} onMouseLeave={() => setIsShown(null)} className={styles.badgesContainer}>
             {acquiredBadgesList}
             <p style={{top:`${y}px`, left:`${x}px`}} className={styles.description}>{isShown !==null ? acquiredBadges[isShown].description: null}</p>
         </div>

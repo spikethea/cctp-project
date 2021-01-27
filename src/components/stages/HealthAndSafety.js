@@ -1,4 +1,4 @@
-import React, {useRef, useState, useCallback, useEffect, Suspense} from 'react';
+import React, {useRef, useState, useEffect, Suspense} from 'react';
 
 //Packages
 //import * as THREE from 'three';
@@ -8,7 +8,7 @@ import {Box, Html, Stats} from 'drei';
 
 import { a } from '@react-spring/three';
 
-import { useSelector, useDispatch} from 'react-redux';
+import {  useDispatch, useSelector } from 'react-redux';
 
 //Redux
 import { addPoints, getBadge } from '../redux/actions';
@@ -17,17 +17,24 @@ import { addPoints, getBadge } from '../redux/actions';
 const HealthAndSafety = () => {
 
     const dispatch = useDispatch();
+    const info = useSelector(state => state.info);
+    const showUI = info.displayingUI
 
     const ref = useRef(null);
 
     const [progress, setProgress] = useState(0);
 
     return (
-
       <>
-      <div style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}}>
-        <progress ref={ref} id="file" value={progress}  max="5"/>
-      </div>
+      <svg style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}} width="200" height="200" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle strokeDasharray="628" fill="none" cx="150" cy="150" r="100" stroke="white" strokeWidth="10"/>
+      </svg>
+
+      <svg style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}} width="200" height="200" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle strokeDashoffset={628 - (125.6*progress)} strokeDasharray="628" fill="none" cx="150" cy="150" r="100" stroke="blue" strokeWidth="10"/>
+      </svg>
+
+      <h1 style={{position: "absolute", zIndex:"3", color:"white", top:"14%", left:"43%"}}>{progress}/5</h1>
 
         <Canvas
         style={{position:"fixed", left:"0%", top:"0%"}}
@@ -35,12 +42,15 @@ const HealthAndSafety = () => {
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('coral')}
         shadowMap
-        
+        style={{filter: showUI ? "blur(5px)": "none" }}
         >
           <Camera onScroll={console.log("scrolling")}/>
             <Lights/>
             <RotatingBox progress={progress} setProgress={setProgress} position={[-3, -1, -10]} dispatch={dispatch}/>
+            <RotatingBox progress={progress} setProgress={setProgress} position={[4, -0.3, -7]} dispatch={dispatch}/>
+            <RotatingBox progress={progress} setProgress={setProgress} position={[0, 0.5, -10]} dispatch={dispatch}/>
             <RotatingBox progress={progress} setProgress={setProgress} position={[4, -0.5, -8]} dispatch={dispatch}/>
+            <RotatingBox progress={progress} setProgress={setProgress} position={[0, -2, -7]} dispatch={dispatch}/>
             <Stats
               showPanel={0} // Start-up panel (default=0)
               className="stats" // Optional className to add to the stats container dom element
@@ -48,7 +58,7 @@ const HealthAndSafety = () => {
             />
             <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"10%"}}>Loading...</Html>}>
               <Kitchen/>
-    </Suspense>
+            </Suspense>
             
         
       </Canvas>
@@ -82,7 +92,7 @@ function Camera(props) {
     }
   })
   // Make the camera known to the system
-  useEffect(() => void setDefaultCamera(ref.current), [])
+  useEffect(() => void setDefaultCamera(ref.current), [setDefaultCamera])
   // Update it every frame
   useFrame(() => {
     //ref.current.rotation += 0.01;
@@ -120,7 +130,7 @@ const Lights = () => {
 
 
 const Kitchen = ()=> {
-  const gltf = useLoader(GLTFLoader, "assets/models/kitchen.glb");
+  const gltf = useLoader(GLTFLoader, "./assets/models/kitchen.glb");
 
   console.log(gltf);
 

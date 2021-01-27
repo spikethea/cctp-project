@@ -10,11 +10,12 @@ const Archive = () => {
 
     return (
         <div className={styles.container}>
+            <h2>Your Archive</h2>
             <section>
                 <Badges state={state}/>
             </section>
             <section>
-                <h3 className={styles.subtitle}>Unlocked Information</h3>
+                <h4 className={styles.subtitle}>Unlocked Information</h4>
                 <Info state={state}/>
             </section>
         </div>
@@ -75,10 +76,11 @@ const Badges = ({state}) => {
         if(acquiredBadges.length > 0) {
             
             return (
-            <div key={index} style={{margin:"0.2em", padding:"1em", background:"whitesmoke"}} className={styles.badge}>
-                <img src={badge.image} alt="Achievement"/>
-                <p style={{color:"#212121"}}>{badge.title}</p>
-            </div>
+                <div key={index} className={styles.archiveBadge}>
+                    <h4>{badge.title}</h4>
+                    <img src={badge.image} alt="Achievement"/>
+                    <p>{badge.description}</p>
+                </div>
         )} else {
             console.log("no badges")
             return (
@@ -92,8 +94,8 @@ const Badges = ({state}) => {
 
     return (
         <>
-        <h3 className={styles.subtitle}>Unlocked Achievement Badges</h3>
-        <div className={styles.badgesContainer}>
+        <h4 className={styles.subtitle}>Unlocked Achievement Badges</h4>
+        <div className={styles.ArchiveBadgesContainer}>
             {AcquiredBadgesList}
         </div>
         </>

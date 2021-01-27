@@ -1,7 +1,7 @@
 .container {
     width: 100vw;
     position: fixed;
-    z-index: 3;
+    z-index: 6;
     background: rgb(0,0,0);
     background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 70%);
 }
@@ -28,6 +28,7 @@
 .exit {
     background: #ff0000;
     width: 2em;
+    height: 2em;
 }
 
 .home {

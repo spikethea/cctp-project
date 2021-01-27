@@ -8,8 +8,9 @@ import Home from '../assets/svg/home.svg'
 
 const Header = () => {
 
-    const showUI = useSelector(state => state.isLogged);
     const info = useSelector(state => state.info);
+    const showUI = info.displayingUI;
+
 
     const dispatch = useDispatch();
 

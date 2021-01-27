@@ -1,6 +1,21 @@
 const infoReducer = (state = initState, action) => {
     let infoSelected = {};
     switch(action.type){
+        case 'SHOW_UI':
+        return {
+            ...state,
+            displayingUI: true
+            }
+        case 'HIDE_UI':
+            return {
+                ...state,
+                displayingUI: false
+            }
+        case 'SWITCH_PAGE':
+            return {
+                ...state,
+                page:action.payload
+            }
         case 'POPUP_INFO':
             infoSelected = {...state.infoBox[action.payload]}
             console.log(action.payload);
@@ -9,7 +24,11 @@ const infoReducer = (state = initState, action) => {
             return {
                 ...state,
                 displayingInfo:true,
-                activeBox:infoSelected
+                activeBox:infoSelected,
+                infoBox: {
+                    ...state.infoBox,
+                    [action.payload]: infoSelected
+                }
             }
         case 'HIDE_INFO':
             return {
@@ -73,16 +92,18 @@ const infoReducer = (state = initState, action) => {
 }
 
 const initState = {
-    points: 32,
+    points: 320,
     exp: 2,
     notifications: 1,
+    page:0,
+    displayingUI: false,
     displayingInfo: false,
     displayingBadge: false,
     activeBox:"Broom",
     activeBadge: {
 
     },
-    activeStage: 1,
+    activeStage: 0,
     infoBox:{
         homeButton:{
             tagname:"HomeButton",

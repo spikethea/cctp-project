@@ -17,7 +17,7 @@ import StageSelector from './components/StageSelector';
 import Tutorial from './components/Tutorial';
 
 //Redux
-import { showUserInterface, closeInfoBox, hideBadge } from './components/redux/actions';
+import { showUserInterface, closeInfoBox, hideBadge, switchPage } from './components/redux/actions';
 
 //Main App Function
 function App() {
@@ -134,6 +134,7 @@ const BadgeNotification = () => {
 
   const handleClick = () => {
     dispatch(showUserInterface('SHOW_UI'));
+    dispatch(switchPage(2));
   }
 
 

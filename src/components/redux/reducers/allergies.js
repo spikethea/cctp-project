@@ -50,7 +50,7 @@ const initState = {
         peanut: {
             name: "Peanut",
             tagName: "peanut",
-            quantity:1,
+            quantity:3,
             inputQuantity:0,
             isCorrect: false,
             color:"#f7be5c",
@@ -90,7 +90,7 @@ const initState = {
           mustard: {
             name: "Mustard",
             tagName: "mustard",
-            quantity:2,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#ff6f00",
@@ -98,7 +98,7 @@ const initState = {
           other: {
             name: "Other",
             tagName: "other",
-            quantity:4,
+            quantity:1,
             inputQuantity:0,
             isCorrect: false,
             color:"#f542e9",
