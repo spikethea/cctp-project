@@ -9,17 +9,20 @@ import styles from  './UserInterface.module.css';
 import { selectStage, showUserInterface, switchPage } from '../redux/actions';
 
 const Homepage = () => {
+    const [isShown, setIsShown] = useState(null);
     
     const info = useSelector(state => state.info);
     const dispatch = useDispatch();
 
     const stages = info.stages;
 
+    
+
     const stageList = stages.map ((stage)=> 
             <Stage key={stage.id} onClick={()=> {
                 dispatch(selectStage(stage.id+1))
                 dispatch(showUserInterface("HIDE_UI"))
-            }} img={stage.img} stagename={stage.name} exp={stage.exp} id={stage.id+1}/>
+            }} onMouseEnter={()=> setIsShown(stage.id)} img={stage.img} stagename={stage.name} exp={stage.exp} id={stage.id+1}/>
     )
 
     
@@ -28,14 +31,14 @@ const Homepage = () => {
 
     return (
         <div className={styles.container}>
-
+            <p style={{top:`${y}px`, left:`${x}px`, maxWidth:"20em"}} className={styles.description}>{isShown !==null ? stages[isShown].description: null}</p>
             <button onClick={() =>{
                 dispatch(selectStage(null))
                 dispatch(showUserInterface("HIDE_UI"))
                 }} className={styles.overworld}>
                 <h4>Return to Home</h4>
             </button>
-            <section className={styles.stageSelect}>
+            <section onMouseLeave={() => setIsShown(null)} className={styles.stageSelect}>
                 <h3 className={styles.subtitle}>Stages</h3>
                 <div className={styles.menu}>
                     {stageList} 
@@ -73,13 +76,14 @@ const useMousePosition = () => {
     return mousePosition;
 };
 
-const Stage = ({onClick, stagename, exp, id, img}) => {
+const Stage = ({onClick, stagename, exp, id, img, onMouseEnter}) => {
+    
 
     const info = useSelector(state => state.info);
 
     if (info.exp >= exp) {
         return (
-            <div onClick={onClick} className={styles.item}>
+            <div onMouseEnter={onMouseEnter} onClick={onClick} className={styles.item}>
                 <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
                 <div className={styles.inner}>
                     <h4>Stage {id}: {stagename}</h4>

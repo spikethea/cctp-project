@@ -42,6 +42,7 @@
     overflow: auto;
     border-radius: 2rem;
     width: 85vw;
+    scroll-snap-type: x mandatory;
 }
 
 .menushadow {
@@ -65,6 +66,7 @@
 }
 
 .item {
+    scroll-snap-align: center;
     border-radius: 0.6rem;
     background:  #ebe9e4;
     margin-bottom: 1.5rem;
@@ -124,6 +126,8 @@
         font-weight: bold;
         color: white;
     }
+
+/*Archive Page*/
 
 .ArchiveBadgesContainer {
     display: grid;
@@ -218,6 +222,32 @@
         padding: 1em;
     }
 
+
+/*Quiz Page*/
+
+    .quiz {
+        background-color: rgb(243, 237, 237);
+        color: black;
+        display: flex;
+        padding: 0.5em;
+        border-radius: 0.5em;
+    }
+
+    .quiz figure {
+       max-width: 30%;
+    }
+
+    .quiz figure img {
+        width: 100%;
+    }
+
+    .quiz aside {
+        text-align: center;
+        padding: 0.5em;
+        color: rgb(39, 39, 39);
+        font-size: 0.8em;
+        width: 100%;
+    }
 
 
 /*Media Queries*/

@@ -38,19 +38,74 @@ const allergyReducer = (state = initState, action) => {
                         [action.payload]: infoSelected,
                     }
                 }
+            case 'SWITCH_ALLERGY_LEVEL':
+                infoSelected = action.payload;
+
+                let peanut, vegan, dairy, vegetarian, eggs, other, mustard;
+                peanut = vegan = dairy = vegetarian = eggs = other = mustard = 0;
+
+                if (infoSelected === 1) {
+                    console.log("Level 1: Peanut and Vegetarian");
+                    peanut = 2;
+                    vegetarian = 1;
+                } else if (infoSelected === 2) {
+                    console.log("Level 2: Peanut, Vegetarian, Vegan and Dairy");
+                    peanut = 3;
+                    vegetarian = 2;
+                    vegan = 1;
+                    dairy = 1;
+                }
+                console.log(infoSelected);
+
+                return {
+                    ...state,
+                    allergies: {
+                        ...state.allergies,
+                        peanut: {
+                            ...state.allergies.peanut,
+                            quantity: peanut,
+                        },
+                        vegan: {
+                            ...state.allergies.vegan,
+                            quantity: vegan,
+                        },
+                        dairy: {
+                            ...state.allergies.dairy,
+                            quantity: dairy,
+                        },
+                        vegetarian: {
+                            ...state.allergies.vegetarian,
+                            quantity: vegetarian,
+                        },
+                        eggs: {
+                            ...state.allergies.eggs,
+                            quantity: eggs,
+                        },
+                        mustard: {
+                            ...state.allergies.mustard,
+                            quantity: mustard,
+                        },
+                        other: {
+                            ...state.allergies.other,
+                            quantity: other,
+                        },
+                    },
+                started: true,
+                }
             default: 
                 return state
     }
 }
 
 const initState = {
-    started:false,
-    difficulty:1,
+    started: false,
+    moving: false,
+    difficulty: 1,
     allergies: {
         peanut: {
             name: "Peanut",
             tagName: "peanut",
-            quantity:3,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#f7be5c",
@@ -58,7 +113,7 @@ const initState = {
           vegan: {
             name: "Vegan",
             tagName: "vegan",
-            quantity:1,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#00ff04",
@@ -66,7 +121,7 @@ const initState = {
           dairy: {
             name: "Dairy",
             tagName: "dairy",
-            quantity:1,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#ede8e1",
@@ -74,7 +129,7 @@ const initState = {
           vegetarian: {
             name: "Vegetarian",
             tagName: "vegetarian",
-            quantity:3,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#006302",
@@ -82,7 +137,7 @@ const initState = {
           eggs: {
             name: "Eggs",
             tagName: "eggs",
-            quantity:1,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#ecf233",
@@ -98,7 +153,7 @@ const initState = {
           other: {
             name: "Other",
             tagName: "other",
-            quantity:1,
+            quantity:0,
             inputQuantity:0,
             isCorrect: false,
             color:"#f542e9",

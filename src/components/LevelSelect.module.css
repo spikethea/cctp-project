@@ -1,0 +1,51 @@
+.container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90%;
+    min-height: 500px;
+    z-index: 5;
+    background: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 1em;
+}
+
+.container header {
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    padding: 1em;
+}
+
+.container h1 {
+    padding-bottom: 2em;
+}
+
+.container h2 {
+    padding-bottom: 1em;
+}
+
+.container p {
+    padding-bottom: 2em;
+}
+.levels {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 0.5em;
+    padding: 2em;
+}
+
+.levels figure {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4em;
+    border-radius: 0.2em;
+    background: cornsilk;
+}

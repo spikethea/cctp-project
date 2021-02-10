@@ -1,4 +1,4 @@
-import {SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, ADD_POINTS} from './types'
+import {SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, GAME_STATE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, SWITCH_ALLERGY_LEVEL, ADD_POINTS, SHOW_QUIZ, HIDE_QUIZ, SWITCH_QUIZ} from './types'
 
 export const showUserInterface = (name) => {
     console.log("inside showUI");
@@ -55,6 +55,14 @@ export const selectStage = (stageID) => {
     }
 }
 
+export const gameState = (gameState) => {
+    console.log("Level " + gameState);
+    return {
+        type: GAME_STATE,
+        payload: gameState
+    }
+}
+
 export const clearNotifications = () => {
     console.log("clearing notifications")
     return {
@@ -71,11 +79,31 @@ export const allergyQuantity = (allergyName, action) => {
     }
 }
 
+export const allergyLevel = (level) => {
+    return {
+        type: SWITCH_ALLERGY_LEVEL,
+        payload: level,
+    }
+}
+
 export const addPoints = (points) => {
-    console.log("adding " + points + "points")
+    console.log("adding " + points + " points")
 
     return {
         type: ADD_POINTS,
         payload: points,
+    }
+}
+
+export const toggleQuiz = (action) => {
+    return {
+        type: action === "show" ? SHOW_QUIZ : HIDE_QUIZ
+    }
+}
+
+export const selectQuiz = (quiz) => {
+    return {
+        type: SWITCH_QUIZ,
+        payload: quiz,
     }
 }

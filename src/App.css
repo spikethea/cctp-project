@@ -21,12 +21,11 @@ body,
 }
 
 /*Landing Page*/
+
 .landing-page {
   text-align: center;
   background: rgb(243, 241, 240);
 }
-
-/*Title*/
 
 .landing-page h1 {
   font-weight: bold;
@@ -37,11 +36,10 @@ body,
 .landing-page section {
   flex-direction: column;
   display: flex;
-  height: 80vh;
   justify-content: space-between;
   padding: 2em;
   margin:auto;
-  
+  min-height: 80vh;
 }
 
 .landing-page section ul {
@@ -56,6 +54,7 @@ body,
   background: rgb(136, 136, 136);
   padding: 2em 2em 10em 2em;
   color: white;
+  flex-direction: column;
 }
 
 .landing-page footer p {
@@ -71,10 +70,10 @@ body,
 }
 
 
-.intro {
+/* .intro {
   
   
-}
+} */
 
   .intro img {
     width: 100%;
@@ -230,6 +229,11 @@ body,
 
   .landing-page section {
     flex-direction: row;
+  }
+
+  .landing-page footer {
+    flex-direction: row;
+    
   }
 
 }

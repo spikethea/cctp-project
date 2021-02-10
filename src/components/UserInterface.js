@@ -11,6 +11,7 @@ import { useSpring, animated } from 'react-spring'
 import Homepage from './pages/Homepage';
 import Leaderboard from './pages/Leaderboard';
 import Archive from './pages/Archive';
+import Quiz from './pages/Quiz';
 
 
 const UserInterface = () => {
@@ -22,22 +23,23 @@ const UserInterface = () => {
 
     const dispatch = useDispatch();
 
+    let mql = window.matchMedia('(max-width: 1200px)').matches;//
 
     //need to code it so that it detects when the badge element is pressed
 
     
     if (showUI === true) {
-        console.log(activePage)
+
         return (
             <Router>
-            <div className="background"></div>
+            {mql ? <div className="background"></div> : null}
             <div className="ui-container">
                 <ProgressBar info={info}/>
                 <ul className="pages">
                     <Link style={{textDecoration: "none"}} to="/homepage"><li style={{backgroundColor:activePage === 0 ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(0))} className="page-item">Homepage</li></Link>
                     <Link style={{textDecoration: "none"}} to="/leaderboard"><li style={{backgroundColor:activePage === 1 ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(1))} className="page-item">Leaderboard</li></Link>
                     <Link style={{textDecoration: "none"}} to="/archive"><li style={{backgroundColor:activePage === 2 ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(2))} className="page-item">Archive</li></Link>
-                    <Link style={{textDecoration: "none"}} to="/settings"><li style={{backgroundColor:activePage === 3 ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(3))} className="page-item">Quiz</li></Link>
+                    <Link style={{textDecoration: "none"}} to="/quiz"><li style={{backgroundColor:activePage === 3 ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(3))} className="page-item">Quiz</li></Link>
                 </ul>
                 
                 <Switch>
@@ -45,7 +47,7 @@ const UserInterface = () => {
                     <Route path="/homepage" component={Homepage}/>
                     <Route path="/leaderboard" component={Leaderboard}/>
                     <Route path="/archive" component={Archive}/>
-                    <Route path="/homepage" component={Homepage}/>
+                    <Route path="/quiz" component={Quiz}/>
                 </Switch>
             </div>
             </Router>
@@ -56,10 +58,22 @@ const UserInterface = () => {
 const ProgressBar = ({info})=> {
 
     const points = info.points;
+    const showUI = info.displayingUI;
+
     const [staggeredPoints, setStaggeredPoints] = useState(0);
 
-    //setStaggeredPoints
+    // Bug stops staggered points variable changing
+    
+    useEffect (()=>{
+        if(showUI) {
+            setStaggeredPoints(points);
+        }
+        
+    })
 
+    console.log(points);
+    console.log(staggeredPoints);
+    
     const props = useSpring({ value: points, from: { value: staggeredPoints } })
 
     return (

@@ -12,7 +12,7 @@ import { a } from '@react-spring/three';
 import { useSelector, useDispatch } from 'react-redux';
 
 //Redux
-import { showUserInterface, allergyQuantity } from '../redux/actions';
+import { showUserInterface, allergyQuantity, allergyLevel } from '../redux/actions';
 
 const Allergies = () => {
     // Redux
@@ -20,13 +20,18 @@ const Allergies = () => {
     const state = useSelector(state => state.allergies);
     const info = useSelector(state => state.info);
 
+    const gameState = info.gameState;
+
+    const started = state.started;
+
     const showUI = info.displayingUI
+    let mql = window.matchMedia('(max-width: 1200px)').matches;
 
     //Hooks
     const scrollbar = useRef(null);
 
     const [scrollPosition, setScrollPosition] = useState(0);
-    const [gameState, setGameState] = useState(false);
+    const [Active, setActive] = useState(false);
 
     const [currentAllergies, setCurrentAllergies] = useState([]);
     const [peopleArray, setPeopleArray] = useState([]);
@@ -41,6 +46,13 @@ const Allergies = () => {
       console.log("scroll camera " + Math.floor(scrollPosition/10) + " %")
     }
 
+    useEffect(()=> {
+      if (gameState !== 0) {
+        console.log(gameState);
+        dispatch(allergyLevel(gameState));
+      }
+
+    }, [gameState])
     
     //populating current allergies and people array
     useEffect(()=> {
@@ -54,9 +66,8 @@ const Allergies = () => {
           setPeopleArray(peopleArray => [...peopleArray, (state.allergies[allergy])]);
         }
       });
-      console.log("current allergies calculated");
+      
     }, [state])
-
 
     return (
       <>            
@@ -66,14 +77,14 @@ const Allergies = () => {
           </div>
         </div>
 
-        {gameState ? <AllergyCounter showUI={showUI} currentAllergies={currentAllergies} state={state} dispatch={dispatch}/> : <StartMenu/>}
-        <Timer gameState={gameState} setGameState={setGameState}/>
+        {Active ? <AllergyCounter currentAllergies={currentAllergies} mql={mql} showUI={showUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : <StartMenu/>}
+        {started ? <Timer Active={Active} setActive={setActive}/> : null}
         <Canvas
         className={"canvas"}
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
-        style={{filter: showUI ? "blur(5px)": "none" }}
+        style={{filter: showUI && mql ? "blur(5px)": "none" }}
         >
           <Camera 
           position={[(scrollPosition/10)-20, 15, 45]}
@@ -87,9 +98,9 @@ const Allergies = () => {
             />
             <Lights/>
             <Floor/>
-            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
-              <People gameState={gameState} peopleArray={peopleArray} state={state}/>
-            </Suspense>
+            {started ? <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
+              <People Active={Active} peopleArray={peopleArray} state={state}/>
+            </Suspense>: null}
         {/* <OrbitControls/> */}
       </Canvas>
       
@@ -99,17 +110,20 @@ const Allergies = () => {
 
 //UI
 
-  const Timer = ({setGameState, gameState}) => {
+  const Timer = ({setActive, Active}) => {
 
-    let [countdown, setCountdown] = useState(20);
-    const props = useSpring({transform: gameState ? "scale(0)": "scale(1)"});
+    let [countdown, setCountdown] = useState(5);
+    const props = useSpring({transform: Active ? "scale(0)": "scale(1)"});
 
-    useEffect(() => {if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown -  1);
-      }, 1000);
+
+    useEffect(() => {  
+
+      if (countdown > 0) {
+        const timer = setTimeout(() => {
+          setCountdown(countdown -  1);
+        }, 1000);
       //console.log("TICK")
-      } else setGameState(true);
+      } else setActive(true);
     })
 
 
@@ -129,31 +143,37 @@ const Allergies = () => {
     )
   }
 
-  const AllergyCounter = ({dispatch, currentAllergies, showUI}) => {
+  const AllergyCounter = ({dispatch, peopleArray, currentAllergies, showUI, mql}) => {
 
     const [display, setDisplay] = useState(true);
-    const [allergyMap, setAllergyMap] = useState(new Map());
 
     const props = useSpring({bottom: display ? "0vh": "-40vh"});
 
+    console.log(currentAllergies);
+
+    const totalAllergies = currentAllergies.filter(function(allergy){
+      return allergy.quantity > 0
+    })
+
+    console.log(totalAllergies);
 
     const checkCount = () => {
       console.log("checking the count of allergies against the users input");
-      console.log(currentAllergies);
+      console.log(totalAllergies);
       let i = 0;
       let incorrect = 0;
       let incorrectPeople = 0;
-      for (i = 0; i < currentAllergies.length; i++) {
-        if (currentAllergies[i].inputQuantity === currentAllergies[i].quantity) {
-          console.log(currentAllergies[i].name + " correct!");
+      for (i = 0; i < totalAllergies.length; i++) {
+        if (totalAllergies[i].inputQuantity === totalAllergies[i].quantity) {
+          console.log(totalAllergies[i].name + " correct!");
         } else {
           incorrect++
-          incorrectPeople += currentAllergies[i].quantity;
+          incorrectPeople += totalAllergies[i].quantity;
         }
       }
 
-      if (incorrect > 1) {
-        alert("incorrect! You got wrote down" + incorrect  + "/" + currentAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people had an averse allergic reaction today...");
+      if (incorrect > 0) {
+        alert("incorrect! You got wrote down" + incorrect  + "/" + totalAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people had an averse allergic reaction today...");
       } else {
         alert("correct!");
 
@@ -161,7 +181,7 @@ const Allergies = () => {
     }
 
     return (
-      <animated.div style={{filter: showUI ? "blur(5px)": "none", bottom: props.bottom}} className={styles.container}>
+      <animated.div style={{filter: showUI && mql ? "blur(5px)": "none", bottom: props.bottom}} className={styles.container}>
         <header>
         <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergen List {display ? <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&gt;</span> : <span alt="expandable" style={{writingMode: "vertical-rl"}}>&lt;</span>}</h2>
         </header>
@@ -248,20 +268,19 @@ const Lights = () => {
   }
 
 
-  const People = ({peopleArray, gameState}) => {
-   
+  const People = ({peopleArray, Active}) => {
 
     return (
       <>
       {peopleArray.map((allergy, id)=> (
-        <Person gameState={gameState} key={id} color={allergy.color}/>
+        <Person Active={Active} key={id} color={allergy.color}/>
         )
       )}
       </>
     )
   }
   
-  const Person = ({gameState, color}) => {
+  const Person = ({Active, color}) => {
 
     const {nodes} = useLoader(GLTFLoader, "assets/models/npc.glb");
     
@@ -285,7 +304,7 @@ const Lights = () => {
         setDelay(delay - 1);
       }
 
-      if (delay < 0) {
+      if (delay < 0 && person.current) {
 
         if (person.current.position.y > 1.5) {
           
@@ -297,7 +316,7 @@ const Lights = () => {
           setBobbing(true);
         }
 
-        if (bobbing) {
+        if (bobbing && person.current) {
           person.current.position.y += 0.01;
         } else {
           person.current.position.y -= 0.01;
@@ -316,7 +335,7 @@ const Lights = () => {
                 zIndexRange={[1, 0]}
                 scaleFactor={50}
             >
-                {!gameState? <p 
+                {!Active? <p 
                   style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
                 > </p>: null}
             </Html>

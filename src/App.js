@@ -15,6 +15,8 @@ import Header from './components/Header';
 import UserInterface from './components/UserInterface';
 import StageSelector from './components/StageSelector';
 import Tutorial from './components/Tutorial';
+import QuizTemplate from './components/QuizTemplate';
+import LevelSelect from './components/LevelSelect';
 
 //Redux
 import { showUserInterface, closeInfoBox, hideBadge, switchPage } from './components/redux/actions';
@@ -35,7 +37,9 @@ function App() {
         <InfoBox/>
         <BadgeNotification/>
         <Tutorial/>
-        {/* <Quiz/> */}
+        <QuizTemplate/>
+        {/* <Question/> */}
+        <LevelSelect/>
         <StageSelector/>
       </Suspense>
       
@@ -81,44 +85,6 @@ function App() {
 }
 
 //UI
-
-const Quiz = ()=> {
-
-  const questions = [
-      {
-        name: "What is the time?",
-        answers: [
-          "7pm", 
-          "8pm",
-          "Funky Time",
-          "5am",
-        ]
-      },
-      {
-        name: "What is the time?",
-        answers: [
-          "7pm", 
-          "8pm",
-          "Funky Time",
-          "5am",
-        ]
-      },
-      
-    ]
-  
-
-  return (
-    <div className="quiz-container">
-        <h1>{questions[0].name}</h1>
-      <section>
-        <button>1:{questions[0].answers[0]}</button>
-        <button>2:{questions[0].answers[1]}</button>
-        <button>3:{questions[0].answers[2]}</button>
-        <button>4:{questions[0].answers[3]}</button>
-      </section>
-    </div>
-  )
-}
 
 const BadgeNotification = () => {
   

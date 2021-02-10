@@ -6,35 +6,46 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
 import {Box, Html, Stats} from 'drei';
 
-import { a } from '@react-spring/three';
-
-import {  useDispatch, useSelector } from 'react-redux';
+import { animated } from '@react-spring/three';
 
 //Redux
-import { addPoints, getBadge } from '../redux/actions';
+import {  useDispatch, useSelector } from 'react-redux';
+import { addPoints, getBadge, showInfo } from '../redux/actions';
 
 
 const HealthAndSafety = () => {
 
     const dispatch = useDispatch();
     const info = useSelector(state => state.info);
-    const showUI = info.displayingUI
+
+    const showUI = info.displayingUI;
+    let mql = window.matchMedia('(max-width: 1200px)').matches;
 
     const ref = useRef(null);
 
     const [progress, setProgress] = useState(0);
+    const [cameraPosition, setCameraPosition] = useState([0, 0, -5]);
+
+    useEffect(()=> {
+      if (progress === 5) {
+        dispatch(getBadge('goodEye'));
+      }
+    },[progress])
 
     return (
       <>
-      <svg style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}} width="200" height="200" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle strokeDasharray="628" fill="none" cx="150" cy="150" r="100" stroke="white" strokeWidth="10"/>
-      </svg>
+      {!showUI ? 
+      <div style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}}>
+        <svg style={{position: "absolute", top: "0", left:"0"}} width="200" height="200" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle strokeDasharray="628" fill="none" cx="150" cy="150" r="100" stroke="white" strokeWidth="10"/>
+        </svg>
 
-      <svg style={{position: "absolute", zIndex:"3", color:"white", top:"10%", left:"40%"}} width="200" height="200" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle strokeDashoffset={628 - (125.6*progress)} strokeDasharray="628" fill="none" cx="150" cy="150" r="100" stroke="blue" strokeWidth="10"/>
-      </svg>
+        <svg style={{position: "absolute", top: "0", left:"0"}} width="200" height="200" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle strokeDashoffset={628 - (125.6*progress)} strokeDasharray="628" fill="none" cx="150" cy="150" r="100" stroke="blue" strokeWidth="10"/>
+        </svg>
 
-      <h1 style={{position: "absolute", zIndex:"3", color:"white", top:"14%", left:"43%"}}>{progress}/5</h1>
+        <h1 style={{position: "absolute", top: "1.35em", left:"1.45em"}}>{progress}/5</h1>
+      </div> : null}
 
         <Canvas
         style={{position:"fixed", left:"0%", top:"0%"}}
@@ -42,12 +53,12 @@ const HealthAndSafety = () => {
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('coral')}
         shadowMap
-        style={{filter: showUI ? "blur(5px)": "none" }}
+        style={{filter: showUI && mql ? "blur(5px)": "none" }}
         >
-          <Camera onScroll={console.log("scrolling")}/>
+          <Camera position={cameraPosition}/>
             <Lights/>
-            <RotatingBox progress={progress} setProgress={setProgress} position={[-3, -1, -10]} dispatch={dispatch}/>
-            <RotatingBox progress={progress} setProgress={setProgress} position={[4, -0.3, -7]} dispatch={dispatch}/>
+            <RotatingBox onClick={()=> dispatch(showInfo("puddle"))} progress={progress} setProgress={setProgress} position={[-3, -1, -10]} dispatch={dispatch}/>
+            <RotatingBox onClick={()=> dispatch(showInfo("fireExtuinguisher"))} progress={progress} setProgress={setProgress} position={[4, -0.5, -12]} dispatch={dispatch}/>
             <RotatingBox progress={progress} setProgress={setProgress} position={[0, 0.5, -10]} dispatch={dispatch}/>
             <RotatingBox progress={progress} setProgress={setProgress} position={[4, -0.5, -8]} dispatch={dispatch}/>
             <RotatingBox progress={progress} setProgress={setProgress} position={[0, -2, -7]} dispatch={dispatch}/>
@@ -56,49 +67,49 @@ const HealthAndSafety = () => {
               className="stats" // Optional className to add to the stats container dom element
                // All stats.js props are valid
             />
-            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"10%"}}>Loading...</Html>}>
+            <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"40%"}}>Loading...</Html>}>
               <Kitchen/>
             </Suspense>
-            
-        
       </Canvas>
+      {!showUI ? <button style={{position:"fixed", bottom: "5em", left: "5em"}} onClick={()=> setCameraPosition([4, 0.5, -7])}>Change Position</button> : null }
       </>
     )
 }
 
 // Custom Camera
 
-function Camera(props) {
-
-  const [Yrotation, setYRotation] = useState(0);
-  const [rotationDir, setRotationDir] = useState(false);
+function Camera({position}) {
 
   const ref = useRef();
   const { setDefaultCamera} = useThree();
-
   
+  let [rotationDir, setRotationDir] = useState(false);
 
-  useFrame(()=> {
-    if (Yrotation > Math.PI / 6) {
+  setTimeout(()=> {
+    if (rotationDir) {
       setRotationDir(false);
-    } else if (Yrotation < -Math.PI / 6) {
+    } else {
       setRotationDir(true);
     }
+  }, 3000)
+
+
+  useFrame(({camera})=> {
+
 
     if (rotationDir) {
-      setYRotation(Yrotation +0.002);
+      camera.rotation.y += 0.002;
     } else {
-      setYRotation(Yrotation -0.002);
+      camera.rotation.y -= 0.002;
     }
-  })
-  // Make the camera known to the system
-  useEffect(() => void setDefaultCamera(ref.current), [setDefaultCamera])
-  // Update it every frame
-  useFrame(() => {
-    //ref.current.rotation += 0.01;
+
     ref.current.updateMatrixWorld()
   })
-  return <a.perspectiveCamera ref={ref} {...props} rotation={[0, Yrotation, 0]} fov={110} position={[0, 0, -5]}/>
+  
+  // Make the camera known to the system
+  useEffect(() => void setDefaultCamera(ref.current), [setDefaultCamera])
+
+  return <animated.perspectiveCamera ref={ref} fov={110} position={position}/>
 }
 
 
@@ -140,7 +151,7 @@ const Kitchen = ()=> {
 
 }
 
-const RotatingBox = ({dispatch, position, progress, setProgress})=> {
+const RotatingBox = ({dispatch, position, progress, setProgress, onClick})=> {
   
     const box = useRef();
 
@@ -157,11 +168,11 @@ const RotatingBox = ({dispatch, position, progress, setProgress})=> {
         setProgress(progress + 1);
         setBoxSize(true);
         console.log("clicked!")
-        dispatch(getBadge('goodEye'));
         dispatch(addPoints(200))
       }
 
     }
+
 
 
   
@@ -174,6 +185,15 @@ const RotatingBox = ({dispatch, position, progress, setProgress})=> {
             castShadow
             onClick={clickBox}//cant get onClick Working at all, drei or R3F
           >
+            {boxSize ? <Html
+            zIndexRange={[1, 0]}
+            scaleFactor={20}
+          >
+            <p 
+              onClick={onClick} 
+              style={{transform:"translate(-10px, -40px)", marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:"black", width:"180%", zIndex:"-3", color:"white"}}
+            >?</p>
+          </Html>: null}
             <meshStandardMaterial 
               
               cast

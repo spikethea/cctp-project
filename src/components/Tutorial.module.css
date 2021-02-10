@@ -48,4 +48,10 @@
     background: rgba(0,0,0,0.20);
     z-index: 2;
 }
-  
+
+
+@media only screen and (max-width: 1199px) {
+  .buttonContainer {
+    flex-direction: column;
+  }
+}

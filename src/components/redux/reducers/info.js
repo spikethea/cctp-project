@@ -64,7 +64,15 @@ const infoReducer = (state = initState, action) => {
             console.log(infoSelected.id);
             return {
                 ...state,
-                activeStage:infoSelected.id,
+                activeStage: infoSelected.id,
+                levelSelect: true,
+            }
+        case 'GAME_STATE':
+            console.log(action.payload)
+            return {
+                ...state,
+                gameState: action.payload,
+                levelSelect: false,
             }
         case 'CLEAR_NOTIFICATIONS':
             return {
@@ -72,7 +80,7 @@ const infoReducer = (state = initState, action) => {
                 notifications: 0,
             }
         case 'ADD_POINTS':
-            let Points = 0;
+            let Points = action.payload;
             let initalPoints = state.points;
             let expLevel = state.exp;
             if ((initalPoints + Points) < 1000) {
@@ -83,7 +91,7 @@ const infoReducer = (state = initState, action) => {
             }
             return {
                 ...state,
-                points:state.points + Points,
+                points: Points,
                 exp: expLevel,
             }
         default: 
@@ -99,11 +107,13 @@ const initState = {
     displayingUI: false,
     displayingInfo: false,
     displayingBadge: false,
+    levelSelect: false,
     activeBox:"Broom",
     activeBadge: {
 
     },
     activeStage: 0,
+    gameState:0,
     infoBox:{
         homeButton:{
             tagname:"HomeButton",
@@ -111,11 +121,17 @@ const initState = {
             description:"To get started, press the home button and you can access your first task.",
             displayed: true
         },
+        gettingAround:{
+            tagname:"gettingAround",
+            title:"Getting Around",
+            description:"If you find yourself getting lost at your on your first day, ask a member of staff at the entrance and they will be able to help you find the front office. Avoid's you coming in late!",
+            displayed: false,
+        },
         fireExtinguisher:{
             tagname:"fireExtinguisher",
             title:"Fire Extinguisher",
             description:"This is a Fire Extinguisher, one the the most important health and safety items there is, accessible in every room. Only use them in emergencies.",
-            displayed: true
+            displayed: true,
         },
         puddle:{
             tagname:"puddle",
@@ -147,7 +163,7 @@ const initState = {
                 id:0,
                 exp:0,
                 img:"../../assets/images/levels/health_and_safety.jpg",
-                description:"This stage is all about managing your Health, and ensuring the safety of you are others around you when Maecenas a nunc ac velit ultrices gravida. Nunc scelerisque diam quis efficitur posuere. Cras id hendrerit libero, nec luctus turpis. Etiam non ullamcorper sem. Curabitur vel dui ligula. Mauris congue a augue at pulvinar. Quisque ut ultrices ante. Nulla interdum nisl dolor, sit amet lacinia lectus dictum id.",
+                description:"This stage is all about managing your Health, and ensuring the safety of you are others around you when Maecenas a nunc ac velit ultrices gravida.",
                 activeLevel:0,
                 levels: [
                     {
