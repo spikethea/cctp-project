@@ -28,7 +28,7 @@ const HealthAndSafety = () => {
 
     useEffect(()=> {
       if (progress === 5) {
-        dispatch(getBadge('goodEye'));
+        dispatch(getBadge('oneHundredPercent'));
       }
     },[progress])
 

@@ -119,7 +119,7 @@ const initState = {
             tagname:"HomeButton",
             title:"Get Started",
             description:"To get started, press the home button and you can access your first task.",
-            displayed: true
+            displayed: false
         },
         gettingAround:{
             tagname:"gettingAround",
@@ -131,7 +131,7 @@ const initState = {
             tagname:"fireExtinguisher",
             title:"Fire Extinguisher",
             description:"This is a Fire Extinguisher, one the the most important health and safety items there is, accessible in every room. Only use them in emergencies.",
-            displayed: true,
+            displayed: false,
         },
         puddle:{
             tagname:"puddle",
@@ -152,7 +152,7 @@ const initState = {
             tagname:"oneHundredPercent",
             title:"100%",
             description:"You've 100% the stage!",
-            isAchieved: true,
+            isAchieved: false,
             image:"../../assets/svg/badges/100.svg"
         }
     },

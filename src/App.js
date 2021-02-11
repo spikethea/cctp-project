@@ -7,7 +7,7 @@ import Hospitality from './assets/images/hospitality'
 import {useSpring, animated} from 'react-spring';
 
 import { useSelector, useDispatch } from 'react-redux';
-//import { BrowserRouter as Router, Link } from "react-router-dom";
+import { BrowserRouter as Router } from 'react-router-dom';
 
 
 //Components
@@ -21,6 +21,7 @@ import LevelSelect from './components/LevelSelect';
 //Redux
 import { showUserInterface, closeInfoBox, hideBadge, switchPage } from './components/redux/actions';
 
+
 //Main App Function
 function App() {
   
@@ -33,7 +34,9 @@ function App() {
     <div className="App">
       <Suspense fallback={<div className="loading">Loading...</div>}>
         <Header />
-        <UserInterface/>
+        <Router>
+          <UserInterface/>
+        </Router>
         <InfoBox/>
         <BadgeNotification/>
         <Tutorial/>

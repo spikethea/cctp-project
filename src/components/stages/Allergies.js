@@ -168,6 +168,7 @@ const Allergies = () => {
           console.log(totalAllergies[i].name + " correct!");
         } else {
           incorrect++
+          console.log(totalAllergies[i].quantity);
           incorrectPeople += totalAllergies[i].quantity;
         }
       }
