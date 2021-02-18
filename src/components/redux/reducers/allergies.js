@@ -148,7 +148,7 @@ const initState = {
             quantity:0,
             inputQuantity:0,
             isCorrect: false,
-            color:"#ff6f00",
+            color:"#f542e9",
           },
           other: {
             name: "Other",
@@ -156,7 +156,7 @@ const initState = {
             quantity:0,
             inputQuantity:0,
             isCorrect: false,
-            color:"#f542e9",
+            color:"#000000",
           },
     }
     

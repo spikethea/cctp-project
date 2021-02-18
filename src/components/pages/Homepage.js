@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch, Redirect, Switch, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import styles from  './UserInterface.module.css';
 
@@ -16,8 +16,6 @@ const Homepage = () => {
 
     const stages = info.stages;
 
-    
-
     const stageList = stages.map ((stage)=> 
             <Stage key={stage.id} onClick={()=> {
                 dispatch(selectStage(stage.id+1))
@@ -27,10 +25,13 @@ const Homepage = () => {
 
     
     const { x, y } = useMousePosition();
+
+    console.log(x);
+      console.log(y);
     
 
     return (
-        <div className={styles.container}>
+        <div id="ui" className={styles.container}>
             <p style={{top:`${y}px`, left:`${x}px`, maxWidth:"20em"}} className={styles.description}>{isShown !==null ? stages[isShown].description: null}</p>
             <button onClick={() =>{
                 dispatch(selectStage(null))
@@ -114,6 +115,12 @@ const Badges = ({x,y, onClick}) => {
     const info = useSelector(state => state.info);
     const badges = info.badges;
 
+    let { path, url } = useRouteMatch();
+    console.log("path: " + path);
+    console.log("url: " + url);
+    let location = useLocation();
+    console.log(location.pathname);
+
     let acquiredBadges = []
     
     Object.keys(badges).forEach(function(item) {
@@ -123,9 +130,10 @@ const Badges = ({x,y, onClick}) => {
     });
 
     const acquiredBadgesList = acquiredBadges.map ((badge, index)=> {
+        
 
         return (
-        <Link key={index} to="/archive">
+        <Link key={index} to={`archive`}>
             <div onMouseEnter={() => setIsShown(index)}   className={styles.badge}>
                 <img src={badge.image} alt="Achievement Badge"/>
                 <p>{badge.title}</p>

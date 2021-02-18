@@ -6,7 +6,7 @@ import { showUserInterface, clearNotifications } from './redux/actions';
 import Home from '../assets/svg/home.svg'
 
 
-const Header = () => {
+const Header = ({setApp}) => {
 
     const info = useSelector(state => state.info);
     const showUI = info.displayingUI;
@@ -31,6 +31,7 @@ const Header = () => {
             {(info.notifications > 0) ? <p onClick={()=> {
                 dispatch(showUserInterface('SHOW_UI'))
                 dispatch(clearNotifications());
+                setApp(true);
             }} className={styles.notifications}>&nbsp; {info.notifications}</p>: null}
         </h3>
         <div className={styles.experience}>
@@ -44,6 +45,7 @@ const Header = () => {
             {showUI ? <button onClick={() => dispatch(showUserInterface('HIDE_UI'))} className={styles.exit}>X</button> : null}
             </header>
         </div>
+        
     )
 }
 

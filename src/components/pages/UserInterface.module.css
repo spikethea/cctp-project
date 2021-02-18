@@ -1,11 +1,13 @@
 .container section {
     border-top: 5px rgb(70, 70, 70) dotted;
     margin: 1em;
+    min-height: 10em;
 }
 
 .container {
     background: rgb(255,255,255, 0.2);
     padding: 1em 1em 3em 1em;
+    min-height: 80vh;
 }
 
 .container button {
@@ -147,12 +149,13 @@
     }
 
     .archiveBadge h4 {
-        color: white;
-        font-weight:normal ;
+        color: rgb(161, 161, 161);
+        font-weight: 400;
+        padding-bottom: 0.5em;
     }
 
     .archiveBadge p {
-        color: rgb(161, 161, 161);
+        color: white;
         font-size: 0.8em;
     }
 
@@ -225,17 +228,15 @@
 
 /*Quiz Page*/
 
-    .quiz {
-        background-color: rgb(243, 237, 237);
-        color: black;
-        display: flex;
-        padding: 0.5em;
-        border-radius: 0.5em;
-    }
-
-    .quiz figure {
-       max-width: 30%;
-    }
+.quiz {
+    background-color: rgb(243, 237, 237);
+    color: black;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    margin: 1em 0em;
+    border-radius: 0.5em;
+}
 
     .quiz figure img {
         width: 100%;
@@ -243,14 +244,21 @@
 
     .quiz aside {
         text-align: center;
-        padding: 0.5em;
         color: rgb(39, 39, 39);
         font-size: 0.8em;
         width: 100%;
     }
 
+    .quiz aside > header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-bottom: 1em;
+    }
+
 
 /*Media Queries*/
+
 
 @media only screen and (min-width: 1200px) {
     .menushadow {
@@ -262,8 +270,18 @@
         
     }
 
-
     .container {
         flex-direction: row;
     }
+}
+
+@media only screen and (min-width: 400px) {
+
+    .quiz {
+        flex-direction: row;
+    }
+
+        .quiz figure {
+            max-width: 30%;
+        }
 }

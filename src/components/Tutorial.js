@@ -19,7 +19,7 @@ const Tutorial = () => {
             <animated.div>
             <animated.div style={props} className={styles.container}>
               <div>
-                <h1>Tutorial</h1>
+                <h1>Welcome to ServiceLearn</h1>
               </div>
               <div className={styles.inner}>
                 <p>If you have never used this training app before, it is extremely recommended that you take this tutorial</p>
@@ -43,8 +43,8 @@ const Tutorial = () => {
                 <div className={styles.inner}>
                   <p>To navigate around this app, click the home button to select stages to complete tasks to earn rewards and points</p>
                   <div className={styles.buttonContainer}>
-                    <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
                     <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
+                    <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
                   </div>
                 </div>
               </animated.div>

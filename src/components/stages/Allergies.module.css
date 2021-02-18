@@ -87,11 +87,27 @@ display: flex;
     height: 100vh;
 }
 
-.StartMenu {
+.chart {
     position: absolute;
-    bottom: 150px;
+
+    top: 150px;
     left: calc(50% - 3em);
+    z-index: 3;
+
+    background: white;
+    padding: 1em;
 }
+
+    .chart section {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 2em;
+    }
+
+    .chart figure {
+        padding: 2em;
+        border-radius: 2em;
+    }
 
 /* Media Queries */
 

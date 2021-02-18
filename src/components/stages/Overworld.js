@@ -49,7 +49,10 @@ const Scene = ({dispatch, counter})=> {
   const mesh = useRef();
 
   useFrame(()=> {
-    mesh.current.rotation.y += 0.003
+    if (mesh.current) {
+      mesh.current.rotation.y += 0.003;
+    }
+
   })
 
   const [sceneRot, setSceneRot] = useState(0);

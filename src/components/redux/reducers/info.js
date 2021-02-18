@@ -100,8 +100,8 @@ const infoReducer = (state = initState, action) => {
 }
 
 const initState = {
-    points: 320,
-    exp: 2,
+    points: 0,
+    exp: 3,
     notifications: 1,
     page:0,
     displayingUI: false,
@@ -112,7 +112,7 @@ const initState = {
     activeBadge: {
 
     },
-    activeStage: 0,
+    activeStage: 1,
     gameState:0,
     infoBox:{
         homeButton:{
@@ -145,7 +145,7 @@ const initState = {
             tagname:"goodEye",
             title:"Good Eye",
             description:"Nice One, you Spotted the Puddle Underneath",
-            isAchieved: false,
+            isAchieved: true,
             image:"../../assets/svg/badges/goodEye.svg"
         },
         oneHundredPercent:{

@@ -14,6 +14,9 @@ import { useSelector, useDispatch } from 'react-redux';
 //Redux
 import { showUserInterface, allergyQuantity, allergyLevel } from '../redux/actions';
 
+//SVG
+import egg from '../../assets/svg/egg.svg';
+
 const Allergies = () => {
     // Redux
     const dispatch = useDispatch();
@@ -77,8 +80,9 @@ const Allergies = () => {
           </div>
         </div>
 
-        {Active ? <AllergyCounter currentAllergies={currentAllergies} mql={mql} showUI={showUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : <StartMenu/>}
+        {Active ? <AllergyCounter currentAllergies={currentAllergies} mql={mql} showUI={showUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
         {started ? <Timer Active={Active} setActive={setActive}/> : null}
+        {Active && started ? <AllergenChart/>: null}
         <Canvas
         className={"canvas"}
         colorManagement 
@@ -134,11 +138,41 @@ const Allergies = () => {
     )
   }
 
-  const StartMenu = ()=> {
+  const AllergenChart = ()=> {
+
     return (
-      <div className={styles.StartMenu}>
-        <h3>Ready to Start?</h3>
-        <button>Start Task</button>
+      <div className={styles.chart}>
+        <header><h2>Allergen Chart</h2></header>
+        <section>
+        <figure style={{ backgroundColor:"#f7be5c"}}>
+            <img alt="peanut" src={egg}/>
+            <p>Peanut</p>
+          </figure>
+          <figure style={{ backgroundColor:"#00ff04"}}>
+          <img alt="Egg" src={egg}/>
+            <p>Vegan</p>
+          </figure>
+          <figure style={{ backgroundColor:"#ede8e1"}}>
+            <img alt="Egg" src={egg}/>
+            <p>Dairy</p>
+          </figure>
+          <figure style={{ backgroundColor:"#006302"}}>
+            <img alt="Egg" src={egg}/>
+            <p>Vegetarian</p>
+          </figure>
+          <figure style={{ backgroundColor:"#ecf233"}}>
+            <img alt="Egg" src={egg}/>
+            <p>Eggs</p>
+          </figure>
+          <figure style={{ backgroundColor:"#f542e9"}}>
+            <img alt="Egg" src={egg}/>
+            <p>Mustard</p>
+          </figure>
+          <figure style={{ backgroundColor:"#000000"}}>
+            <img alt="Egg" src={egg}/>
+            <p>Other</p>
+          </figure>
+        </section>
       </div>
     )
   }
@@ -283,7 +317,7 @@ const Lights = () => {
   
   const Person = ({Active, color}) => {
 
-    const {nodes} = useLoader(GLTFLoader, "assets/models/npc.glb");
+    const {nodes} = useLoader(GLTFLoader, "../assets/models/npc.glb");
     
     let person = useRef();
 
@@ -338,7 +372,7 @@ const Lights = () => {
             >
                 {!Active? <p 
                   style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
-                > </p>: null}
+                ></p>: null}
             </Html>
             <meshStandardMaterial 
                 attach="material" 

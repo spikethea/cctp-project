@@ -1,0 +1,54 @@
+.progress {
+    position: absolute;
+    z-index: 1;
+    color: white;
+    top: 10%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, 0%);
+    /* background: rgb(225,255,255, 0.8);
+    backdrop-filter: blur(5px); 
+    clip-path: circle(200%);*/
+}
+
+    .progress .ring {
+        position: absolute;
+        z-index: 2;
+        color: white;
+        left: 50%;
+        transform: translate(-50%, 0%);
+    }
+
+    .progress .stroke {
+        position: absolute;
+        z-index: 2;
+        color: white;
+        left: 50%;
+        transform: translate(-50%, 0%);
+    }
+
+.navigation {
+    z-index: 3;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+
+    display: flex;
+    justify-content: space-between;
+    padding: 2em;
+
+    pointer-events: none;
+}
+
+    .navigation svg {
+        border-radius: 0.5em;
+        pointer-events: all;
+        fill: #ffffff;
+        fill-opacity: 0.3;
+        stroke: #fdf9f9;
+        stroke-width: 3px;
+        stroke-linejoin: round;
+    }

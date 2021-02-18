@@ -1,13 +1,12 @@
-import React, { Suspense, useRef, useState} from 'react';
+import React, { Suspense, useRef, useState, useEffect } from 'react';
 import './App.css';
 import goodEye from './assets/svg/badges/goodEye.svg'
-import Hospitality from './assets/images/hospitality'
 
 //Packages
 import {useSpring, animated} from 'react-spring';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
 //Components
@@ -18,88 +17,93 @@ import Tutorial from './components/Tutorial';
 import QuizTemplate from './components/QuizTemplate';
 import LevelSelect from './components/LevelSelect';
 
+import LandingPage from './components/pages/LandingPage';
+
 //Redux
 import { showUserInterface, closeInfoBox, hideBadge, switchPage } from './components/redux/actions';
 
 
 //Main App Function
 function App() {
-  
-  const [App, setApp] = useState(false);
 
-  if (App) {
-    console.log(App);
-    return (
+  const [app, setApp] = useState(false)
     
-    <div className="App">
-      <Suspense fallback={<div className="loading">Loading...</div>}>
-        <Header />
-        <Router>
-          <UserInterface/>
-        </Router>
-        <InfoBox/>
-        <BadgeNotification/>
-        <Tutorial/>
-        <QuizTemplate/>
-        {/* <Question/> */}
-        <LevelSelect/>
-        <StageSelector/>
-      </Suspense>
-      
-    </div>
-  )} else return(
-    <div className="landing-page">
-      <header>
-      <h1>ServiceLearn</h1>
-      </header>
-        <section className="intro">
-          <div>
-            <img alt="Hospitality Staff" src={Hospitality}/>
-          </div>
-          <div>
-            <h2>A Interactive Staff Training system design for Hospitality staff, by Hospitality staff</h2>
-            <button onClick={()=>setApp(true)}>Enter Training</button>
-          </div>
-        </section>
-        <section className="explanation">
-          <h2>Why use ServiceLearn</h2>
-          <ul>
-            <li>Teaches you wide variety of skills ready for work</li>
-            <li>Designed to be an engaging experience </li>
-            <li>Works cross-platform, on laptop, mobile or whiteboard etc.</li>
-          </ul>
-        </section>
-        <section className="reviews">
-          <h2>User Reviews</h2>
-          <ul>
-            <li>Teaches you wide variety of skills ready for work</li>
-            <li>Designed to be an engaging experience </li>
-            <li>Works cross-platform, on laptop, mobile or whiteboard etc.</li>
-          </ul>
-        </section>
-        <footer>
-          <p>UWE Bristol</p>
-          <p>Made with ReactJS, Redux and react-three-fiber</p>
-          <p>Developed by <a href="http://quincegorerodney.panel.uwe.ac.uk/portfolio/">Quince Gore-Rodney</a></p>
-          <p>2020</p>
-        </footer>
-    </div>
+    return (
+    <Router>
+    <Switch>
+      <Route exact path="/">
+        <LandingPage setApp={setApp}/>
+      </Route>
+      <Route path="/training">
+        <div className="App">
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <Header setApp={setApp} />
+          <UserInterface setApp={setApp} app={app}/>
+          <InfoBox/>
+          <BadgeNotification/>
+          <PointsNotification/>
+          <Tutorial/>
+          <QuizTemplate/>
+          {/* <Question/> */}
+          <LevelSelect/>
+          <StageSelector/>
+        </Suspense>
+        </div>
+      </Route>
+    </Switch>
+
+    
+    
+    </Router>
   );
 }
 
 //UI
 
+const PointsNotification = () => {
+  //Redux
+  const state = useSelector(state => state.info);
+  const points = state.points;
+  const dispatch = useDispatch();
+
+  //Hooks
+  const [displaying, setDisplaying] = useState(false);
+  const props = useSpring({ config:{duration: 250}, delay:500, left: "65%"  , top: displaying ? "30%": "50%", opacity: displaying ? 1: 0})
+
+  useEffect(()=> {
+    console.log("useEffect Points")
+    if (!displaying) {
+      setDisplaying(true);
+      setTimeout(()=> setDisplaying(false), 1000);
+    }
+  }, [points]) 
+
+    return (
+      <animated.div style={props} className="badge-container">
+        {displaying ?
+        <>
+          <h2 style={{color:"white"}}>+ {points}</h2>
+        </>
+        : null}
+      </animated.div>
+    )
+}
+
 const BadgeNotification = () => {
   
   const info = useSelector(state => state.info);
   const dispatch = useDispatch();
+  const [displaying, setDisplaying] = useState(false);
 
-  const props = useSpring({ config:{duration: 250}, delay:500, top: info.displayingBadge ? "20%": "40%", opacity: info.displayingBadge ? 1: 0})
+  const props = useSpring({ config:{duration: 250}, delay:500, top: displaying ? "20%": "40%", opacity: displaying ? 1 : 0})
 
-  if (info.displayingBadge) {
-    
-    setTimeout(()=> dispatch(hideBadge()), 2000);
-  }
+  useEffect(()=> {
+    console.log("useEffect Badge")
+    if (!displaying) {
+      setDisplaying(true);
+      setTimeout(()=> setDisplaying(false), 5000);
+    }
+  }, [info.activeBadge]) 
 
   const handleClick = () => {
     dispatch(showUserInterface('SHOW_UI'));
@@ -109,7 +113,7 @@ const BadgeNotification = () => {
 
     return (
       <animated.div style={props} onClick={handleClick} className="badge-container">
-        {info.displayingBadge ?
+        {displaying ?
         <>
           <h3>New Badge!</h3>
           <img src={goodEye} alt="React Logo"/>

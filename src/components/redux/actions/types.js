@@ -36,3 +36,4 @@ export const SWITCH_ALLERGY_LEVEL = "SWITCH_ALLERGY_LEVEL";
 export const SHOW_QUIZ = "SHOW_QUIZ";
 export const HIDE_QUIZ = "HIDE_QUIZ";
 export const SWITCH_QUIZ = "SWITCH_QUIZ";
+export const FINISH_QUIZ = "FINISH_QUIZ";
