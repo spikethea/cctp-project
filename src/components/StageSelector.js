@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React from 'react';
 //Redux
 import {useSelector} from 'react-redux';
 
@@ -12,12 +12,8 @@ const StageSelector = () => {
 
     const currentStage = useSelector(state => state.info.activeStage);
 
-    console.log(currentStage);
-    //useEffect(()=>setStageLoad(true), [currentStage])
-
     switch(currentStage) {
       case 0:
-        console.log(currentStage);
         return (
           <Overworld/>
           )

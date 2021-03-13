@@ -1,5 +1,6 @@
 const quizReducer = (state = initState, action) => {
     let quizSelected = {};
+    let initialCompleted = 0;
     switch(action.type) {
         case 'SHOW_QUIZ':
           quizSelected = {...state.quizzes[action.payload]};
@@ -24,14 +25,26 @@ const quizReducer = (state = initState, action) => {
           }
           case 'FINISH_QUIZ':
             quizSelected = {...state.quizzes[action.payload]};
-            console.log(action.payload);
-            console.log(quizSelected);
-            quizSelected.completed = true;
             console.log(quizSelected.tagName + " finished");
             return {
               ...state,
               quizActive: false,
-              currentQuiz: null,
+              quizzes: {
+                ...state.quizzes,
+                [action.payload]: quizSelected,
+              }
+            }
+            case 'WIN_QUIZ':
+            initialCompleted = state.completed;
+            quizSelected = {...state.quizzes[action.payload]};
+            console.log(action.payload);
+            console.log(quizSelected);
+            quizSelected.completed = true;
+            console.log("you  won " + quizSelected.name);
+            return {
+              ...state,
+              quizActive: false,
+              completed: initialCompleted + 1,
               quizzes: {
                 ...state.quizzes,
                 [action.payload]: quizSelected,
@@ -45,6 +58,7 @@ const quizReducer = (state = initState, action) => {
 const initState = {
     currentQuiz: null,
     quizActive: false,
+    completed: 0,
     page:0,
     quizzes: {
       introduction: {
@@ -59,7 +73,7 @@ const initState = {
                 question: "How do I access tasks?",
                 answers: {
                   a: "Click a stage and play",
-                  b: "Select a stage in the Homepage and select a difficult level",
+                  b: "Select a stage in the Homepage and choose a difficult level",
                   c: "Select a difficulty level in the Homepage",
                   d: "Go to Work",
                 },

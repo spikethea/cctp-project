@@ -1,39 +1,53 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { gameState } from './redux/actions';
-import styles from  './LevelSelect.module.css';
+import { selectLevel } from './redux/actions';
+import styles from  './PopUp.module.css';
 
 const LevelSelect = ()=> {
 
     const state = useSelector(state => state.info);
     const dispatch = useDispatch();
 
-    const activeLevel = state.gameState;
-    console.log(activeLevel);
+    const activeLevel = state.level;
 
 
-    if (state.levelSelect) {
+    if (state.gameState === 1) {
+
         return (
+        <>
         <div className={styles.container}>
-            <section>
-                <header><p>Return To Home</p></header>
-                <h1>{state.activeStage? state.stages[state.activeStage-1].name: "Stage"}</h1>
-
-                <p>{state.activeStage? state.stages[state.activeStage-1].description: "Stage Description"}</p>
-            </section>
+            
+                <header>
+                    <div></div>
+                    <button className={styles.open}><p>Return To Home</p></button>
+                </header>
+                <section>
+                    <h1>{state.activeStage? state.stages[state.activeStage-1].name: "Stage"}</h1>
+                    {state.activeStage ? <img alt={state.stages[state.activeStage-1].name} src={state.stages[state.activeStage-1].img}/>: null}
+                    <h3>{state.activeStage? state.stages[state.activeStage-1].description: "Stage Description"}</h3>
+                </section>
+                
+                <section>
+                <h2>How to Play</h2>
+                <h3>{state.activeStage? state.stages[state.activeStage-1].howToPlay: "How to Play"}</h3>
+                </section>
+                
+            
 
             <section>
                 <h2>Levels</h2>
                 <div className={styles.levels}>
-                    <figure onClick={()=>dispatch(gameState(1))}>1</figure>
-                    <figure onClick={()=>dispatch(gameState(2))}>2</figure>
-                    <figure onClick={()=>dispatch(gameState(3))}>3</figure>
-                    <figure onClick={()=>dispatch(gameState(4))}>4</figure>
-                    <figure onClick={()=>dispatch(gameState(5))}>5</figure>
-                    <figure onClick={()=>dispatch(gameState(6))}>6</figure>
+                    <button className={styles.open} onClick={()=>dispatch(selectLevel(1))}>1</button>
+                    <button className={styles.open} onClick={()=>dispatch(selectLevel(2))}>2</button>
+                    <button className={styles.locked}>3</button>
+                    <button className={styles.locked}>4</button>
+                    <button className={styles.locked}>5</button>
+                    <button className={styles.locked}>6</button>
                 </div>
             </section>
         </div>
+        <div className="background"></div>
+        </>
     )} else return null
 }
 

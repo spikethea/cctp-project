@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect,  useState } from 'react';
 import "../App.css";
 
-import { BrowserRouter as Router, Switch, Route, Link, useLocation, useRouteMatch, Redirect } from "react-router-dom";
+import { Switch, Route, Link, useLocation, useRouteMatch, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { switchPage } from './redux/actions';
 
@@ -29,10 +29,8 @@ const UserInterface = ({app, setApp}) => {
         if (activePage === "/training") {
              setApp(true)
          }
-        console.log(location.pathname);
      }, [location]);
 
-     console.log(activePage);
     
     //Redux
     const info = useSelector(state => state.info);
@@ -47,25 +45,22 @@ const UserInterface = ({app, setApp}) => {
         if(showUI) {
             setStaggeredPoints(info.points);
         }
-    }, [showUI]);
+    }, [showUI, info.points]);
 
-    let mql = window.matchMedia('(max-width: 1200px)').matches;//
 
-    //need to code it so that it detects when the badge element is pressed
 
     
     if (showUI === true && app) {
 
         return (
             <> 
-            {mql ? <div className="background"></div> : null}
             <div className="ui-container">
                 <ProgressBar staggeredPoints={staggeredPoints} info={info}/>
                 <ul className="pages">
-                    <Link style={{textDecoration: "none"}} to={`${url}/homepage`}><li style={{backgroundColor: location.pathname === `${url}/homepage` ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(0))} className="page-item">Homepage</li></Link>
-                    <Link style={{textDecoration: "none"}} to={`${url}/leaderboard`}><li style={{backgroundColor:activePage === `${url}/leaderboard` ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(1))} className="page-item">Leaderboard</li></Link>
-                    <Link style={{textDecoration: "none"}} to={`${url}/archive`}><li style={{backgroundColor:activePage === `${url}/archive` ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(2))} className="page-item">Archive</li></Link>
-                    <Link style={{textDecoration: "none"}} to={`${url}/quiz`}><li style={{backgroundColor:activePage === `${url}/quiz` ? "rgb(255,255,255, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(3))} className="page-item">Quiz</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/homepage`}><li style={{backgroundColor: location.pathname === `${url}/homepage` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(0))} className="page-item">Homepage</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/leaderboard`}><li style={{backgroundColor:activePage === `${url}/leaderboard` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(1))} className="page-item">Leaderboard</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/archive`}><li style={{backgroundColor:activePage === `${url}/archive` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(2))} className="page-item">Archive</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/quiz`}><li style={{backgroundColor:activePage === `${url}/quiz` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(3))} className="page-item">Quiz</li></Link>
                 </ul>
                 
                 <Switch>
@@ -93,10 +88,10 @@ const UserInterface = ({app, setApp}) => {
 
 const UI = () => {
     return (
-        <div style={{minHeight:"40em", display:'flex', justifyContent:"center", alignItems:"center"}} className="container">
+        <div style={{minHeight:"40em", display:'flex', justifyContent:"center", alignItems:"center"}} className="default-container">
             <div>
-            <h1>Welcome to the On-Screen UI </h1>
-            <h2>Press Home to Get Started</h2>
+            <h3>Welcome to the On-Screen UI </h3>
+            <h4>Press Home to Get Started</h4>
             </div>
         </div>
     )
@@ -110,9 +105,9 @@ const ProgressBar = ({info, staggeredPoints})=> {
 
     return (
         <div style={{display:'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-                    <h3 style={{fontWeight:"bold", color:"white", padding:"1em"}}>LV:{info.exp}</h3>
-                    <animated.progress style={{width:"70%"}} id="file" value={props.value}  max="1000"/>
-                    <p>{points} XP</p>
+                    <h3 style={{fontWeight:"bold", color:"white", padding:"1em", whiteSpace:"nowrap"}}>LVL {info.exp}</h3>
+                    <animated.progress className="progress" style={{width:"70%"}} id="file" value={props.value}  max="1000"/>
+                    <p style={{marginLeft:"0.5em", whiteSpace:"nowrap"}}>{points} XP</p>
 
         </div>
     )

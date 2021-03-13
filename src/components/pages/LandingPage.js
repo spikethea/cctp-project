@@ -6,15 +6,16 @@ import { Link } from 'react-router-dom';
 const LandingPage = ({setApp}) => {
     return (
         <div className="landing-page">
-        <header>
-        <h1>ServiceLearn</h1>
-        </header>
+        
           <section className="intro">
             <div>
               <img alt="Hospitality Staff" src={Hospitality}/>
             </div>
             <div>
-              <h2>A Interactive Staff Training System Designed for Hospitality staff, by Hospitality Staff</h2>
+              <header>
+                <h1>ServiceLearn</h1>
+              </header>
+              <h3>A Interactive Staff Training System <br/> Designed for Hospitality staff, by Hospitality Staff</h3>
               <Link to="/training"><button onClick={()=>setApp(true)}>Enter Training</button></Link>
             </div>
           </section>
@@ -29,7 +30,7 @@ const LandingPage = ({setApp}) => {
             </div>
             <figure className="video">
               <div className="videoWrapper">
-                <iframe src="https://www.youtube.com/embed/4-5onF-uLFU" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                <iframe title="ServiceLearn - Prototype Demo Video" src="https://www.youtube.com/embed/4-5onF-uLFU" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
               </div>
             </figure>
           </section>

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import styles from './UserInterface.module.css';
 
-import puddle from '../../assets/images/info-box/puddle.jpg';
-
 const Archive = () => {
 
     const state = useSelector(state => state.info);
@@ -32,7 +30,7 @@ const Info = ({state})=> {
         setInfoBox([]);
 
         Object.keys(state.infoBox).forEach(function(info) {
-        console.log(infoBox)
+
         if(state.infoBox[info].displayed) {
             setInfoBox(infoBox => [...infoBox, (state.infoBox[info])]);
         }
@@ -44,10 +42,14 @@ const Info = ({state})=> {
             {infoBox.map((infoBox, id)=> (
                 <div key={id} className={styles.info}>
                     <figure>
-                        <h3>{infoBox.title}</h3>
-                        <img src={puddle} alt="puddle"/>
+                        
+                        <img src={`../${infoBox.image}`} alt="puddle"/>
                     </figure>
-                    <p>{infoBox.description}</p>
+                    <article>
+                        <h3>{infoBox.title}</h3>
+                        <p>{infoBox.description}</p>
+                    </article>
+                    
                 </div>
             ))}
         </div>
@@ -78,7 +80,7 @@ const Badges = ({state}) => {
             return (
                 <div key={index} className={styles.archiveBadge}>
                     <h4>{badge.title}</h4>
-                    <img src={badge.image} alt="Achievement"/>
+                    <img src={`../${badge.image}`} alt="Achievement"/>
                     <p>{badge.description}</p>
                 </div>
         )} else {

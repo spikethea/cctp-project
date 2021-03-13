@@ -5,12 +5,86 @@
   box-sizing: border-box;
 }
 
+button {
+  border-style: none
+}
+
+a {
+  text-decoration: none;
+}
+
+.progress {
+  /* Positioning */
+  /* position: absolute; */
+  left: 0;
+  top: 0;
+
+  /* Dimensions */
+  width: 100%;
+  height: 5px;
+
+  /* Reset the appearance */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+
+  /* Get rid of the default border in Firefox/Opera. */
+  border: none;
+
+  /* Progress bar container for Firefox/IE10+ */
+  background-color: rgb(255, 255, 255, 0.5);
+  border-radius: 0.5em;
+
+  /* Progress bar value for IE10+ */
+  color: var(--secondary);
+}
+
+progress[value]::-webkit-progress-value {
+  position: relative;
+  background: var(--secondary);  
+}
+
+progress[value]::-webkit-progress-value::after {
+  content: '';
+  width: 20px;
+  height: 5px;
+  border-radius: 50px;
+  background: rgb(255, 255, 255, 0.5);
+}
+
+progress::-webkit-progress-bar {
+  background-color: transparent;
+}
+
+progress::-webkit-progress-value {
+  background-color: #00D38D;
+}
+
+progress::-moz-progress-bar {
+  background-color: #00D38D;
+}
+
+/* Variables */
+:root {
+  --primary: rgba(158, 113, 158, 0.4);
+  --secondary: #77779e;
+  --scrollbar: rgb(230, 230, 230);
+}
+
+@font-face { 
+  font-family: "LibreFranklin";
+  src: local("LibreFranklin"),
+    url("./fonts/LibreFranklin-VariableFont_wght.ttf") format("truetype");
+  font-weight: normal;
+}
+
 html,
 body,
 #root {
   width: 100%;
   height: 100%;
-  
+  font-family: "LibreFranklin";
+  overscroll-behavior: none;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -20,10 +94,18 @@ body,
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+p {
+  line-height: 1.5;
+}
+
+h3 {
+  padding: 0.4em;
+}
+
 /* Works on Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(255, 255, 255) rgb(255, 255, 255);
+  scrollbar-color: var(--scrollbar) var(--scrollbar);
 }
 
 /* Works on Chrome, Edge, and Safari */
@@ -37,9 +119,14 @@ body,
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: white;
+  background-color: var(--scrollbar);
   border-radius: 20px;
   
+}
+
+.loader:empty {
+  background: black;
+
 }
 
 /*Landing Page*/
@@ -52,11 +139,35 @@ body,
 .landing-page h1 {
   font-weight: bold;
   padding: 1em;
+  font-size: 2.5em;
 }
 
 .landing-page h2 {
   font-weight: bold;
+  font-size: 2em;
+  line-height: 150%;
   padding: 2em 2em;
+}
+
+.landing-page h3 {
+    padding: 1em;
+    color: rgb(107, 107, 107);
+    font-size: 1em;
+    line-height: 150%;
+    letter-spacing: 0.1em;
+}
+
+.landing-page button {
+  font-size: 1.5em;
+  font-weight: bold;
+  border-radius: 1em;
+  border: 1px solid black;
+
+  box-shadow: 0px 13px 16px 0px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0px 13px 16px 0px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0px 13px 16px 0px rgba(0,0,0,0.5);
+  
+
 }
 
 .landing-page section {
@@ -121,20 +232,8 @@ body,
 }
 
 
-/* .intro {
-  
-  
-} */
-
   .intro img {
     width: 100%;
-  }
-
-  .intro h2 {
-    padding: 1em;
-    color: rgb(107, 107, 107);
-    font-size: 1em;
-    letter-spacing: 0.2em;
   }
 
   .intro button {
@@ -162,25 +261,39 @@ body,
   left: calc(50% - 2.5em);
 }
 
-.badge-container img {
-  height: 5em;
-}
+  .badge-container h1 {
+    text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  }
+
+  .badge-container img {
+    height: 5em;
+  }
+
+  .badge-container h3 {
+    color: white;
+  }
+
+  .badge-container p {
+    font-weight: bold;
+    color: white;
+    background: #383838;
+    padding: 0.2em 0.5em;
+    border-radius: 2em;
+  }
 
 
 .ui-container {
   position: fixed;
   width: 100vw;
   height: 100vh;
-  top: 3.5rem;
+  top: 4.5rem;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.50);
+  background: rgb(158 113 158 / 40%);
   color: rgb(255, 255, 255);
   z-index: 6;
   overflow-y: scroll;
-  backdrop-filter: blur(20px);
 }
-
 
 .pages {
   display: flex;
@@ -204,38 +317,53 @@ body,
   left: 0%;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.20);
-  z-index: 3;
-  filter: blur(5px);
+  background: rgba(0,0,0,0.65);
+  z-index: 4;
 }
 
 .infobox {
   width: 20rem;
-  top:30%;
+  max-width: 90vw;
+  max-height: 90vh;
+  top:10%;
   left:50%;
-  margin: -50px -50px -50px -10rem;
+  transform: translate(-50%, 0);
+  
   position:absolute;
   background-color:white;
-  z-index:4;
+  z-index:5;
   border-radius:1em;
-  padding:3em;
   -webkit-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
   box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
 }
 
-.infobox p {
-  margin-top: 3em;
+.infobox .inner {
+  overflow-y: auto;
+  border: 1px solid;
+  padding: 0.3em;
+  max-height: 30vh;
 }
+  
+  .infobox h1 {
+    margin: 0.5em;
+  }
 
-.infobox button {
-  border-radius: 2em;
-  background-color: black;
-  color: white;
-  margin-top: 4em;
-  padding: 1em;
-}
+  .infobox p {
+    margin: 0.5em;
+  }
 
+  .infobox button {
+    border-radius: 2em;
+    background-color: black;
+    color: white;
+    margin: 1em;
+    padding: 1em;
+  }
+
+  .infobox img {
+    max-width: 30vh;
+  }
 
 .quiz-container {
   position: fixed;
@@ -264,10 +392,17 @@ body,
 
 @media only screen and (min-width: 1200px) {
 
+  .landing-page h1 {
+    font-weight: bold;
+    font-size: 5em;
+    padding: 1em;
+  }
+
   .infobox {
-    width: 30rem;
+    width: 650px;
+    transform: none;
     top:30%;
-    left:0%;
+    left:2em;
     margin-left: 2em;
   }
   .ui-container {
@@ -276,7 +411,12 @@ body,
     height: unset;
     top: 13vh;
     right: 5vw;
-    border-radius: 3em;
+    border: 1px solid white;
+    border-radius: 0.8em;
+
+    box-shadow: 0px 30px 40px 0px rgb(0 0 0 / 55%);
+    -webkit-box-shadow: 0px 30px 40px 0px rgb(0 0 0 / 55%);
+    -moz-box-shadow: 0px 30px 40px 0px rgb(0 0 0 / 55%);
   }
 
   .landing-page h2 {
@@ -300,6 +440,7 @@ body,
   .video {
     padding: 2em;
   }
+
 
 }
 

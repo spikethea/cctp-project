@@ -44,16 +44,20 @@ const allergyReducer = (state = initState, action) => {
                 let peanut, vegan, dairy, vegetarian, eggs, other, mustard;
                 peanut = vegan = dairy = vegetarian = eggs = other = mustard = 0;
 
+                function randomInteger(min, max) {// Function to chose a random integer between range of min & max
+                    return Math.floor(Math.random() * (max - min + 1)) + min;
+                  }
+
                 if (infoSelected === 1) {
                     console.log("Level 1: Peanut and Vegetarian");
-                    peanut = 2;
-                    vegetarian = 1;
+                    peanut = randomInteger(3, 5);
+                    vegetarian = randomInteger(1, 2);
                 } else if (infoSelected === 2) {
                     console.log("Level 2: Peanut, Vegetarian, Vegan and Dairy");
-                    peanut = 3;
-                    vegetarian = 2;
-                    vegan = 1;
-                    dairy = 1;
+                    peanut = randomInteger(3, 5);
+                    vegetarian = randomInteger(1, 3);
+                    vegan = randomInteger(1, 3);;
+                    dairy = randomInteger(1, 3);;
                 }
                 console.log(infoSelected);
 
@@ -90,7 +94,6 @@ const allergyReducer = (state = initState, action) => {
                             quantity: other,
                         },
                     },
-                started: true,
                 }
             default: 
                 return state

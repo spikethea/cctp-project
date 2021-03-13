@@ -1,4 +1,4 @@
-import {SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, GAME_STATE, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, SWITCH_ALLERGY_LEVEL, ADD_POINTS, SHOW_QUIZ, HIDE_QUIZ, SWITCH_QUIZ, FINISH_QUIZ} from './types'
+import {SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, RESTART_STAGE, RETURN_TO_HOME, SELECT_LEVEL, FINISH_LEVEL, CLEAR_NOTIFICATIONS, RESTART_ALLERGY, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, SWITCH_ALLERGY_LEVEL, ADD_POINTS, SHOW_QUIZ, HIDE_QUIZ, SWITCH_QUIZ, FINISH_QUIZ, WIN_QUIZ} from './types'
 
 export const showUserInterface = (name) => {
     console.log("inside showUI");
@@ -55,11 +55,25 @@ export const selectStage = (stageID) => {
     }
 }
 
-export const gameState = (gameState) => {
-    console.log("Level " + gameState);
+export const endStage = (name) => {
+    console.log("Ending Stage: " + name)
     return {
-        type: GAME_STATE,
-        payload: gameState
+        type: name === 'restart' ? RESTART_STAGE : RETURN_TO_HOME,
+    }
+}
+
+export const selectLevel = (level) => {
+    console.log("Selecting Level " + level);
+    return {
+        type: SELECT_LEVEL,
+        payload: level
+    }
+}
+
+export const finishLevel = () => {
+    console.log("Finished Level");
+    return {
+        type: FINISH_LEVEL,
     }
 }
 
@@ -86,6 +100,12 @@ export const allergyLevel = (level) => {
     }
 }
 
+export const allergyRestart = () => {
+    return {
+        type: RESTART_ALLERGY,
+    }
+}
+
 export const addPoints = (points) => {
     console.log("adding " + points + " points")
 
@@ -97,7 +117,7 @@ export const addPoints = (points) => {
 
 export const toggleQuiz = ( name, action) => {
     return {
-        type: action === "show" ? SHOW_QUIZ : action === "hide" ? HIDE_QUIZ : FINISH_QUIZ,
+        type: action === "show" ? SHOW_QUIZ : action === "hide" ? HIDE_QUIZ : action === "finish" ? FINISH_QUIZ: WIN_QUIZ,
         payload: name
     }
 }
@@ -105,6 +125,13 @@ export const toggleQuiz = ( name, action) => {
 export const selectQuiz = (quiz) => {
     return {
         type: SWITCH_QUIZ,
+        payload: quiz,
+    }
+}
+
+export const winQuiz = (quiz) => {
+    return {
+        type: WIN_QUIZ,
         payload: quiz,
     }
 }

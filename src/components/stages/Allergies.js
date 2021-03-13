@@ -1,10 +1,11 @@
 import React, {useRef, useState, useEffect, Suspense} from 'react';
 import styles from './Allergies.module.css';
+import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for safari compatibility
 
 //Packages
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
-import {Html, Stats} from 'drei';
+import {Html} from 'drei';
 import {useSpring, animated} from 'react-spring';
 
 import { a } from '@react-spring/three';
@@ -12,7 +13,7 @@ import { a } from '@react-spring/three';
 import { useSelector, useDispatch } from 'react-redux';
 
 //Redux
-import { showUserInterface, allergyQuantity, allergyLevel } from '../redux/actions';
+import { allergyQuantity, allergyLevel, allergyRestart, addPoints, finishLevel } from '../redux/actions';
 
 //SVG
 import egg from '../../assets/svg/egg.svg';
@@ -22,40 +23,49 @@ const Allergies = () => {
     const dispatch = useDispatch();
     const state = useSelector(state => state.allergies);
     const info = useSelector(state => state.info);
-
     const gameState = info.gameState;
 
-    const started = state.started;
+    const level = info.level;
 
-    const showUI = info.displayingUI
+    const displayingUI = info.displayingUI
     let mql = window.matchMedia('(max-width: 1200px)').matches;
 
     //Hooks
     const scrollbar = useRef(null);
 
     const [scrollPosition, setScrollPosition] = useState(0);
-    const [Active, setActive] = useState(false);
+    const [active, setActive] = useState(false);
 
     const [currentAllergies, setCurrentAllergies] = useState([]);
     const [peopleArray, setPeopleArray] = useState([]);
 
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 50
+
+    const DisableRender = () => useFrame(() => null, 1000);// Performance Optimisation to pause rendering while the UI is open.
     
     //tracking scroll position
-
     const onScroll = () => {
       const scrollTop = scrollbar.current.scrollLeft
       setScrollPosition((scrollTop/scrollbar.current.scrollWidth)* 1000);
       console.log("scroll camera " + Math.floor(scrollPosition/10) + " %")
     }
 
+    //Reset Level by resetting the state
     useEffect(()=> {
-      if (gameState !== 0) {
-        console.log(gameState);
-        dispatch(allergyLevel(gameState));
+      if (gameState === 1) {
+        dispatch(allergyRestart());
+        setActive(false);
+      }
+    },[gameState, dispatch])
+    
+    //Change Allergy Level/Difficulty
+    useEffect(()=> {
+      if (level) {
+        console.log(level);
+        dispatch(allergyLevel(level));
       }
 
-    }, [gameState])
+    }, [level, dispatch])
     
     //populating current allergies and people array
     useEffect(()=> {
@@ -74,36 +84,33 @@ const Allergies = () => {
 
     return (
       <>            
-        <div className={styles.scrollbar} ref={scrollbar} style={{height:`${vh}px`}} onScroll={onScroll}>
-          <div style={{width:"500vh"}}>
-              <p className={styles.scrollDown}>Scroll Horizontally to Move the Camera!</p>
+        {!displayingUI ? <div className={styles.scrollbar} ref={scrollbar} style={{height:`${vh}px`}} onScroll={onScroll}>
+          <div style={{display: "flex", width:"500vh"}}>
+              <p className={styles.scrollDown}>Scroll/Drag Horizontally to Move the Camera!</p>
           </div>
-        </div>
+        </div>: null}
 
-        {Active ? <AllergyCounter currentAllergies={currentAllergies} mql={mql} showUI={showUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
-        {started ? <Timer Active={Active} setActive={setActive}/> : null}
-        {Active && started ? <AllergenChart/>: null}
+        { active ? <AllergyCounter currentAllergies={currentAllergies} mql={mql} displayingUI={displayingUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
+        {!displayingUI && gameState === 2 ? <Timer level={level}   active={ active} setActive={setActive}/> : null}
+        {!displayingUI &&  active && gameState === 2 ? <AllergenChart mql={mql}/>: null}
         <Canvas
+        resize={{ polyfill: ResizeObserver }}
         className={"canvas"}
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
-        style={{filter: showUI && mql ? "blur(5px)": "none" }}
+        style={{filter: displayingUI && mql ? "blur(5px)": "none" }}
         >
+          {displayingUI && mql && <DisableRender />} 
           <Camera 
-          position={[(scrollPosition/10)-20, 15, 45]}
+          position={[(scrollPosition/10)-40, 15, 45]}
           rotation={[-Math.PI / 8, 0, 0]}
           fov={70}
           />
-            <Stats
-              showPanel={0} // Start-up panel (default=0)
-              className="stats" // Optional className to add to the stats container dom element
-               // All stats.js props are valid
-            />
             <Lights/>
             <Floor/>
-            {started ? <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
-              <People Active={Active} peopleArray={peopleArray} state={state}/>
+            {gameState === 2 ? <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
+              <People  active={ active} peopleArray={peopleArray} state={state}/>
             </Suspense>: null}
         {/* <OrbitControls/> */}
       </Canvas>
@@ -114,22 +121,42 @@ const Allergies = () => {
 
 //UI
 
-  const Timer = ({setActive, Active}) => {
+  const Timer = ({setActive, active, level}) => {
 
-    let [countdown, setCountdown] = useState(5);
-    const props = useSpring({transform: Active ? "scale(0)": "scale(1)"});
+    let [countdown, setCountdown] = useState(15);
+    const props = useSpring({transform:  active ? "scale(0)": "scale(1)"});
+    
+    console.log(countdown);
+
+    useEffect (()=> {
+      if (level === 1) {
+        setCountdown(15);
+      } else if (level === 2) {
+        setCountdown(50);
+      } else if (level === 3) {
+        setCountdown(90);
+      }
+    },[level])
 
 
-    useEffect(() => {  
-
-      if (countdown > 0) {
-        const timer = setTimeout(() => {
-          setCountdown(countdown -  1);
+    useEffect(() => {
+      console.log(countdown);
+      if (countdown > 0 && !active) {
+        const interval = setInterval(() => {
+          console.log(active);
+          console.log(countdown);
+          console.log("cleanup");
+          setCountdown(prevState => prevState -  1);
+          console.log(countdown);
+          
         }, 1000);
-      //console.log("TICK")
-      } else setActive(true);
-    })
+        return () => clearInterval(interval);
 
+      } else {
+        console.log(active);
+        setActive(true);
+      };
+    }, [active, countdown, setActive])
 
     return (
       <animated.div style={props} className={styles.timer}>
@@ -140,10 +167,25 @@ const Allergies = () => {
 
   const AllergenChart = ()=> {
 
+    const [hidden, setHidden] = useState(false);
+
+    const props = useSpring({maxHeight: hidden ? "40px": "300px"});
+
+    const handleClick = () => {
+      console.log("toggled allergen chart");
+      if (hidden) {
+        setHidden(false);
+      } else {
+        setHidden(true);
+      }
+      console.log(hidden);
+      
+    }
+
     return (
-      <div className={styles.chart}>
-        <header><h2>Allergen Chart</h2></header>
-        <section>
+      <animated.div style={props} className={styles.chart}>
+        <header onClick={handleClick}><h3>{hidden ? <span alt="expandable" style={{writingMode: "vertical-rl"}}>&gt;</span> : <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&lt;</span>} Allergen Chart</h3></header>
+        <section >
         <figure style={{ backgroundColor:"#f7be5c"}}>
             <img alt="peanut" src={egg}/>
             <p>Peanut</p>
@@ -173,23 +215,20 @@ const Allergies = () => {
             <p>Other</p>
           </figure>
         </section>
-      </div>
+      </animated.div>
     )
   }
 
-  const AllergyCounter = ({dispatch, peopleArray, currentAllergies, showUI, mql}) => {
+  const AllergyCounter = ({dispatch, currentAllergies, displayingUI, mql}) => {
 
-    const [display, setDisplay] = useState(true);
+    const [hidden, setHidden] = useState(false);
 
-    const props = useSpring({bottom: display ? "0vh": "-40vh"});
+    const props = useSpring({maxHeight: hidden ? "3em": "35em"});
 
-    console.log(currentAllergies);
-
+    
     const totalAllergies = currentAllergies.filter(function(allergy){
       return allergy.quantity > 0
     })
-
-    console.log(totalAllergies);
 
     const checkCount = () => {
       console.log("checking the count of allergies against the users input");
@@ -207,33 +246,37 @@ const Allergies = () => {
         }
       }
 
+      let correctPeople = totalAllergies.length - incorrect;
+
       if (incorrect > 0) {
         alert("incorrect! You got wrote down" + incorrect  + "/" + totalAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people had an averse allergic reaction today...");
+        dispatch(addPoints(10*correctPeople));
+        dispatch(finishLevel());
+
       } else {
         alert("correct!");
-
+        dispatch(addPoints(500));
+        dispatch(finishLevel());
       }
     }
 
     return (
-      <animated.div style={{filter: showUI && mql ? "blur(5px)": "none", bottom: props.bottom}} className={styles.container}>
+      <animated.div style={{display: displayingUI && mql ? "none": "block", maxHeight: props.maxHeight}} className={styles.container}>
         <header>
-        <h2 onClick={()=> (display? setDisplay(false): setDisplay(true))}>Allergen List {display ? <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&gt;</span> : <span alt="expandable" style={{writingMode: "vertical-rl"}}>&lt;</span>}</h2>
+        <h3 onClick={()=> (hidden ? setHidden(false): setHidden(true))}>Allergen List {hidden ?<span alt="expandable" style={{writingMode: "vertical-rl"}}>&lt;</span> : <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&gt;</span> }</h3>
         </header>
           <div className={styles.inner}>
           {currentAllergies.map((allergy, index) => (
-  <div key={index} className={styles.item}>
-      <label>
-        <p style={{color:`${allergy.color}`, fontWeight:"bold", fontSize:"3em", lineHeight:"0.3em"}}>.</p>
-        {allergy.tagName}
-      </label>
-      <div className={styles.itemInner}>
-
-        <p className={styles.quantity}>{allergy.inputQuantity}</p>
-        <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'decrease'))}>-</button>
-        <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'increase'))}>+</button>
-      </div>
-    </div>
+            <div key={index} className={styles.item}>
+                <label>
+                  {allergy.tagName}
+                </label>
+                <div className={styles.itemInner}>
+                  <p className={styles.quantity}>{allergy.inputQuantity}</p>
+                  <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'decrease'))}>-</button>
+                  <button className={styles.radioButton} onClick={() => dispatch(allergyQuantity(allergy.tagName, 'increase'))}>+</button>
+                </div>
+            </div>
 ))}
           </div>
         <button onClick={checkCount} className={styles.submit}>Confirm</button>
@@ -247,7 +290,7 @@ function Camera(props) {
   const ref = useRef()
   const { setDefaultCamera, camera } = useThree()
   // Make the camera known to the system
-  useEffect(() => void setDefaultCamera(ref.current), [])
+  useEffect(() => void setDefaultCamera(ref.current), [setDefaultCamera])
   // Update it every frame
   useFrame(() => ref.current.updateMatrixWorld())
   //ref.lookAt(new THREE.Vector3( 0, 0, 0 ))
@@ -303,19 +346,19 @@ const Lights = () => {
   }
 
 
-  const People = ({peopleArray, Active}) => {
+  const People = ({peopleArray,  active}) => {
 
     return (
       <>
       {peopleArray.map((allergy, id)=> (
-        <Person Active={Active} key={id} color={allergy.color}/>
+        <Person  active={active} key={id} color={allergy.color}/>
         )
       )}
       </>
     )
   }
   
-  const Person = ({Active, color}) => {
+  const Person = ({ active, color}) => {
 
     const {nodes} = useLoader(GLTFLoader, "../assets/models/npc.glb");
     
@@ -324,7 +367,7 @@ const Lights = () => {
     const [bobbing, setBobbing] = useState(true);
     const [delay, setDelay] = useState(Math.random()* 100);
 
-    const [properties, setProperties] = useState({
+    const [properties] = useState({
       position: [(Math.random()*100) - 50, 1, Math.random() * 25], 
       color: [Math.floor(Math.random()*255), Math.floor(Math.random()*255), Math.floor(Math.random()*255)],
       popup: false,
@@ -334,6 +377,7 @@ const Lights = () => {
     setTimeout(
 
     useFrame(()=> {
+      if (person.current) {
 
       if (delay > 0) {
         setDelay(delay - 1);
@@ -351,12 +395,20 @@ const Lights = () => {
           setBobbing(true);
         }
 
+
+
         if (bobbing && person.current) {
           person.current.position.y += 0.01;
+          person.current.position.x += 0.1;
         } else {
-          person.current.position.y -= 0.01;
+          if (!active) {
+            person.current.position.y -= 0.01;
+            person.current.position.x -= 0.1;
+          }
+          
         }
-      } 
+      }
+    } 
     }), properties.delay) 
   
     return (
@@ -370,7 +422,7 @@ const Lights = () => {
                 zIndexRange={[1, 0]}
                 scaleFactor={50}
             >
-                {!Active? <p 
+                {! active? <p 
                   style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
                 ></p>: null}
             </Html>

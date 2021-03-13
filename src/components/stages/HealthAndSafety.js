@@ -1,39 +1,70 @@
 import React, {useRef, useState, useEffect, Suspense} from 'react';
 import styles from './HealthAndSafety.module.css';
+import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for safari compatibility
 
 //Packages
-//import * as THREE from 'three';
+import * as THREE from 'three';
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
-import {Box, Html, Stats} from 'drei';
+import {Box} from 'drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-
-import { animated } from '@react-spring/three';
+import { animated, useSpring } from '@react-spring/three';
 
 //Redux
-import {  useDispatch, useSelector, useRouteMatch } from 'react-redux';
-import { addPoints, getBadge, showInfo } from '../redux/actions';
+import {  useDispatch, useSelector } from 'react-redux';
+import { addPoints, getBadge, showInfo, finishLevel } from '../redux/actions';
 
+// Components
+import Loading from '../../components/Loading';
+import InfoBubble from '../InfoBubble';
+import { TextureLoader } from 'three';
 
 const HealthAndSafety = () => {
 
     const dispatch = useDispatch();
     const info = useSelector(state => state.info);
+    const level = info.level;
+    const gameState = info.gameState
 
     const showUI = info.displayingUI;
     let mql = window.matchMedia('(max-width: 1200px)').matches;
 
     const [progress, setProgress] = useState(0);
+    const [max, setMax] = useState(2);
 
     const [cameraPosition, setCameraPosition] = useState([0, 2, 5]);
-    let [rotationDir, setRotationDir] = useState(false);
-    let [cameraRotating, setCameraRotating] = useState(false)
+    const [rotationDir, setRotationDir] = useState(false);
+    const [cameraRotating, setCameraRotating] = useState(false);
 
+    const DisableRender = () => useFrame(() => null, 1000);// Performance Optimisation to pause rendering while the UI is open.
+    
+    // UseEffect 
     useEffect(()=> {
-      if (progress === 3) {
+      if (progress === max) {
         dispatch(getBadge('oneHundredPercent'));
+        dispatch(finishLevel());
       }
-    },[progress])
+    },[progress, dispatch, max])
+    
+    // Setting difficult (number of Hazards) for the current Level
+    useEffect(()=> {
+      if (level === 1) {
+        setMax(3)
+      } else if (level === 2)
+       {
+         setMax(5)
+      }
 
+    }, [level])
+    //When the level is restarted, reset all the state 
+    useEffect(()=>{
+      if (gameState === 1) {
+        setProgress(0);
+        setCameraPosition([0, 2, 5]);
+        setCameraRotating(false);
+      }
+    },[gameState])
+
+    // Event Listeners
     const handleClick = (direction) => {
       setRotationDir(direction)
       setCameraRotating(true)
@@ -48,39 +79,39 @@ const HealthAndSafety = () => {
       {!showUI ? 
       <div className={styles.progress}>
         
-        <svg className={styles.ring} width="100" height="100" viewBox="50 50 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle strokeDasharray="628" fill="none" cx="100" cy="100" r="50" stroke="white" strokeWidth="3"/>
+        <svg className={styles.ring} width="100" height="100" viewBox="50 50 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle strokeDasharray="628" fill="none" cx="100" cy="100" r="50" stroke="white" strokeWidth="5"/>
         </svg>
 
-        <svg className={styles.stroke} width="200" height="100" viewBox="50 50 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle strokeDashoffset={314 - ((314/5)*progress)} strokeDasharray="314" fill="none" cx="100" cy="100" r="50" stroke="blue" strokeWidth="3"/>
+        <svg className={styles.stroke} width="100" height="100" viewBox="50 50 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle strokeDashoffset={314 - ((314/max)*progress)} cx="100" cy="100" r="50"/>
         </svg>
 
-        <h1>{progress}/5</h1>
+        <h1>{progress}/{max}</h1>
       </div> : null}
       
       <div style={{display: showUI && mql ? "none" : "flex"}} className={styles.navigation}>
           <svg onMouseLeave={()=> handleLeave()} onMouseDown={()=> handleClick(true)} height="50" width="50">
           <polygon points="50,50 50,0 0,25" className="triangle">Left</polygon>
           </svg>
-          <svg  onMouseLeave={()=> handleLeave()} onMouseDown={()=> handleClick(false)} height="50" width="50">
+          <svg onMouseLeave={()=> handleLeave()} onMouseDown={()=> handleClick(false)} height="50" width="50">
             <polygon points="0,0 50,25 0,50" className="triangle">Right</polygon>
           </svg>
       </div>
 
         <Canvas
-        style={{position:"fixed", left:"0%", top:"0%"}}
+        resize={{ polyfill: ResizeObserver }}
         className={"canvas"}
         colorManagement 
-        onCreated={({ gl }) => gl.setClearColor('coral')}
+        onCreated={({ gl }) => gl.setClearColor('#87ceeb')}
         shadowMap
-        style={{filter: showUI && mql ? "blur(5px)":"none" }}
+        style={{position:"fixed", left:"0%", top:"0%", filter: showUI && mql ? "blur(5px)":"none" }}
         >
+          {showUI && mql && <DisableRender />} 
           <Camera direction={rotationDir} rotating={cameraRotating} position={cameraPosition}/>
-            <Lights/>
-            <Scene setCameraPosition={setCameraPosition} progress={progress} setProgress={setProgress} dispatch={dispatch}/>
-      </Canvas>
-      {!showUI ? <button style={{position:"fixed", bottom: "5em", left: "5em"}} onClick={()=> setCameraPosition([4, 2.5, 3])}>Change Position</button> : null }
+          {gameState === 2 && level === 1 ? <Scene1 setCameraPosition={setCameraPosition} progress={progress} setProgress={setProgress} dispatch={dispatch}/>: null}
+          {gameState === 2 && level === 2 ? <Scene2 setCameraPosition={setCameraPosition} progress={progress} setProgress={setProgress} dispatch={dispatch}/> : null}
+        </Canvas>
       </>
     )
 }
@@ -89,13 +120,15 @@ const Teleportation = ({setCameraPosition, position}) => {
 
   let localPosition = position
 
-const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/teleport.glb");
+  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/teleport.glb");
 
-  console.log(nodes);
-  console.log(materials);
+  const handleClick = ()=> {
+    console.log(`teleporting to ${position[0]}, ${position[1] + 2}, ${position[2]}`)
+    setCameraPosition([position[0], position[1] + 2, position[2]]);
+  }
 
   return (
-    <mesh onClick={()=> setCameraPosition([localPosition[0], localPosition[1] + 2, localPosition[1]])} scale={[0.8, 0.8, 0.8]} position={localPosition} geometry={nodes.Circle.geometry} material={materials["Material.001"]}/>
+    <mesh onClick={()=> handleClick()} scale={[0.5, 0.5, 0.5]} position={localPosition} geometry={nodes.Circle.geometry} material={materials["Material.001"]}/>
   )
 }
 
@@ -105,6 +138,12 @@ function Camera({position, direction, rotating}) {
 
   const ref = useRef();
   const { setDefaultCamera} = useThree();
+
+  //const props = useSpring({position: change ? })
+
+  //useEffect(()=> {
+
+  //} ,[position])
   
 
 
@@ -112,9 +151,9 @@ function Camera({position, direction, rotating}) {
   useFrame(({camera})=> {
     if (rotating) {
       if (direction) {
-        camera.rotation.y += 0.005;
+        camera.rotation.y += 0.01;
       } else {
-        camera.rotation.y -= 0.005;
+        camera.rotation.y -= 0.01;
       }
 
       ref.current.updateMatrixWorld()
@@ -125,111 +164,279 @@ function Camera({position, direction, rotating}) {
   // Make the camera known to the system
   useEffect(() => void setDefaultCamera(ref.current), [setDefaultCamera])
 
-  return <animated.perspectiveCamera ref={ref} fov={110} position={position}/>
+  return <animated.perspectiveCamera ref={ref} fov={90} position={position}/>
 }
 
 
 //Scene
-const Scene = ({dispatch, setProgress, progress, setCameraPosition}) => {
-
+const Scene1 = ({dispatch, setProgress, setCameraPosition}) => {
 
   return (
     <>
-      <RotatingBox onClick={()=> dispatch(showInfo("puddle"))} progress={progress} setProgress={setProgress} position={[-3, -1, 0]} dispatch={dispatch}/>
-      <RotatingBox progress={progress} setProgress={setProgress} position={[0, 2.5, 0]} dispatch={dispatch}/>
-      <RotatingBox progress={progress} setProgress={setProgress} position={[0, 0, 3]} dispatch={dispatch}/>
-      <Stats
-        showPanel={0} // Start-up panel (default=0)
-        className="stats" // Optional className to add to the stats container dom element
-          // All stats.js props are valid
+      <ambientLight
+      intensity={0.2}
       />
-      <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"40%"}}>Loading...</Html>}>
-        <Kitchen/>
+      
+      <Suspense fallback={<Loading/>}>
+        {/* <pointLight position={[0, 3, -2]} intensity={1.55} /> */}
+        <SmallKitchen/>
+        
+        
+        <FaultyLightbar position={[-2.5, 4, -2]} dispatch={dispatch} setProgress={setProgress}/>
+        <Puddle position={[3, 0.1, -3]} dispatch={dispatch} setProgress={setProgress}/>
+        <Meat position={[4, 1.25, 2]} dispatch={dispatch} setProgress={setProgress} />
+        
+        <Lightbar position={[2.5, 4, -2]}/>
+        <Lightbar position={[-2.5, 4, 2]} rotation={[0, 90*(Math.PI/180), 0]}/>
+        <Lightbar position={[2.5, 4, 2]} rotation={[0, 90*(Math.PI/180), 0]}/>
+
         <Teleportation position={[0, 0, 5]} setCameraPosition={setCameraPosition}/>
-          <Teleportation position={[2.5, 0, 0]} setCameraPosition={setCameraPosition}/>
-          <Teleportation position={[-2.5, 0, 0]} setCameraPosition={setCameraPosition}/>
-        <Puddle dispatch={dispatch} setProgress={setProgress}/>
-        <Meat dispatch={dispatch} setProgress={setProgress} />
+        <Teleportation position={[2.5, 0, 0]} setCameraPosition={setCameraPosition}/>
+        <Teleportation position={[-2.5, 0, 0]} setCameraPosition={setCameraPosition}/>
+        
+        
       </Suspense>
     </>
   )
 }
 
+const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
 
-// Lights
-const Lights = () => {
+  useEffect(()=>{
+    setCameraPosition([0, 2, 8]);
+  },[])
 
-    return (
-      <>
-        <ambientLight
-          intensity={0.5}
-        />
-        <rectAreaLight
-          width={1.5}
-          height={1.5}
-          color={"#f7f3eb"}
-          intensity={4}
-          position={[3, 3, 0]}
-          lookAt={[0, 0, 0]}
-          penumbra={1}
-        />
-        <FlickeringLight/>
-        <pointLight
-        width={10}
-        height={10}
-        color={"#f7f3eb"}
-        intensity={0.4}
-        position={[0, 2, 0]}
-        lookAt={[0, 0, 0]}
-        penumbra={1}
-        />
-      </>
-    )
-  }
+  return (
+    <>
+      <ambientLight
+      intensity={0.2}
+      />
+      
+      <Suspense fallback={<Loading/>}>
+        {/* <pointLight position={[0, 3, -2]} intensity={1.55} /> */}
+        <MainKitchen/>
+              
+        <DirtySurface position={[-4.5, 1.15, 4]}  dispatch={dispatch} setProgress={setProgress}/>
+        <CrossContamination position={[0.38, 0.8, 0.8]} dispatch={dispatch} setProgress={setProgress}/>
+        <ClutteredShelfBox position={[-2.8, 1.9, -4.4]} dispatch={dispatch} setProgress={setProgress}/>
+        <ObstructionBoundingBox position={[2.8, 0, 5.8]} dispatch={dispatch} setProgress={setProgress}/>
+        <FaultyLightbar position={[8, 4, 3]} rotation={[0, 90*(Math.PI/180), 0]} dispatch={dispatch} setProgress={setProgress}/>
+        
+        <Lightbar position={[8, 4, -2]} rotation={[0, 90*(Math.PI/180), 0]}/>
+
+        <Lightbar position={[0, 4, 3]} rotation={[0, 90*(Math.PI/180), 0]}/>
+        <Lightbar position={[0, 4, -2]} rotation={[0, 90*(Math.PI/180), 0]}/>
+
+        <Lightbar position={[2.5, 4, 9]} />
+        <Lightbar position={[-2.5, 4, 9]} />
+
+        <Teleportation position={[0, 0, 8]} setCameraPosition={setCameraPosition}/>
+        <Teleportation position={[-2.5, 0, 4]} setCameraPosition={setCameraPosition}/>
+        <Teleportation position={[2.5, 0, 2]} setCameraPosition={setCameraPosition}/>
+        <Teleportation position={[-2.5, 0, -2]} setCameraPosition={setCameraPosition}/>
+        <Teleportation position={[8, 0, 3]} setCameraPosition={setCameraPosition}/>
+        <Teleportation position={[8, 0, -3]} setCameraPosition={setCameraPosition}/>
+      </Suspense>
+    </>
+  )
+}
   
 //Meshes
+const CrossContamination = ({position, dispatch, setProgress}) => {// Need to aniamte and add dispatch
 
-const FlickeringLight = () => {
+  const [found, setFound] = useState(false)
+  const props = useSpring({ position: found ? [0, 0.03, -1] : [0, 0.03, 0], yRotation: found ? [0, THREE.Math.degToRad(90), 0] : [0, THREE.Math.degToRad(15), 0]})
+  console.log(props);
+  const handleClick = ()=> {
+    if (!found) {
+      setFound(true);
+      console.log(props);
+      setProgress((prevState)=> prevState + 1);
+    }
+      
+  }
+
+
+
+  return (
+    <group position={position}>
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      <ChoppingBoard  onClick={handleClick} color={"#E7595F"} position={[0, 0, 0]}/>{/* Red */}
+      <ChoppingBoard onClick={handleClick} color={"#76c4e8"} position={props.position} rotation={props.yRotation}/>{/* Blue */}
+    </group>
+  )
+}
+
+const ObstructionBoundingBox = ({position, dispatch, setProgress}) => {
+
+  const [found, setFound] = useState(false);
+
+  const handleClick = ()=> {
+    if (!found) {
+      setFound(true);
+      setProgress((prevState)=> prevState + 1);
+    }
+  }
+
+  return (
+    <mesh onClick={handleClick} position={position}>
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      <meshBasicMaterial transparent={true} opacity={0} attach="material" color="white"/>
+      <boxBufferGeometry attach="geometry" args={[1, 2, 1]}/>
+    </mesh>
+  )
+}
+
+const ClutteredShelfBox = ({position, dispatch, setProgress})=> {
+
+  const [found, setFound] = useState(false);
+
+  const handleClick = ()=> {
+    if (!found) {
+      setFound(true);
+      setProgress((prevState)=> prevState + 1);
+    }
+  }
+
+  return (
+    <mesh onClick={handleClick} position={position}>
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      <meshBasicMaterial transparent={true} opacity={0} attach="material" color="white"/>
+      <boxBufferGeometry attach="geometry" args={[1.6, 0.5, 0.8]}/>
+    </mesh>
+  )
+}
+
+const DirtySurface = ({position, dispatch, setProgress}) => {// Need to, yknow
+
+  const texture = useLoader(TextureLoader, '../assets/images/textures/dirt.png')
+
+  const [found, setFound] = useState(false);
+
+  const handleClick = ()=> {
+    if (!found) {
+      setFound(true);
+      setProgress((prevState) => prevState + 1);
+    }
+  }
+
+  return (
+    <mesh onClick={handleClick} position={position} rotation={[-90*(Math.PI/180), 0, 0]}>
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      <meshLambertMaterial transparent={true} attach="material" map={texture}/>
+      <planeBufferGeometry  attach="geometry" args={[1, 1]}/>
+    </mesh>
+  )
+}
+
+const ChoppingBoard = ({color, opacity, position, rotation, style, onClick}) => {
+
+  const { nodes } = useLoader(GLTFLoader, "../assets/models/chopping-board.glb");
+
+  return (
+    <animated.mesh onClick={onClick} style={style} scale={[0.2, 0.2, 0.2]} geometry={nodes.Plane005.geometry} rotation={rotation} position={position}>
+      <meshStandardMaterial
+        transparent
+        opacity={opacity}
+        color={color}
+      />
+    </animated.mesh>
+  )
+}
+
+const WetFloorSign = ({found, position}) => {
+
+  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/wet-floor-sign.glb");
+
+  const props = useSpring({position: found ? 0: 3})
+
+return (
+  <animated.mesh visible={found} position={position} position-y={props.position} rotation={[0, 30*(Math.PI/180), 0]} geometry={nodes["wet-floor-sign"].geometry} material={materials["Material.001"]}>
+  </animated.mesh>
+)
+}
+
+const FlickeringLight = ({position, distance}) => {
 
   let light = useRef();
   const [dimming, setDimming] = useState(true)
 
   useFrame(()=> {
-    if (light.current.intensity > 10) {
+    if (light.current) {
+      if (light.current.intensity > 0.25) {
       setDimming(true);
-    } else if (light.current.intensity > 2) {
+    } else if (light.current.intensity < 0.3) {
       setDimming(false);
     }
 
     if (dimming) {
-      light.current.intensity -= 1;
+      light.current.intensity -= 0.05;
     } else {
-      light.current.intensity += 1;
+      light.current.intensity += 0.05;
     }
+    }
+    
   })
 
   return (
-    <rectAreaLight
+    <pointLight
           ref={light}
-          width={1.5}
-          height={1.5}
+          width={3}
+          height={3}
+          distance={distance}
           color={"#f7f3eb"}
-          intensity={6}
-          position={[-3, 3, 0]}
-          lookAt={[0, 0, 0]}
+          intensity={0.6}
+          position={position}
           penumbra={1}
         />
   )
 }
 
+const Lightbar = ({ position, rotation }) => {
 
-const Kitchen = ()=> {
+  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/lightbar-new.glb");
+
+  return (
+    <mesh rotation={rotation} scale={[0.1, 0.1, 1]} position={position} geometry={nodes["faulty-lightbar"].geometry} material={materials["Material.004"]}>
+      <pointLight distance={10} color={"#f7f3eb"} intensity={3} position={[0, -1, 0]} />
+    </mesh>
+  )
+}
+
+const FaultyLightbar = ({ position, rotation, dispatch, setProgress }) => {
+
+  const { nodes } = useLoader(GLTFLoader, "../assets/models/lightbar-new.glb");
+
+  const [found, setFound] = useState(false);
+
+  const handleClick = () => {
+    if(!found) {
+      setProgress((prevState) => prevState + 1);
+      setFound(true);
+      dispatch(addPoints(200));
+    }
+  }
+
+  return (
+    <mesh onClick={handleClick} scale={[0.1, 0.1, 1]} color="#000000" position={position} rotation={rotation} geometry={nodes["faulty-lightbar"].geometry} >
+      {!found ? 
+      <FlickeringLight distance={10} position={[0, 0, 0]}/>
+      : 
+      <>
+      <InfoBubble onClick={()=> dispatch(showInfo("faultyLighting"))}/>
+      <pointLight distance={10} color={"#f7f3eb"} intensity={3} position={[0, 0, 0]} />
+      </>}
+    </mesh>
+  )
+}
+
+
+const SmallKitchen = ()=> {
 
 
 
   const gltf = useLoader(GLTFLoader, "../assets/models/kitchen.glb");
 
-  console.log(gltf);
 
   return (
     <primitive position={[0, 0, 0]} object={gltf.scene} />
@@ -237,39 +444,55 @@ const Kitchen = ()=> {
 
 }
 
-const Puddle = ({setProgress, dispatch})=> {
+const MainKitchen = ()=> {
 
-  const gltf = useLoader(GLTFLoader, "../assets/models/puddle.glb");
 
+
+  const gltf = useLoader(GLTFLoader, "../assets/models/main-kitchen.glb");
+
+
+  return (
+    <primitive position={[0, 0, 0]} object={gltf.scene} />
+  )
+
+}
+
+const Puddle = ({setProgress, dispatch, position})=> {
+
+  const { renderer } = useThree();
+
+  const environment = useLoader(THREE.TextureLoader, "../assets/images/textures/equirectangular.jpg")
+  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/puddle.glb");
   const [found, setFound] = useState(false);  
+
+  environment.mapping = THREE.EquirectangularReflectionMapping;
+  environment.encoding = THREE.sRGBEncoding;
+
+  console.log(materials);
+  console.log(renderer);
 
   const clickBox = () => {
     if(!found) {
       setProgress((prevState) => prevState + 1);
       setFound(true);
-      console.log("clicked!");
       dispatch(addPoints(200));
     }
 
   }
 
   return (
-    <primitive transparent opacity={0.5} onClick={clickBox} position={[3, 0.1, -3]} object={gltf.scene} >
-      {found ? <Html
-            zIndexRange={[1, 0]}
-            scaleFactor={20}
-          >
-            <p 
-              onClick={()=> dispatch(showInfo("puddle"))} 
-              style={{transform:"translate(-10px, -40px)", marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:"black", width:"180%", zIndex:"-3", color:"white"}}
-            >?</p>
-          </Html>: null}
-      </primitive>
+  <>
+    <WetFloorSign position={position} found={found}/>
+    <mesh geometry={nodes.puddle.geometry} transparent opacity={0.5} onClick={clickBox} position={position}>
+      <meshStandardMaterial opacity={0.1} roughness={0} metalness={0.95} envMap={environment} transparent={true} normalMap={materials["Material.003"].normalMap} map={materials["Material.003"].map}/>
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo("puddle"))}/> : null}
+      </mesh>
+      </>
   )
 
 }
 
-const Meat = ({setProgress, dispatch})=> {
+const Meat = ({setProgress, dispatch, position})=> {
 
   const gltf = useLoader(GLTFLoader, "../assets/models/meat.glb");
 
@@ -279,23 +502,14 @@ const Meat = ({setProgress, dispatch})=> {
     if(!found) {
       setProgress((prevState) => prevState + 1);
       setFound(true);
-      console.log("clicked!");
       dispatch(addPoints(200));
     }
 
   }
 
   return (
-    <primitive onClick={clickBox} position={[4, 1.25, 2]} object={gltf.scene} >
-      {found ? <Html
-            zIndexRange={[1, 0]}
-            scaleFactor={20}
-          >
-            <p 
-              onClick={()=> dispatch(showInfo("puddle"))} 
-              style={{transform:"translate(-10px, -40px)", marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:"black", width:"180%", zIndex:"-3", color:"white"}}
-            >?</p>
-          </Html>: null}
+    <primitive scale={[0.8, 0.6, 0.8]} onClick={clickBox} position={position} object={gltf.scene} >
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo("puddle"))}/>: null}
       </primitive>
   )
 
@@ -317,7 +531,6 @@ const RotatingBox = ({dispatch, position, progress, setProgress, onClick})=> {
       if(!boxSize) {
         setProgress(progress + 1);
         setBoxSize(true);
-        console.log("clicked!")
         dispatch(addPoints(200))
       }
 
@@ -335,15 +548,7 @@ const RotatingBox = ({dispatch, position, progress, setProgress, onClick})=> {
             castShadow
             onClick={clickBox}//cant get onClick Working at all, drei or R3F
           >
-            {boxSize ? <Html
-            zIndexRange={[1, 0]}
-            scaleFactor={20}
-          >
-            <p 
-              onClick={onClick} 
-              style={{transform:"translate(-10px, -40px)", marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:"black", width:"180%", zIndex:"-3", color:"white"}}
-            >?</p>
-          </Html>: null}
+            {boxSize ? <InfoBubble onClick={onClick}/>: null}
             <meshStandardMaterial 
               
               cast

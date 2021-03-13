@@ -1,5 +1,7 @@
 const infoReducer = (state = initState, action) => {
     let infoSelected = {};
+    let initialNotifications;
+    let initialDisplaying;
     switch(action.type){
         case 'SHOW_UI':
         return {
@@ -17,13 +19,18 @@ const infoReducer = (state = initState, action) => {
                 page:action.payload
             }
         case 'POPUP_INFO':
+            initialNotifications = state.notifications;
+            console.log(initialNotifications);
             infoSelected = {...state.infoBox[action.payload]}
-            console.log(action.payload);
-            console.log(infoSelected);
+            if (!infoSelected.displayed) {
+                initialNotifications += 1;
+            }
+            console.log(initialNotifications);
             infoSelected.displayed = true;
             return {
                 ...state,
-                displayingInfo:true,
+                notifications: initialNotifications,
+                displayingInfo: true,
                 activeBox:infoSelected,
                 infoBox: {
                     ...state.infoBox,
@@ -36,8 +43,8 @@ const infoReducer = (state = initState, action) => {
                 displayingInfo:false,
             }
         case 'GET_BADGE':
-            let initialNotifications = state.notifications;
-            let initialDisplaying = false;
+            initialNotifications = state.notifications;
+            initialDisplaying = false;
             infoSelected = {...state.badges[action.payload]};
             if (!infoSelected.isAchieved) {
                 infoSelected.isAchieved = true;
@@ -61,18 +68,38 @@ const infoReducer = (state = initState, action) => {
                 }
         case 'SELECT_STAGE':
             infoSelected = {...state.stages[action.payload]}
+            // let isLevelSelected;
+            // infoSelected.id ? isLevelSelected = true : isLevelSelected = false
             console.log(infoSelected.id);
             return {
                 ...state,
                 activeStage: infoSelected.id,
-                levelSelect: true,
+                gameState: 1,// gameState 1 is the state to select a level 
             }
-        case 'GAME_STATE':
+        case 'SELECT_LEVEL':
             console.log(action.payload)
             return {
                 ...state,
-                gameState: action.payload,
-                levelSelect: false,
+                level: action.payload,
+                gameState: 2,// gameState 2 is the state to start the task
+            }
+        case 'FINISH_LEVEL': 
+        console.log("level finish")
+            return {
+                ...state,
+                gameState: 3// GameState 3 finishes the level, bringing up the LevelEnd component
+            }
+        case 'RESTART_STAGE':// Restart the Task on the same level
+            return {
+                ...state,
+                gameState: 1,
+            }
+        case 'RETURN_TO_HOME':// return back to Overworld/Home 
+            return {
+                ...state,
+                level: null,
+                gameState: 0,
+                activeStage: 0,
             }
         case 'CLEAR_NOTIFICATIONS':
             return {
@@ -92,6 +119,7 @@ const infoReducer = (state = initState, action) => {
             return {
                 ...state,
                 points: Points,
+                activePoints: action.payload,
                 exp: expLevel,
             }
         default: 
@@ -102,58 +130,82 @@ const infoReducer = (state = initState, action) => {
 const initState = {
     points: 0,
     exp: 3,
-    notifications: 1,
+    notifications: 0,
     page:0,
     displayingUI: false,
     displayingInfo: false,
     displayingBadge: false,
-    levelSelect: false,
+    gameState: 0,
     activeBox:"Broom",
-    activeBadge: {
-
-    },
-    activeStage: 1,
-    gameState:0,
+    activePoints:0,
+    activeBadge: null,
+    activeStage: 0,
+    level:null,
     infoBox:{
         homeButton:{
-            tagname:"HomeButton",
+            tagname:"homeButton",
             title:"Get Started",
             description:"To get started, press the home button and you can access your first task.",
-            displayed: false
+            displayed: false,
+            image:"./assets/images/infobox/home-button.jpg"
         },
         gettingAround:{
             tagname:"gettingAround",
             title:"Getting Around",
-            description:"If you find yourself getting lost at your on your first day, ask a member of staff at the entrance and they will be able to help you find the front office. Avoid's you coming in late!",
+            description:"If you find yourself getting lost finding the front office at your on your first day, ask a member of staff at the entrance. This could save you coming in late!",
             displayed: false,
+            image:"./assets/images/infobox/getting-around.jpg",
         },
         fireExtinguisher:{
             tagname:"fireExtinguisher",
             title:"Fire Extinguisher",
             description:"This is a Fire Extinguisher, one the the most important health and safety items there is, accessible in every room. Only use them in emergencies.",
             displayed: false,
+            image:"./assets/images/infobox/home-button.jpg"
         },
         puddle:{
             tagname:"puddle",
             title:"Its a Puddle!",
             description:"This is a Massive Health and Safety risk, if you see a puddle, cover it with a yellow warning sign immediately!",
-            displayed: false
+            displayed: false,
+            image:"./assets/images/infobox/puddle.jpg"
+        },
+        faultyLighting:{
+            tagname:"faultyLighting",
+            title:"Faulty Lighting",
+            description:"While in busy kitchens we need to see everything thats going on. If a light is broken or faulty, report it to your shift manager.",
+            displayed: false,
+            image:"./assets/images/infobox/faulty-lighting.jpg"
         }
     },
     badges: {
+        curiousCat: {
+            tagname:"curiousCat",
+            title:"Be a Curious Cat",
+            description:"Curiosity killed the cat, but satisfaction brough it back. Keep being inquisitive.",
+            isAchieved: false,
+            image:"./assets/svg/badges/curious-cat.svg"
+        },
+        brainiac: {
+            tagname:"brainiac",
+            title:"Brainiac!",
+            description:"You've completed more than 3 quizzes, keep going (you're halfway there)",
+            isAchieved: false,
+            image:"./assets/svg/badges/brainiac.svg"
+        },
         goodEye:{
             tagname:"goodEye",
             title:"Good Eye",
             description:"Nice One, you Spotted the Puddle Underneath",
-            isAchieved: true,
-            image:"../../assets/svg/badges/goodEye.svg"
+            isAchieved: false,
+            image:"./assets/svg/badges/good-eye.svg"
         },
         oneHundredPercent:{
             tagname:"oneHundredPercent",
             title:"100%",
-            description:"You've 100% the stage!",
+            description:"You've 100% the first stage!",
             isAchieved: false,
-            image:"../../assets/svg/badges/100.svg"
+            image:"./assets/svg/badges/100.svg"
         }
     },
     stages: [
@@ -162,17 +214,20 @@ const initState = {
                 tagname:"healthAndSafety",
                 id:0,
                 exp:0,
-                img:"../../assets/images/levels/health_and_safety.jpg",
-                description:"This stage is all about managing your Health, and ensuring the safety of you are others around you when Maecenas a nunc ac velit ultrices gravida.",
+                img:"./../assets/images/levels/health_and_safety.jpg",
+                description:"This stage is all about using your observational skills to spot all the dangerous hazards around the room, and ensuring the safety of you are others around you.",
+                howToPlay: "Identify and click/tap to find archive information about hazards. Indentify all them to complete!",
                 activeLevel:0,
                 levels: [
                     {
-                        name: "Correct Uniform",
+                        name: "Upper Kitchen",
                         tagname:"correctUniform",
+                        description:"This is the Smallest kitchen in the Venue. "
                     },
                     {
-                        name: "Coffee Machine",
+                        name: "Main Ktichen",
                         tagname:"coffeeMachine",
+                        description:"The main kitchen in the room, this "
                     },
                     {
                         name: "Food Safety",
@@ -185,8 +240,9 @@ const initState = {
                 tagname:"allergyLists",
                 id:1,
                 exp:2,
-                img:"../../assets/images/levels/allergies.jpg",
-                description:"Allergen lists are an important task, where you must the correct details of each customer to essential accuracy, in a tight amount of space. ensuring the customers get their dietal prefences and no potential allrgic reaction occurs.",
+                img:"./../assets/images/levels/allergies.jpg",
+                description:"Allergen lists are an important task, where you must the correct details of each customer to essential accuracy, in a tight amount of space. ensuring the customers get their dietal preferences right.",
+                howToPlay: "To play this game, you must use your arithmetic and memory skills to keep count of the amount of each color coded allergic customer. Once the timer is up, you must convert these using the allergen chart and write them down.",
                 activeLevel:0,
                 levels: [
                     {
@@ -208,7 +264,7 @@ const initState = {
                 tagname:"customerService",
                 id:2,
                 exp:5,
-                img:"../../assets/images/levels/customer_service.jpg",
+                img:"./../assets/images/levels/customer_service.jpg",
                 activeLevel:0,
                 levels: [
                     {

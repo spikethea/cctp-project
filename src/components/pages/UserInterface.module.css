@@ -1,11 +1,95 @@
+
+/*Header*/
+
+.headerContainer {
+    width: 100vw;
+    position: fixed;
+    z-index: 5;
+    background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 70%);
+}
+
+.experienceContainer {
+    color: white;
+    font-weight: bold;
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: start;
+    padding: 1rem;
+}
+
+.header h3 {
+    color: #f7f2f0;
+    filter: drop-shadow(0px 4px 0px #77779eb6);
+}
+
+.experience {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.exit {
+    box-sizing: content-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0em;
+    border-radius: 1em;
+    
+    font-weight: bold;
+    font-size: 1.5em;
+    color: var(--secondary);
+    
+    transform: rotate(45deg);
+    
+}
+
+.home {
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0.5em;
+    border-radius: 2em;
+    background: rgb(255,220,255,0.2);
+    border: 1px solid white;
+    box-sizing: content-box;
+}
+
+.notifications {
+    position: relative;
+    left: 100%;
+    top: -20%;
+    border-radius: 50%;
+    background-color: tomato;
+    color: black;
+    width: 1.3em;
+    text-align: start;
+    height: 1.3em;
+    z-index: 6;
+}
+
+/*Main UI*/
 .container section {
-    border-top: 5px rgb(70, 70, 70) dotted;
-    margin: 1em;
+    border-bottom: 5px rgb(70, 70, 70) dotted;
+    padding: 2em 0em;
     min-height: 10em;
 }
 
+    .container > :last-child {
+        border-bottom: none;
+        margin-bottom: 5em;
+    }
 .container {
-    background: rgb(255,255,255, 0.2);
+    background: rgb(34, 34, 34, 0.2);
     padding: 1em 1em 3em 1em;
     min-height: 80vh;
 }
@@ -43,8 +127,11 @@
     max-height: 65vh;
     overflow: auto;
     border-radius: 2rem;
-    width: 85vw;
     scroll-snap-type: x mandatory;
+}
+
+.stageSelect {
+    position: relative;
 }
 
 .menushadow {
@@ -52,8 +139,8 @@
     border-radius: 1rem;
     width: calc(100vw - 2rem);
     height: 20em;
-    top: 14.5rem;
-    left: 0;
+    top: 4.5em;
+    left: -1em;
     align-items: center;
     justify-content: center;
     
@@ -75,6 +162,7 @@
     padding: 1rem;
     margin: 0.5em;
     color: black;
+    height: 100%;
 }
 
 .inner {
@@ -96,6 +184,7 @@
     margin-bottom: 1.5rem;
     padding: 1rem;
     margin: 0.5em;
+    height: 100%;
 }
 
     .itemLocked img {
@@ -113,7 +202,8 @@
 
 .badgesContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr) )
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr) );
+    margin-bottom: 5em;
 }
 
     .badge {
@@ -138,8 +228,7 @@
 }
 
     .archiveBadge {
-        margin:0.2em;
-        padding: 1em;
+        padding: 0.4em;
         background: rgb(59, 59, 59);
         
     }
@@ -151,7 +240,7 @@
     .archiveBadge h4 {
         color: rgb(161, 161, 161);
         font-weight: 400;
-        padding-bottom: 0.5em;
+        padding-bottom: 0.25em;
     }
 
     .archiveBadge p {
@@ -170,9 +259,8 @@
 }
 
 .levelInfo {
-    color: rgb(24, 24, 24);
-    background-color: white;
-    border: 2px solid black;
+    background: var(--secondary);
+    color: white;
     padding: 1em;
 }
 
@@ -189,9 +277,13 @@
     .info {
         display: flex;
         flex-direction: row;
-        background: whitesmoke;
+        background: rgb(59, 59, 59);
         border: solid 2px white;
-        color: black;
+        color: white;
+    }
+
+    .info article {
+        margin: 0.5em;
     }
 
     .info figure {
@@ -200,7 +292,8 @@
     }
 
     .info h3 {
-            color: rgb(51, 51, 51);
+            color: rgb(114, 114, 114);
+            text-align: start;
     }
 
     .info p {
@@ -209,16 +302,16 @@
     }
 
     .info img {
-        height: 5em;
+        height: 8em;
     }
 
 /*Leaderboard Page*/
 
 .leaderboard, th, td {
     width: 100%;
-    background: black;
-    border: 1px solid white;
-    color: white;
+    background: rgb(255, 254, 254);
+    border: 1px solid rgb(0, 0, 0);
+    color: rgb(0, 0, 0);
 }
 
     .leaderboard th, td {
@@ -272,6 +365,10 @@
 
     .container {
         flex-direction: row;
+    }
+
+    .badgesContainer {
+        margin-bottom: none;
     }
 }
 

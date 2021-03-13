@@ -19,7 +19,14 @@ export const SHOW_BADGE = 'SHOW_BADGE';
 export const HIDE_BADGE = 'HIDE_BADGE';
 
 export const SELECT_STAGE = 'SELECT_STAGE';
+
+
+export const SELECT_LEVEL = 'SELECT_LEVEL';
+export const FINISH_LEVEL = 'FINISH_LEVEL';
+
 export const GAME_STATE = 'GAME_STATE';
+export const RESTART_STAGE = 'RESTART_STAGE';
+export const RETURN_TO_HOME = 'RETURN_TO_HOME';
 
 export const ADD_POINTS = "ADD_POINTS";
 
@@ -28,6 +35,7 @@ export const ADD_POINTS = "ADD_POINTS";
 
 export const DECREASE_ALLERGY_QUANITITY = "DECREASE_ALLERGY_QUANTITY";
 export const INCREASE_ALLERGY_QUANTITY = "INCREASE_ALLERGY_QUANTITY";
+export const RESTART_ALLERGY = 'RESTART_ALLERGY';
 
 export const SWITCH_ALLERGY_LEVEL = "SWITCH_ALLERGY_LEVEL";
 
@@ -37,3 +45,4 @@ export const SHOW_QUIZ = "SHOW_QUIZ";
 export const HIDE_QUIZ = "HIDE_QUIZ";
 export const SWITCH_QUIZ = "SWITCH_QUIZ";
 export const FINISH_QUIZ = "FINISH_QUIZ";
+export const WIN_QUIZ = 'WIN_QUIZ';

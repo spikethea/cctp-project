@@ -1,14 +1,21 @@
-import React, {useRef, useState, Suspense} from 'react';
+import React, {useRef, useState, Suspense, useEffect} from 'react';
 
 //Packages
 import { useSelector, useDispatch } from 'react-redux';
-import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
-import {Box, Html, Sky, Stats} from 'drei';
+import { Canvas, useFrame, useLoader } from 'react-three-fiber'
+import { Box, Html } from 'drei';
+import useSound from 'use-sound';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for safari compatibility
 
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+//Components
+import InfoBubble from '../InfoBubble';
+
 //Redux
-import { showUserInterface, showInfo, getBadge } from '../redux/actions';
-import { FogExp2 } from 'three';
+import { getBadge, showInfo, addPoints } from '../redux/actions';
+
+//Sounds
+import stadium from '../../assets/audio/stadium.mp3';
 
 const Overworld = () => {
     //Redux
@@ -20,11 +27,23 @@ const Overworld = () => {
     const showUI = info.displayingUI
     let mql = window.matchMedia('(max-width: 1200px)').matches;
 
-    
+    //useSound
+    const [muted, setMuted] = useState(true);
+    const [ playStadium, { stop }] = useSound(stadium, {volume: showUI ? 0.05 : 0.2});
+
+    useEffect(()=> {
+      if (muted) {
+        console.log("stop");
+        stop();
+      } else {
+        playStadium();
+      }
+    },[muted, playStadium, stop, showUI])
 
     return (
 
         <Canvas
+        resize={{ polyfill: ResizeObserver }}
         colorManagement 
         camera={{position: [0, 100, 150], fov: 30, rotation:[0, 0, 0]}}
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
@@ -32,11 +51,6 @@ const Overworld = () => {
         style={{filter: showUI && mql ? "blur(5px)": "none" }}
         >
           <fog attach="fog" args={["lightblue", 100, 500]}/>
-          <Stats
-              showPanel={0} // Start-up panel (default=0)
-              className="stats" // Optional className to add to the stats container dom element
-               // All stats.js props are valid
-          />
           <Scene counter={counter} dispatch={dispatch}/>
       </Canvas>
     )
@@ -50,19 +64,18 @@ const Scene = ({dispatch, counter})=> {
 
   useFrame(()=> {
     if (mesh.current) {
-      mesh.current.rotation.y += 0.003;
+      mesh.current.rotation.y += 0.0015;
     }
 
   })
 
-  const [sceneRot, setSceneRot] = useState(0);
 
   return (
-    <group ref={mesh} position={[2, 0, -10]}  rotation-y={sceneRot}>
+    <group ref={mesh} position={[2, 0, -10]}>
       <Lights/>
-      <Person position={[1, -1, 20]} color={[200, 200, 200]} onClick={()=> dispatch(showInfo("gettingAround")) }/>
+      <FrontGate position={[1, -1, 20]} color={[200, 200, 200]} onClick={()=> dispatch(showInfo("gettingAround")) }/>
       <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
-        <Stadium onClick={()=> dispatch(showInfo("homeButton"))}/>
+        <Stadium dispatch={dispatch}/>
         <Floor/>
         <Grass/>
         <Building args={[5, 15, 20]} color={'#a3917c'} position={[20, 0, -30]} rotation={[0, Math.PI/4, 0]}/>
@@ -109,14 +122,69 @@ const Lights = () => {
   
 //Meshes
 
-const Stadium = ({onClick}) => {
+const Stadium = ({ dispatch }) => {
 
   const gltf = useLoader(GLTFLoader, "assets/models/stadium.glb");
 
-  console.log(gltf);
+  let [found, setFound] = useState(false)
+  let [pressed, setPressed] = useState(false);
+
+  let [light, setLight] = useState(false);
+
+  let object = useRef();
+
+  const handleClick = () => {
+    
+    if (!found) {
+      setFound(true);
+      dispatch(addPoints(100));
+    }
+  }
+
+  const handleInfoClick = () => {
+    if (!pressed) {
+      setPressed(true);
+      dispatch(getBadge('curiousCat'));
+      dispatch(showInfo("homeButton"));
+    }
+    
+  }
+
+
+  useFrame(()=> {
+    if (object.current) {
+      let material = object.current.children[0].children[0].material;
+      
+
+      if (!found) {
+        if (material.emissive.r > 0.4) {
+          setLight(false);
+        }
+
+        if (material.emissive.r < 0) {
+          setLight(true);
+        }
+
+        if (light) {
+          material.emissive.r += 0.01;
+          material.emissive.g += 0.01;
+          material.emissive.b += 0.01;
+        } else {
+          material.emissive.r -= 0.01;
+          material.emissive.g -= 0.01;
+          material.emissive.b -= 0.01;
+        }
+
+      } else if (material.emissive.r > 0) {
+        material.emissive.r = 0;
+        material.emissive.g = 0;
+        material.emissive.b = 0;
+      }
+    }
+  })
 
   return (
-        <primitive onClick={onClick} position={[0, -2, -10]} object={gltf.scene} />
+        <primitive castShadow ref={object} onClick={handleClick} position={[0, -2, -10]} object={gltf.scene} >{found ? <InfoBubble scaleFactor={100} onClick={handleInfoClick}/>: null}</primitive>
   )
 }
 
@@ -149,14 +217,12 @@ const Building = ({position, rotation, color, args}) => {
   )
 }
   
-const Person = ({onClick, position, color}) => {
+const FrontGate = ({onClick, position, color}) => {
   
-    let person = useRef();
     let [pressed, setPressed] = useState(false);
 
-    console.log(person);
 
-    const handleCick = () => {
+    const handleClick = () => {
       onClick(); 
       setPressed(true);
     } 
@@ -167,17 +233,8 @@ const Person = ({onClick, position, color}) => {
           <Box
             args={[8, 4, 8]}
             position={position}
-            ref={person}
           >
-            {!pressed? <Html
-              zIndexRange={[1, 0]}
-              scaleFactor={150}
-            >
-              <p 
-                onClick={handleCick} 
-                style={{padding:"5px",borderRadius:"50%", backgroundColor:"black", width:"180%", zIndex:"-3", color:"white"}}
-              >?</p>
-            </Html>: null}
+            {!pressed ? <InfoBubble scaleFactor={100} onClick={handleClick}/>: null}
             <meshStandardMaterial 
               
               cast

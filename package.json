@@ -1,8 +1,10 @@
 {
   "name": "cctp-app",
+  "homepage": "http://quincegorerodney.panel.uwe.ac.uk/servicelearn",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@juggle/resize-observer": "^3.3.0",
     "@react-spring/three": "^9.0.0-rc.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -19,7 +21,8 @@
     "react-three-fiber": "^5.1.0",
     "react-use-gesture": "^8.0.1",
     "redux": "^4.0.5",
-    "three": "^0.121.1"
+    "three": "^0.121.1",
+    "use-sound": "^2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

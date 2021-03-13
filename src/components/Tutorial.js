@@ -1,15 +1,14 @@
 import React, {useState} from 'react'
 import {useSpring, animated} from 'react-spring';
-import styles from './Tutorial.module.css'
+import styles from './PopUp.module.css'
 
 
 const Tutorial = () => {
 
     const [pressed, setPressed] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
-    console.log(currentPage);
   
-    const props = useSpring({opacity: pressed ? 0: 1, top: pressed ? "100%": "15%"})
+    const props = useSpring({opacity: pressed ? 0: 1, top: pressed ? "-200%": "50%"})
   
     const backgroundProps = useSpring({opacity: pressed ? 0: 1})
 
@@ -19,11 +18,16 @@ const Tutorial = () => {
             <animated.div>
             <animated.div style={props} className={styles.container}>
               <div>
-                <h1>Welcome to ServiceLearn</h1>
+                <h1>Guide to ServiceLearn</h1>
+                <img style={{width:"50%"}} alt="Business man and woman - positive looking" src="./assets/svg/publicdomainq-business-man-and-woman-positive-looking.svg"/>
               </div>
               <div className={styles.inner}>
-                <p>If you have never used this training app before, it is extremely recommended that you take this tutorial</p>
-              <p>This tutorial will take you through the basics of how to nativate and use this application</p>
+                <section>
+                  <h3>If you have never used this training app before, it is extremely recommended that you take this tutorial</h3>
+                  <h3>This tutorial will take you through the basics of how to navigate and use this application</h3>
+                  <p>Scroll Down...</p>
+                </section>
+                
                 <div className={styles.buttonContainer}>
                   <button onClick={() => setCurrentPage(currentPage + 1)}>Play Tutorial?</button>
                   <button onClick={() => setPressed(true)}>Close and Continue</button>
@@ -39,12 +43,16 @@ const Tutorial = () => {
               <animated.div style={props} className={styles.container}>
                 <div>
                   <h1>Nagivation</h1>
+                  <video loop autoPlay>
+                    <source src="./assets/video/tutorial/navigation.mp4"/>
+                  </video>
                 </div>
                 <div className={styles.inner}>
-                  <p>To navigate around this app, click the home button to select stages to complete tasks to earn rewards and points</p>
+                  <h3>To navigate around this app, click the home button to select stages.</h3>
+                  <h3>Complete stages to complete tasks to earn rewards and points.</h3>
                   <div className={styles.buttonContainer}>
-                    <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
                     <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
+                    <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
                   </div>
                 </div>
               </animated.div>
@@ -53,6 +61,30 @@ const Tutorial = () => {
               </animated.div>
               </>
           );
+          case 2:
+            return (
+              <>
+                <animated.div style={props} className={styles.container}>
+                  <div>
+                    <h1>Nagivation</h1>
+                    <video loop autoPlay>
+                      <source src="./assets/video/tutorial/navigation.mp4"/>
+                    </video>
+                  </div>
+                  <div className={styles.inner}>
+                    <h3>To navigate around this app, click the home button to select stages.</h3>
+                    <h3>Complete stages to complete tasks to earn rewards and points.</h3>
+                    <div className={styles.buttonContainer}>
+                    <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
+                    <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
+                    </div>
+                  </div>
+                </animated.div>
+                <animated.div>
+                {!pressed ? <div style={backgroundProps} className="background"></div> : null}
+                </animated.div>
+                </>
+            );
           default:
             return (
               <animated.div>
@@ -61,7 +93,7 @@ const Tutorial = () => {
                   <h1>End of Tutorial</h1>
                 </div>
                 <div className={styles.inner}>
-                  <p>For more information, click the ? indicators to get more information</p>
+                  <h3>For more information, click the ? indicators to get more information</h3>
                   <div className={styles.buttonContainer}>
                     <button onClick={() => setPressed(true)}>Close and Continue</button>
                   </div>

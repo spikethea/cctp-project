@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from  './UserInterface.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleQuiz, selectQuiz } from '../redux/actions';
+import { getBadge, toggleQuiz } from '../redux/actions';
 
 const Quiz = () => {
 
@@ -30,6 +30,21 @@ const Quizzes = ({state, info}) => {
     let quizArray = [];
     let lockedQuizArray = [];
 
+    useEffect(()=> {
+
+
+
+        console.log("state")
+        Object.keys(state.quizzes).forEach(function(item){
+            if (lvl >= state.quizzes[item].lvl) {
+                quizArray.push(state.quizzes[item]);
+            } else {
+                
+            }
+    
+        })
+    }, [state, lvl, quizArray])
+
     Object.keys(state.quizzes).forEach(function(item){
         if (lvl >= state.quizzes[item].lvl) {
             quizArray.push(state.quizzes[item]);
@@ -39,7 +54,12 @@ const Quizzes = ({state, info}) => {
 
     })
 
-    console.log(quizArray);
+    useEffect(()=> {
+        if (state.completed === 3) {
+            dispatch(getBadge('brainiac'));
+        }
+        
+    },[state, dispatch])
 
     const handleClick = (tagName) => {
         dispatch(toggleQuiz(tagName, "show"))
@@ -51,7 +71,7 @@ const Quizzes = ({state, info}) => {
             <article style={{background: quiz.completed ? "grey" : "white"}} key={index} onClick={()=> handleClick(quiz.tagName)} className={styles.quiz}>
                 <figure>
                     <h4>{quiz.name}</h4>
-                    <img alt="Quiz Picture" src="https://upload.wikimedia.org/wikipedia/en/3/34/Students-in-barrons-kitchen.jpg"/>
+                    <img alt="Quiz" src="https://upload.wikimedia.org/wikipedia/en/3/34/Students-in-barrons-kitchen.jpg"/>
                 </figure>
                 <aside>
                     <header>

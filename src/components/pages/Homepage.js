@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Link, useRouteMatch, Redirect, Switch, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import styles from  './UserInterface.module.css';
 
@@ -25,20 +25,24 @@ const Homepage = () => {
 
     
     const { x, y } = useMousePosition();
-
-    console.log(x);
-      console.log(y);
     
 
     return (
         <div id="ui" className={styles.container}>
+            <section>
+                <article className={styles.levelInfo}>
+                    <h4>{info.activeStage? info.stages[info.activeStage-1].name: "Overworld"}</h4>
+                    <p>{info.activeStage? info.stages[info.activeStage-1].description: "This is the Overworld Map, Have a look around to see if you can find anything interesting"}</p>
+                </article>
+            </section>
             <p style={{top:`${y}px`, left:`${x}px`, maxWidth:"20em"}} className={styles.description}>{isShown !==null ? stages[isShown].description: null}</p>
-            <button onClick={() =>{
+            {info.activeStage > 0 ? <section><button onClick={() =>{
                 dispatch(selectStage(null))
                 dispatch(showUserInterface("HIDE_UI"))
                 }} className={styles.overworld}>
-                <h4>Return to Home</h4>
-            </button>
+                 <h4> Return to Home </h4>
+            </button></section> : null} 
+            
             <section onMouseLeave={() => setIsShown(null)} className={styles.stageSelect}>
                 <h3 className={styles.subtitle}>Stages</h3>
                 <div className={styles.menu}>
@@ -47,12 +51,8 @@ const Homepage = () => {
                 <div className={styles.menushadow}></div>
             </section>
             <section className={styles.badges}>
-                <h3 className={styles.subtitle}>Acheivement Badges</h3>
+                <h3 className={styles.subtitle}>Achievement Badges</h3>
                 <Badges onClick={()=>dispatch(switchPage(2))} x={x} y={y}/>
-            </section>
-            <section className={styles.levelInfo}>
-                <h4>{info.activeStage? info.stages[info.activeStage-1].name: "Overworld"}</h4>
-                <p>{info.activeStage? info.stages[info.activeStage-1].description: "This is the Overworld Map, Have a look around to see if you can find anything interesting"}</p>
             </section>
         </div>
     )
@@ -65,14 +65,14 @@ const useMousePosition = () => {
     const updateMousePosition = ev => {
       setMousePosition({ x: ev.clientX, y: ev.clientY });
     };
-  
+
     useEffect(() => {
         if (!touch) {
-            window.addEventListener("mousemove", updateMousePosition);
+            document.addEventListener("mousemove", updateMousePosition);
   
-      return () => window.removeEventListener("mousemove", updateMousePosition);
+      return () => document.removeEventListener("mousemove", updateMousePosition);
         }
-    }, []);
+    }, [touch]);
   
     return mousePosition;
 };
@@ -87,7 +87,7 @@ const Stage = ({onClick, stagename, exp, id, img, onMouseEnter}) => {
             <div onMouseEnter={onMouseEnter} onClick={onClick} className={styles.item}>
                 <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
                 <div className={styles.inner}>
-                    <h4>Stage {id}: {stagename}</h4>
+                    <h4>{id}: {stagename}</h4>
                     <p>LVL {exp}</p>
                 </div>
             </div>
@@ -100,7 +100,7 @@ const Stage = ({onClick, stagename, exp, id, img, onMouseEnter}) => {
         <div className={styles.itemLocked}>
             <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
             <div className={styles.inner}>
-                <h4>Stage {id}: {stagename}</h4>
+                <h4>{id}: {stagename}</h4>
                 <p>LVL {exp}</p>
             </div>
         </div>
@@ -114,12 +114,6 @@ const Badges = ({x,y, onClick}) => {
 
     const info = useSelector(state => state.info);
     const badges = info.badges;
-
-    let { path, url } = useRouteMatch();
-    console.log("path: " + path);
-    console.log("url: " + url);
-    let location = useLocation();
-    console.log(location.pathname);
 
     let acquiredBadges = []
     
@@ -135,7 +129,7 @@ const Badges = ({x,y, onClick}) => {
         return (
         <Link key={index} to={`archive`}>
             <div onMouseEnter={() => setIsShown(index)}   className={styles.badge}>
-                <img src={badge.image} alt="Achievement Badge"/>
+                <img src={`/servicelearn/${badge.image}`} alt="Achievement Badge"/>
                 <p>{badge.title}</p>
             </div>
         </Link>
@@ -144,8 +138,9 @@ const Badges = ({x,y, onClick}) => {
     })
 
     return (
+        acquiredBadges.length === 0  ? <p>No Achievements Yet</p> : 
         <div onClick={onClick} onMouseLeave={() => setIsShown(null)} className={styles.badgesContainer}>
-            {acquiredBadgesList}
+           {acquiredBadgesList}
             <p style={{top:`${y}px`, left:`${x}px`}} className={styles.description}>{isShown !==null ? acquiredBadges[isShown].description: null}</p>
         </div>
     )
