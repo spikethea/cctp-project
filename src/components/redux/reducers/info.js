@@ -147,36 +147,71 @@ const initState = {
             title:"Get Started",
             description:"To get started, press the home button and you can access your first task.",
             displayed: false,
-            image:"./assets/images/infobox/home-button.jpg"
+            image:"../assets/images/infobox/home-button.jpg"
         },
         gettingAround:{
             tagname:"gettingAround",
             title:"Getting Around",
             description:"If you find yourself getting lost finding the front office at your on your first day, ask a member of staff at the entrance. This could save you coming in late!",
             displayed: false,
-            image:"./assets/images/infobox/getting-around.jpg",
+            image:"../assets/images/infobox/getting-around.jpg",
         },
         fireExtinguisher:{
             tagname:"fireExtinguisher",
             title:"Fire Extinguisher",
             description:"This is a Fire Extinguisher, one the the most important health and safety items there is, accessible in every room. Only use them in emergencies.",
             displayed: false,
-            image:"./assets/images/infobox/home-button.jpg"
+            image:"../assets/images/infobox/home-button.jpg"
+        },
+        fireAlarm:{
+            tagname:"fireAlarm",
+            title:"Fire Alarms",
+            description:"Fire Alarms are THE most important and safety device there is, accessible in every room. If you see a fire, press the fire alarm and find your closest fire exit. Fire is no joke, and can kill.",
+            displayed: false,
+            image:"../assets/images/infobox/home-button.jpg"
         },
         puddle:{
             tagname:"puddle",
             title:"Its a Puddle!",
-            description:"This is a Massive Health and Safety risk, if you see a puddle, cover it with a yellow warning sign immediately!",
+            description:"This is a Massive safety risk, if you see a puddle, place a yellow warning sign over it immediately!",
             displayed: false,
-            image:"./assets/images/infobox/puddle.jpg"
+            image:"../assets/images/infobox/puddle.jpg"
         },
         faultyLighting:{
             tagname:"faultyLighting",
             title:"Faulty Lighting",
-            description:"While in busy kitchens we need to see everything thats going on. If a light is broken or faulty, report it to your shift manager.",
+            description:"While in busy kitchens we need to see everything thats going on around us. If a light is broken or faulty, report it to your shift manager.",
             displayed: false,
-            image:"./assets/images/infobox/faulty-lighting.jpg"
-        }
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        crossContamination:{
+            tagname:"crossContamination",
+            title:"Cross Contamination",
+            description:"Watch out for cross-contamination! Coloured chopping boards do not mix! Red is for raw meat, while green for fruit/veg and blue for raw fish.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        obstruction:{
+            tagname:"obstruction",
+            title:"3 is a Bit Too Close",
+            description:"Slips, Trips and Falls. Keep the walkway clear to avoid these. If a obstruction under 25kg is blocking the way, adopt a good posture, keeping the load close to your body and move in out the way if you can.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        overstacked:{
+            tagname:"overstacked",
+            title:"Overstacked Shelf ",
+            description:"Improper storage of heavy items on shelves above waist-height could fall on people, causing serious injuries. Never Overstack items like heavy equipment, tableware. Use a ladder if necessary to reach higher.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        cleanSurfaces:{
+            tagname:"cleanSurfaces",
+            title:"Clean at all Times",
+            description:"As a commercial kitchen, we have to keep our counter surfaces clean at all times. Always use the green detergent spray, for common kitchen counters like this. We'll learn about cleaning chemicals in-depth in Stage 5.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
     },
     badges: {
         curiousCat: {
@@ -184,28 +219,28 @@ const initState = {
             title:"Be a Curious Cat",
             description:"Curiosity killed the cat, but satisfaction brough it back. Keep being inquisitive.",
             isAchieved: false,
-            image:"./assets/svg/badges/curious-cat.svg"
+            image:"../assets/svg/badges/curious-cat.svg"
         },
         brainiac: {
             tagname:"brainiac",
             title:"Brainiac!",
             description:"You've completed more than 3 quizzes, keep going (you're halfway there)",
             isAchieved: false,
-            image:"./assets/svg/badges/brainiac.svg"
+            image:"../assets/svg/badges/brainiac.svg"
         },
         goodEye:{
             tagname:"goodEye",
             title:"Good Eye",
             description:"Nice One, you Spotted the Puddle Underneath",
             isAchieved: false,
-            image:"./assets/svg/badges/good-eye.svg"
+            image:"../assets/svg/badges/good-eye.svg"
         },
         oneHundredPercent:{
             tagname:"oneHundredPercent",
             title:"100%",
             description:"You've 100% the first stage!",
             isAchieved: false,
-            image:"./assets/svg/badges/100.svg"
+            image:"../assets/svg/badges/100.svg"
         }
     },
     stages: [
@@ -214,7 +249,7 @@ const initState = {
                 tagname:"healthAndSafety",
                 id:0,
                 exp:0,
-                img:"./../assets/images/levels/health_and_safety.jpg",
+                img:"../../assets/images/levels/health_and_safety.jpg",
                 description:"This stage is all about using your observational skills to spot all the dangerous hazards around the room, and ensuring the safety of you are others around you.",
                 howToPlay: "Identify and click/tap to find archive information about hazards. Indentify all them to complete!",
                 activeLevel:0,
@@ -240,7 +275,7 @@ const initState = {
                 tagname:"allergyLists",
                 id:1,
                 exp:2,
-                img:"./../assets/images/levels/allergies.jpg",
+                img:"../../assets/images/levels/allergies.jpg",
                 description:"Allergen lists are an important task, where you must the correct details of each customer to essential accuracy, in a tight amount of space. ensuring the customers get their dietal preferences right.",
                 howToPlay: "To play this game, you must use your arithmetic and memory skills to keep count of the amount of each color coded allergic customer. Once the timer is up, you must convert these using the allergen chart and write them down.",
                 activeLevel:0,
@@ -264,7 +299,7 @@ const initState = {
                 tagname:"customerService",
                 id:2,
                 exp:5,
-                img:"./../assets/images/levels/customer_service.jpg",
+                img:"../../assets/images/levels/customer_service.jpg",
                 activeLevel:0,
                 levels: [
                     {

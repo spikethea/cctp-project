@@ -1,7 +1,7 @@
 import React from 'react';
 import { Html } from 'drei';
 
-const InfoBubble = ({onClick, scaleFactor}) => {
+const InfoBubble = ({onClick, scaleFactor, sign}) => {
 
     return (
         <Html
@@ -10,8 +10,8 @@ const InfoBubble = ({onClick, scaleFactor}) => {
           >
             <p 
               onClick={onClick} 
-              style={{transform:"translate(-10px, -40px)", marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:"white", width:"180%", zIndex:"-3", color:"black"}}
-            >?</p>
+              style={{transform:"translate(-10px, -40px)", width:"2em",height:"2em", padding:"5px",borderRadius:"50%", backgroundColor:sign ? "gray" : "white", zIndex:"-3", color: sign ? "white" :"black", fontWeight: sign ? "normal": "bold", fontFamily: !sign ? "system-ui": null}}
+            >{sign ? sign : "!"}</p>
           </Html>
     )
 }

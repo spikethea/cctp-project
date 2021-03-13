@@ -360,7 +360,7 @@ const Lights = () => {
   
   const Person = ({ active, color}) => {
 
-    const {nodes} = useLoader(GLTFLoader, "../assets/models/npc.glb");
+    const {nodes} = useLoader(GLTFLoader, "../../assets/models/npc.glb");
     
     let person = useRef();
 

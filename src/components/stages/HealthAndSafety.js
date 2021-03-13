@@ -120,7 +120,7 @@ const Teleportation = ({setCameraPosition, position}) => {
 
   let localPosition = position
 
-  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/teleport.glb");
+  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/teleport.glb");
 
   const handleClick = ()=> {
     console.log(`teleporting to ${position[0]}, ${position[1] + 2}, ${position[2]}`)
@@ -215,6 +215,8 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
       <Suspense fallback={<Loading/>}>
         {/* <pointLight position={[0, 3, -2]} intensity={1.55} /> */}
         <MainKitchen/>
+
+        <FireAlarm position={[6, 2, -4.5]} dispatch={dispatch}/>
               
         <DirtySurface position={[-4.5, 1.15, 4]}  dispatch={dispatch} setProgress={setProgress}/>
         <CrossContamination position={[0.38, 0.8, 0.8]} dispatch={dispatch} setProgress={setProgress}/>
@@ -260,7 +262,7 @@ const CrossContamination = ({position, dispatch, setProgress}) => {// Need to an
 
   return (
     <group position={position}>
-      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('crossContamination'))}/>: null}
       <ChoppingBoard  onClick={handleClick} color={"#E7595F"} position={[0, 0, 0]}/>{/* Red */}
       <ChoppingBoard onClick={handleClick} color={"#76c4e8"} position={props.position} rotation={props.yRotation}/>{/* Blue */}
     </group>
@@ -280,7 +282,7 @@ const ObstructionBoundingBox = ({position, dispatch, setProgress}) => {
 
   return (
     <mesh onClick={handleClick} position={position}>
-      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('obstruction'))}/>: null}
       <meshBasicMaterial transparent={true} opacity={0} attach="material" color="white"/>
       <boxBufferGeometry attach="geometry" args={[1, 2, 1]}/>
     </mesh>
@@ -300,7 +302,7 @@ const ClutteredShelfBox = ({position, dispatch, setProgress})=> {
 
   return (
     <mesh onClick={handleClick} position={position}>
-      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('overstacked'))}/>: null}
       <meshBasicMaterial transparent={true} opacity={0} attach="material" color="white"/>
       <boxBufferGeometry attach="geometry" args={[1.6, 0.5, 0.8]}/>
     </mesh>
@@ -309,7 +311,7 @@ const ClutteredShelfBox = ({position, dispatch, setProgress})=> {
 
 const DirtySurface = ({position, dispatch, setProgress}) => {// Need to, yknow
 
-  const texture = useLoader(TextureLoader, '../assets/images/textures/dirt.png')
+  const texture = useLoader(TextureLoader, '../../assets/images/textures/dirt.png')
 
   const [found, setFound] = useState(false);
 
@@ -322,7 +324,7 @@ const DirtySurface = ({position, dispatch, setProgress}) => {// Need to, yknow
 
   return (
     <mesh onClick={handleClick} position={position} rotation={[-90*(Math.PI/180), 0, 0]}>
-      {found ? <InfoBubble onClick={()=> dispatch(showInfo('puddle'))}/>: null}
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo('cleanSurfaces'))}/>: null}
       <meshLambertMaterial transparent={true} attach="material" map={texture}/>
       <planeBufferGeometry  attach="geometry" args={[1, 1]}/>
     </mesh>
@@ -331,7 +333,7 @@ const DirtySurface = ({position, dispatch, setProgress}) => {// Need to, yknow
 
 const ChoppingBoard = ({color, opacity, position, rotation, style, onClick}) => {
 
-  const { nodes } = useLoader(GLTFLoader, "../assets/models/chopping-board.glb");
+  const { nodes } = useLoader(GLTFLoader, "../../assets/models/chopping-board.glb");
 
   return (
     <animated.mesh onClick={onClick} style={style} scale={[0.2, 0.2, 0.2]} geometry={nodes.Plane005.geometry} rotation={rotation} position={position}>
@@ -346,7 +348,7 @@ const ChoppingBoard = ({color, opacity, position, rotation, style, onClick}) => 
 
 const WetFloorSign = ({found, position}) => {
 
-  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/wet-floor-sign.glb");
+  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/wet-floor-sign.glb");
 
   const props = useSpring({position: found ? 0: 3})
 
@@ -394,7 +396,7 @@ const FlickeringLight = ({position, distance}) => {
 
 const Lightbar = ({ position, rotation }) => {
 
-  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/lightbar-new.glb");
+  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/lightbar-new.glb");
 
   return (
     <mesh rotation={rotation} scale={[0.1, 0.1, 1]} position={position} geometry={nodes["faulty-lightbar"].geometry} material={materials["Material.004"]}>
@@ -405,7 +407,7 @@ const Lightbar = ({ position, rotation }) => {
 
 const FaultyLightbar = ({ position, rotation, dispatch, setProgress }) => {
 
-  const { nodes } = useLoader(GLTFLoader, "../assets/models/lightbar-new.glb");
+  const { nodes } = useLoader(GLTFLoader, "../../assets/models/lightbar-new.glb");
 
   const [found, setFound] = useState(false);
 
@@ -435,7 +437,7 @@ const SmallKitchen = ()=> {
 
 
 
-  const gltf = useLoader(GLTFLoader, "../assets/models/kitchen.glb");
+  const gltf = useLoader(GLTFLoader, "../../assets/models/kitchen.glb");
 
 
   return (
@@ -448,7 +450,7 @@ const MainKitchen = ()=> {
 
 
 
-  const gltf = useLoader(GLTFLoader, "../assets/models/main-kitchen.glb");
+  const gltf = useLoader(GLTFLoader, "../../assets/models/main-kitchen.glb");
 
 
   return (
@@ -461,8 +463,8 @@ const Puddle = ({setProgress, dispatch, position})=> {
 
   const { renderer } = useThree();
 
-  const environment = useLoader(THREE.TextureLoader, "../assets/images/textures/equirectangular.jpg")
-  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/puddle.glb");
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg")
+  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/puddle.glb");
   const [found, setFound] = useState(false);  
 
   environment.mapping = THREE.EquirectangularReflectionMapping;
@@ -492,9 +494,72 @@ const Puddle = ({setProgress, dispatch, position})=> {
 
 }
 
+const FireAlarm = ({position, rotation, dispatch}) => {
+
+  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/fire-alarm.glb");
+  const [found, setFound] = useState(false);  
+  let [light, setLight] = useState(false);
+
+  let object = useRef();
+
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg")
+  environment.mapping = THREE.EquirectangularReflectionMapping;
+  environment.encoding = THREE.sRGBEncoding;
+
+  const clickBox = () => {
+    if(!found) {
+      setFound(true);
+    }
+  }
+
+  
+
+  useFrame(()=> {
+    if (object.current) {
+      console.log(object.current);
+      let material = object.current.material;
+      
+
+      if (!found) {
+        if (material.emissive.r > 0.4) {
+          setLight(false);
+        }
+
+        if (material.emissive.r < 0) {
+          setLight(true);
+        }
+
+        if (light) {
+          material.emissive.r += 0.01;
+          material.emissive.g += 0.01;
+          material.emissive.b += 0.01;
+        } else {
+          material.emissive.r -= 0.01;
+          material.emissive.g -= 0.01;
+          material.emissive.b -= 0.01;
+        }
+
+      } else if (material.emissive.r > 0) {
+        material.emissive.r = 0;
+        material.emissive.g = 0;
+        material.emissive.b = 0;
+      }
+    }
+  })
+
+  return (
+    <>
+    <mesh ref={object} scale={[0.6, 0.6, 0.6]} geometry={nodes.Cube013.geometry} rotation={rotation} onClick={clickBox} position={position}>
+      <meshStandardMaterial  roughness={0.8} metalness={0.7} envMap={environment} color="red"/>
+      {found ? <InfoBubble sign="?" onClick={()=> dispatch(showInfo("fireAlarm"))}/> : null}
+      </mesh>
+    </>
+  )
+}
+
 const Meat = ({setProgress, dispatch, position})=> {
 
-  const gltf = useLoader(GLTFLoader, "../assets/models/meat.glb");
+  const gltf = useLoader(GLTFLoader, "../../assets/models/meat.glb");
 
   const [found, setFound] = useState(false);  
 

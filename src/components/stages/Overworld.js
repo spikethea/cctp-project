@@ -124,7 +124,7 @@ const Lights = () => {
 
 const Stadium = ({ dispatch }) => {
 
-  const gltf = useLoader(GLTFLoader, "assets/models/stadium.glb");
+  const gltf = useLoader(GLTFLoader, "../assets/models/stadium.glb");
 
   let [found, setFound] = useState(false)
   let [pressed, setPressed] = useState(false);
@@ -142,10 +142,11 @@ const Stadium = ({ dispatch }) => {
   }
 
   const handleInfoClick = () => {
+    dispatch(showInfo("homeButton"));
     if (!pressed) {
       setPressed(true);
       dispatch(getBadge('curiousCat'));
-      dispatch(showInfo("homeButton"));
+      
     }
     
   }
@@ -184,7 +185,7 @@ const Stadium = ({ dispatch }) => {
   })
 
   return (
-        <primitive castShadow ref={object} onClick={handleClick} position={[0, -2, -10]} object={gltf.scene} >{found ? <InfoBubble scaleFactor={100} onClick={handleInfoClick}/>: null}</primitive>
+        <primitive castShadow ref={object} onClick={handleClick} position={[0, -2, -10]} object={gltf.scene} >{found ? <InfoBubble sign="?" scaleFactor={100} onClick={handleInfoClick}/>: null}</primitive>
   )
 }
 
@@ -234,7 +235,7 @@ const FrontGate = ({onClick, position, color}) => {
             args={[8, 4, 8]}
             position={position}
           >
-            {!pressed ? <InfoBubble scaleFactor={100} onClick={handleClick}/>: null}
+            <InfoBubble sign="?" scaleFactor={100} onClick={handleClick}/>
             <meshStandardMaterial 
               
               cast
