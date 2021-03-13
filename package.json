@@ -1,6 +1,6 @@
 {
   "name": "cctp-app",
-  "homepage": "http://quincegorerodney.panel.uwe.ac.uk/servicelearn",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
