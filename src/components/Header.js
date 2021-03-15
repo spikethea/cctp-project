@@ -3,7 +3,7 @@ import styles from './pages/UserInterface.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { showUserInterface, clearNotifications } from './redux/actions';
 
-import Home from '../assets/svg/home.svg'
+import Home from './../assets/svg/home.svg'
 
 
 const Header = ({setApp}) => {

@@ -69,6 +69,7 @@ const UserInterface = ({app, setApp}) => {
                     <Route path={`${path}/leaderboard`} component={Leaderboard}/>
                     <Route path={`${path}/archive`} component={Archive}/>
                     <Route path={`${path}/quiz`} component={Quiz}/>
+                    <Redirect exact from={`${path}/`} to={`${path}/homepage`}/>
                 </Switch>
             </div>
             </>
@@ -91,7 +92,7 @@ const UI = () => {
         <div style={{minHeight:"40em", display:'flex', justifyContent:"center", alignItems:"center"}} className="default-container">
             <div>
             <h3>Welcome to the On-Screen UI </h3>
-            <h4>Press Home to Get Started</h4>
+            <h4>Select the Homepage Tab to Get Started</h4>
             </div>
         </div>
     )
