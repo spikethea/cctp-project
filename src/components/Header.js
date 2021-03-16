@@ -3,8 +3,6 @@ import styles from './pages/UserInterface.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { showUserInterface, clearNotifications } from './redux/actions';
 
-import Home from './../assets/svg/home.svg'
-
 
 const Header = ({setApp}) => {
 
@@ -37,7 +35,7 @@ const Header = ({setApp}) => {
             }} className={styles.notifications}>&nbsp; {info.notifications}</p>: null}
         </h3>
         <div className={styles.experience}>
-            {!showUI ? <img className={styles.home} src={Home} alt="Home Button" onClick={() => {
+            {!showUI ? <img className={styles.home} src={'./../assets/svg/home.svg'} alt="Home Button" onClick={() => {
                 dispatch(showUserInterface('SHOW_UI'));
                 dispatch(clearNotifications());
             }
