@@ -20,16 +20,15 @@ const UserInterface = ({app, setApp}) => {
     const location = useLocation();
 
     let { path, url } = useRouteMatch();
-
-    let activePage = location.pathname;
+    let [activePage, setActivePage] = useState(location.pathname);
 
      useEffect (()=>{
-         
-        activePage = location.pathname;
+        setActivePage(location.pathname);
+
         if (activePage === "/training") {
              setApp(true)
          }
-     }, [location]);
+     }, [location, activePage, setApp]);
 
     
     //Redux

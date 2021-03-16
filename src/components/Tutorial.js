@@ -49,7 +49,7 @@ const Tutorial = () => {
                 </div>
                 <div className={styles.inner}>
                   <h3>To navigate around this app, click the home button to select stages.</h3>
-                  <h3>Complete stages to complete tasks to earn rewards and points.</h3>
+                  <h3>On the homepage, select one of your unlocked stages to start learning.</h3>
                   <div className={styles.buttonContainer}>
                     <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>
                     <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
@@ -72,7 +72,7 @@ const Tutorial = () => {
                     </video>
                   </div>
                   <div className={styles.inner}>
-                    <h3></h3>
+                    <h3>Inside a stage, you need to select a level to choose the difficulty.</h3>
                     <h3>Complete stages to complete tasks to earn rewards and points.</h3>
                     <div className={styles.buttonContainer}>
                     <button onClick={() => setCurrentPage(currentPage + 1)}>Next Page</button>

@@ -21,7 +21,7 @@ import LevelEnd from './components/LevelEnd';
 import LandingPage from './components/pages/LandingPage';
 
 //Redux
-import { showUserInterface, closeInfoBox, switchPage, clearNotifications, addPoints } from './components/redux/actions';
+import { showUserInterface, closeInfoBox, switchPage, clearNotifications } from './components/redux/actions';
 
 
 //Main App Function

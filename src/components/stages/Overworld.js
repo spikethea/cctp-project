@@ -58,7 +58,7 @@ const Overworld = () => {
 
 
 
-const Scene = ({dispatch, counter})=> {
+const Scene = ({dispatch})=> {
 
   const mesh = useRef();
 

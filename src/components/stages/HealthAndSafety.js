@@ -5,7 +5,6 @@ import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for 
 //Packages
 import * as THREE from 'three';
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
-import {Box} from 'drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { animated, useSpring } from '@react-spring/three';
 
@@ -204,7 +203,7 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
 
   useEffect(()=>{
     setCameraPosition([0, 2, 8]);
-  },[])
+  },[setCameraPosition])
 
   return (
     <>
@@ -496,7 +495,7 @@ const Puddle = ({setProgress, dispatch, position})=> {
 
 const FireAlarm = ({position, rotation, dispatch}) => {
 
-  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/fire-alarm.glb");
+  const { nodes } = useLoader(GLTFLoader, "../../assets/models/fire-alarm.glb");
   const [found, setFound] = useState(false);  
   let [light, setLight] = useState(false);
 
@@ -578,51 +577,6 @@ const Meat = ({setProgress, dispatch, position})=> {
       </primitive>
   )
 
-}
-
-const RotatingBox = ({dispatch, position, progress, setProgress, onClick})=> {
-  
-    const box = useRef();
-
-  
-    const [boxSize, setBoxSize] = useState(false);  
-  
-    useFrame(()=>(
-      boxSize ? box.current.rotation.y = box.current.rotation.x += 0.01: null
-      )
-    )
-
-    const clickBox = () => {
-      if(!boxSize) {
-        setProgress(progress + 1);
-        setBoxSize(true);
-        dispatch(addPoints(200))
-      }
-
-    }
-
-
-
-  
-    return (
-        <>
-          <Box
-            args={boxSize ? [1,1,1]: [0.2, 0.2, 0.2]}
-            position={position}
-            ref={box}
-            castShadow
-            onClick={clickBox}//cant get onClick Working at all, drei or R3F
-          >
-            {boxSize ? <InfoBubble onClick={onClick}/>: null}
-            <meshStandardMaterial 
-              
-              cast
-              attach="material" 
-              color={"lightblue"}
-            />
-          </Box>
-        </>
-    )
 }
 
 
