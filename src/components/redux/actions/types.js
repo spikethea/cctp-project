@@ -30,6 +30,9 @@ export const RETURN_TO_HOME = 'RETURN_TO_HOME';
 
 export const ADD_POINTS = "ADD_POINTS";
 
+export const ADD_TOKENS = "ADD_TOKENS";
+export const REMOVE_TOKENS = "REMOVE_TOKENS";
+
 
 //Allergies Stage
 

@@ -6,7 +6,7 @@ import styles from  './UserInterface.module.css';
 //Level Images
 
 //Redux
-import { selectStage, showUserInterface, switchPage } from '../redux/actions';
+import { selectStage, showUserInterface, switchPage, endStage } from '../redux/actions';
 
 const Homepage = () => {
     const [isShown, setIsShown] = useState(null);
@@ -37,7 +37,7 @@ const Homepage = () => {
             </section>
             <p style={{top:`${y}px`, left:`${x}px`, maxWidth:"20em"}} className={styles.description}>{isShown !==null ? stages[isShown].description: null}</p>
             {info.activeStage > 0 ? <section><button onClick={() =>{
-                dispatch(selectStage(null))
+                dispatch(endStage('home'))
                 dispatch(showUserInterface("HIDE_UI"))
                 }} className={styles.overworld}>
                  <h4> Return to Home </h4>

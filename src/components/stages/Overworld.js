@@ -4,18 +4,17 @@ import React, {useRef, useState, Suspense, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Canvas, useFrame, useLoader } from 'react-three-fiber'
 import { Box, Html } from 'drei';
-import useSound from 'use-sound';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for safari compatibility
 
 //Components
 import InfoBubble from '../InfoBubble';
+import Help from '../Help';
 
 //Redux
 import { getBadge, showInfo, addPoints } from '../redux/actions';
 
-//Sounds
-import stadium from '../../assets/audio/stadium.mp3';
+
 
 const Overworld = () => {
     //Redux
@@ -27,21 +26,11 @@ const Overworld = () => {
     const showUI = info.displayingUI
     let mql = window.matchMedia('(max-width: 1200px)').matches;
 
-    //useSound
-    const [muted, setMuted] = useState(true);
-    const [ playStadium, { stop }] = useSound(stadium, {volume: showUI ? 0.05 : 0.2});
-
-    useEffect(()=> {
-      if (muted) {
-        console.log("stop");
-        stop();
-      } else {
-        playStadium();
-      }
-    },[muted, playStadium, stop, showUI])
+    
 
     return (
-
+      <>
+        {!showUI ? <Help message="Click on Landmarks around the Map to reveal important information which could help you in the future"/>: null}
         <Canvas
         resize={{ polyfill: ResizeObserver }}
         colorManagement 
@@ -53,6 +42,7 @@ const Overworld = () => {
           <fog attach="fog" args={["lightblue", 100, 500]}/>
           <Scene counter={counter} dispatch={dispatch}/>
       </Canvas>
+    </>
     )
 }
 
@@ -73,7 +63,7 @@ const Scene = ({dispatch})=> {
   return (
     <group ref={mesh} position={[2, 0, -10]}>
       <Lights/>
-      <FrontGate position={[1, -1, 20]} color={[200, 200, 200]} onClick={()=> dispatch(showInfo("gettingAround")) }/>
+      <FrontGate dispatch={dispatch} position={[1, -1, 20]} color={[200, 200, 200]} />
       <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
         <Stadium dispatch={dispatch}/>
         <Floor/>
@@ -137,7 +127,7 @@ const Stadium = ({ dispatch }) => {
     
     if (!found) {
       setFound(true);
-      dispatch(addPoints(100));
+      dispatch(addPoints(350));
     }
   }
 
@@ -145,8 +135,6 @@ const Stadium = ({ dispatch }) => {
     dispatch(showInfo("homeButton"));
     if (!pressed) {
       setPressed(true);
-      dispatch(getBadge('curiousCat'));
-      
     }
     
   }
@@ -218,24 +206,29 @@ const Building = ({position, rotation, color, args}) => {
   )
 }
   
-const FrontGate = ({onClick, position, color}) => {
+const FrontGate = ({dispatch, position, color}) => {
   
+    let [found, setFound] = useState(false);
     let [pressed, setPressed] = useState(false);
 
 
     const handleClick = () => {
-      onClick(); 
-      setPressed(true);
-    } 
+      if (!pressed){
+        setPressed(true);
+      dispatch(getBadge('curiousCat'));
+      dispatch(addPoints(450));
+      }
+      
+    }
       
   
     return (
-      <mesh>
+      <mesh onClick={handleClick}>
           <Box
             args={[8, 4, 8]}
             position={position}
           >
-            <InfoBubble sign="?" scaleFactor={100} onClick={handleClick}/>
+            {pressed? <InfoBubble sign="?" scaleFactor={100} onClick={()=> dispatch(showInfo("gettingAround"))}/> : null}
             <meshStandardMaterial 
               
               cast

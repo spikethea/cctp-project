@@ -3,7 +3,7 @@ import styles from './QuizTemplate.module.css';
 
 //Packages
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleQuiz, winQuiz } from './redux/actions';
+import { toggleQuiz, winQuiz, tokens } from './redux/actions';
 import useSound from 'use-sound';
 
 
@@ -165,8 +165,9 @@ const Quiz = ({handleClick, currentQuiz, quizPage, dispatch, correctNum}) => {
 const Incorrect = ({message, setQuizPage, setIncorrect, dispatch, currentQuiz})=> {
 
     const handleClick = () => {
-        setQuizPage((prevState)=> prevState + 1);
         setIncorrect(false);
+        dispatch(toggleQuiz(currentQuiz.tagName, 'finish'))
+        dispatch(tokens(1, 'remove'));
     }
 
 
@@ -174,7 +175,7 @@ const Incorrect = ({message, setQuizPage, setIncorrect, dispatch, currentQuiz})=
         <div className={styles.window}>
                     <div className={styles.container}>
                         <nav>
-                        <button onClick={() =>dispatch(toggleQuiz(currentQuiz.tagName, 'finish'))} alt="Close Quiz">X</button>
+                        <button onClick={handleClick} alt="Close Quiz">X</button>
                         </nav>
                         <div className={styles.inner}>
                             <h1>Incorrect Answer</h1>
@@ -182,7 +183,7 @@ const Incorrect = ({message, setQuizPage, setIncorrect, dispatch, currentQuiz})=
                                 <h1>{message}</h1>
                             </section>
                             <section>
-                                <button onClick={handleClick}>Next Question</button>
+                                <button onClick={handleClick}>Exit Quiz</button>
                             </section>
                         </div>
                     </div>

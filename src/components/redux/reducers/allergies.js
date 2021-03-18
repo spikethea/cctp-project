@@ -50,14 +50,14 @@ const allergyReducer = (state = initState, action) => {
 
                 if (infoSelected === 1) {
                     console.log("Level 1: Peanut and Vegetarian");
-                    peanut = randomInteger(3, 5);
+                    peanut = randomInteger(2, 4);
                     vegetarian = randomInteger(1, 2);
                 } else if (infoSelected === 2) {
                     console.log("Level 2: Peanut, Vegetarian, Vegan and Dairy");
-                    peanut = randomInteger(3, 5);
+                    peanut = randomInteger(1, 2);
                     vegetarian = randomInteger(1, 3);
-                    vegan = randomInteger(1, 3);;
-                    dairy = randomInteger(1, 3);;
+                    vegan = randomInteger(1, 1);;
+                    dairy = randomInteger(1, 2);;
                 }
                 console.log(infoSelected);
 

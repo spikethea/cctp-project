@@ -35,7 +35,7 @@ const Header = ({setApp}) => {
             }} className={styles.notifications}>&nbsp; {info.notifications}</p>: null}
         </h3>
         <div className={styles.experience}>
-            {!showUI ? <img className={styles.home} src='./../assets/svg/home.svg' alt="Home Button" onClick={() => {
+            {!showUI ? <img className={styles.home} src='/assets/svg/home.svg' alt="Home Button" onClick={() => {
                 dispatch(showUserInterface('SHOW_UI'));
                 dispatch(clearNotifications());
             }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectLevel } from './redux/actions';
+import { selectLevel, endStage } from './redux/actions';
 import styles from  './PopUp.module.css';
 
 const LevelSelect = ()=> {
@@ -19,7 +19,7 @@ const LevelSelect = ()=> {
             
                 <header>
                     <div></div>
-                    <button className={styles.open}><p>Return To Home</p></button>
+                    <button onClick={()=> dispatch(endStage('home'))} className={styles.open}><p>Return To Home</p></button>
                 </header>
                 <section>
                     <h1>{state.activeStage? state.stages[state.activeStage-1].name: "Stage"}</h1>

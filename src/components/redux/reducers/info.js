@@ -2,6 +2,7 @@ const infoReducer = (state = initState, action) => {
     let infoSelected = {};
     let initialNotifications;
     let initialDisplaying;
+    let tokens = 0;
     switch(action.type){
         case 'SHOW_UI':
         return {
@@ -19,16 +20,18 @@ const infoReducer = (state = initState, action) => {
                 page:action.payload
             }
         case 'POPUP_INFO':
+            tokens = state.tokens
             initialNotifications = state.notifications;
             console.log(initialNotifications);
             infoSelected = {...state.infoBox[action.payload]}
             if (!infoSelected.displayed) {
+                tokens = state.tokens += 1;
                 initialNotifications += 1;
             }
             console.log(initialNotifications);
-            infoSelected.displayed = true;
             return {
                 ...state,
+                tokens: tokens,
                 notifications: initialNotifications,
                 displayingInfo: true,
                 activeBox:infoSelected,
@@ -38,21 +41,30 @@ const infoReducer = (state = initState, action) => {
                 }
             }
         case 'HIDE_INFO':
+            infoSelected = {...state.infoBox[action.payload]}
+            infoSelected.displayed = true;
             return {
                 ...state,
                 displayingInfo:false,
+                infoBox: {
+                    ...state.infoBox,
+                    [action.payload]: infoSelected
+                }
             }
         case 'GET_BADGE':
+            tokens = state.tokens
             initialNotifications = state.notifications;
             initialDisplaying = false;
             infoSelected = {...state.badges[action.payload]};
             if (!infoSelected.isAchieved) {
+                tokens += 3
                 infoSelected.isAchieved = true;
                 initialDisplaying = true;
                 initialNotifications += 1;
             }
             return {
                 ...state,
+                tokens: tokens,
                 notifications: initialNotifications,
                 displayingBadge: initialDisplaying,
                 activeBadge:infoSelected,
@@ -122,6 +134,23 @@ const infoReducer = (state = initState, action) => {
                 activePoints: action.payload,
                 exp: expLevel,
             }
+        case 'ADD_TOKENS':
+            tokens = state.tokens + action.payload;
+            return {
+                ...state,
+                tokens: tokens,
+            }
+        case 'REMOVE_TOKENS':
+            tokens = state.tokens;
+            if (state.tokens - action.payload > 0) {
+                tokens -= action.payload;
+            } else {
+                tokens = 0;
+            }
+        return {
+            ...state,
+            tokens: tokens,
+        }
         default: 
             return state
     }
@@ -129,7 +158,8 @@ const infoReducer = (state = initState, action) => {
 
 const initState = {
     points: 0,
-    exp: 3,
+    exp: 2,
+    tokens:1,
     notifications: 0,
     page:0,
     displayingUI: false,
@@ -140,7 +170,7 @@ const initState = {
     activePoints:0,
     activeBadge: null,
     activeStage: 0,
-    level:null,
+    level: 1,
     infoBox:{
         homeButton:{
             tagname:"homeButton",
@@ -212,6 +242,69 @@ const initState = {
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
+        allergens: {
+            tagname:"allergens",
+            title: "Allergens",
+            description: "Never offer allergen advice to a customer, unless you have been specifically trained in-person to do so. You could be personally viable for it which we do not want for our or me!",
+            displayed: false,
+            image: "../assets/images/infobox/faulty-lighting.jpg"
+        },
+        buffet: {
+            tagname:"buffet",
+            title: "Allergen Signs Facing Forward",
+            description: "At Buffets, all the food MUST have information on allergens clearly placed on/by each item with any of the 14 allergenic ingredients unless there is a member of the catering staff on site who can provide allergen information",
+            displayed: false,
+            image: "../assets/images/infobox/faulty-lighting.jpg"
+        },
+        peanut:{
+            tagname:"peanut",
+            title:"Peanuts",
+            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        vegan:{
+            tagname:"vegan",
+            title:"Vegan",
+            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        dairy:{
+            tagname:"dairy",
+            title:"Dairy",
+            description:"Dairy Allergies/Intolerance are common. If a customer ",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        vegetarian:{
+            tagname:"Vegetarian",
+            title:"Vegetarian Choices",
+            description:"A less critical allergen/dietary choice, but nevertheless important. Many Muslim customer may choose to eat vegetarian if there is no Halal available.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        eggs:{
+            tagname:"eggs",
+            title:"Eggs",
+            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        mustard:{
+            tagname:"mustard",
+            title:"Mustard",
+            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        other:{
+            tagname:"other",
+            title:"Other Allergens",
+            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
     },
     badges: {
         curiousCat: {
@@ -239,6 +332,13 @@ const initState = {
             tagname:"oneHundredPercent",
             title:"100%",
             description:"You've 100% the first stage!",
+            isAchieved: false,
+            image:"../assets/svg/badges/100.svg"
+        },
+        firstLoss: {
+            tagname:"firstLoss",
+            title:"First Loss",
+            description:"Sometimes you win, sometimes you lose. Its the taking part that counts, right?",
             isAchieved: false,
             image:"../assets/svg/badges/100.svg"
         }
@@ -300,6 +400,8 @@ const initState = {
                 id:2,
                 exp:5,
                 img:"../../assets/images/levels/customer_service.jpg",
+                description:"Customer Service Skills will be the most frequently used skills on the job.",
+                howToPlay: "To play this game, you must talk to customers and say the right thing.",
                 activeLevel:0,
                 levels: [
                     {

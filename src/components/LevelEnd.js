@@ -13,6 +13,7 @@ const LevelEnd = () => {
     if (state.gameState === 3) {
         
         return (
+            <>
             <div className={styles.container}>
                 <section>
                 <h1>Well Done! you Completed the Level!</h1>
@@ -26,6 +27,8 @@ const LevelEnd = () => {
                     </div>
                 </section>
             </div>
+            <div className={styles.background}></div>
+            </>
         )} else {
             return null
         }

@@ -82,7 +82,7 @@
     justify-content: space-evenly;
   }
 
-  .container .buttonContainer :nth-child(2) {
+  .container .buttonContainer :nth-child(1) {
     background: rgb(112, 64, 94);
   }
 
@@ -112,8 +112,8 @@
     left: 0%;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.20);
-    z-index: 2;
+    background: rgba(0,0,0,0.85);
+    z-index: 4;
 }
 
 
@@ -123,7 +123,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 0.5em;
-  padding: 0.5em;
+  padding: 2em;
 }
 
   .levels button {
@@ -141,6 +141,10 @@
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.35);
   }
 
+  .open p {
+    color: rgb(41, 41, 41);
+  }
+
   .locked {
     background: rgb(180, 180, 180);
     border: 1px solid whitesmoke;
@@ -152,10 +156,54 @@
   }
 
 
+/* Help */
+
+.help {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 1em;
+}
+
+.help > div {
+  z-index: 4;
+  
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5em;
+  width: 4em;
+  height: 4em;
+  color: white;
+  background-color: var(--secondary);
+
+  
+}
+
+.help article {
+  z-index: 3;
+  position: absolute;
+  background: white;
+  padding-right: 4em;
+  font-weight: bold;
+
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  width: 90vw;
+  height: 4em;
+  border-radius: 5em 5em 5em 5em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media only screen and (max-width: 1199px) {
   
   .buttonContainer {
-    flex-direction: column;
+    flex-direction: column-reverse;
     
   }
 }

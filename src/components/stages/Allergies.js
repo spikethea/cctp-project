@@ -7,16 +7,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Canvas, useFrame, useLoader, useThree } from 'react-three-fiber'
 import {Html} from 'drei';
 import {useSpring, animated} from 'react-spring';
-
 import { a } from '@react-spring/three';
-
 import { useSelector, useDispatch } from 'react-redux';
 
 //Redux
-import { allergyQuantity, allergyLevel, allergyRestart, addPoints, finishLevel } from '../redux/actions';
+import { allergyQuantity, allergyLevel, allergyRestart, addPoints, finishLevel, showInfo, getBadge } from '../redux/actions';
+
+//Components
+import InfoBubble from '../InfoBubble';
 
 //SVG
 import egg from '../../assets/svg/egg.svg';
+import Loading from '../Loading';
+import Help from '../Help';
 
 const Allergies = () => {
     // Redux
@@ -34,7 +37,7 @@ const Allergies = () => {
     const scrollbar = useRef(null);
 
     const [scrollPosition, setScrollPosition] = useState(0);
-    const [active, setActive] = useState(false);
+    const [localState, setLocalState] = useState(0);
 
     const [currentAllergies, setCurrentAllergies] = useState([]);
     const [peopleArray, setPeopleArray] = useState([]);
@@ -54,7 +57,7 @@ const Allergies = () => {
     useEffect(()=> {
       if (gameState === 1) {
         dispatch(allergyRestart());
-        setActive(false);
+        setLocalState(0);
       }
     },[gameState, dispatch])
     
@@ -66,6 +69,17 @@ const Allergies = () => {
       }
 
     }, [level, dispatch])
+
+    //Start or Finish the level, depending on the local game state
+    const handleClick = () => {
+      if (localState === 0) {
+        setLocalState(1);
+      } else if (localState === 3) {
+        dispatch(finishLevel());
+      } else if (localState === 4) {
+        dispatch(finishLevel());
+      }
+    }
     
     //populating current allergies and people array
     useEffect(()=> {
@@ -85,17 +99,18 @@ const Allergies = () => {
     return (
       <>            
         {!displayingUI ? <div className={styles.scrollbar} ref={scrollbar} style={{height:`${vh}px`}} onScroll={onScroll}>
-          <div style={{display: "flex", width:"500vh"}}>
-              <p className={styles.scrollDown}>Scroll/Drag Horizontally to Move the Camera!</p>
+          <div style={{display: "flex", width:"500vh", height:"5px"}}>
           </div>
         </div>: null}
 
-        { active ? <AllergyCounter currentAllergies={currentAllergies} mql={mql} displayingUI={displayingUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
-        {!displayingUI && gameState === 2 ? <Timer level={level}   active={ active} setActive={setActive}/> : null}
-        {!displayingUI &&  active && gameState === 2 ? <AllergenChart mql={mql}/>: null}
+        {localState === 2 ? <AllergyCounter setLocalState={setLocalState} currentAllergies={currentAllergies} mql={mql} displayingUI={displayingUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
+        {!displayingUI ? <Timer level={level} onClick={handleClick}  localState={localState} setLocalState={setLocalState}/> : null}
+        {!displayingUI &&  localState === 2 ? <AllergenChart mql={mql}/>: null}
+        {!displayingUI ? <Help message="Scroll/Drag Horizontally to Move and keep count of the allergenic customers" /> : null}
         <Canvas
         resize={{ polyfill: ResizeObserver }}
         className={"canvas"}
+        shadowMap
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
@@ -107,11 +122,42 @@ const Allergies = () => {
           rotation={[-Math.PI / 8, 0, 0]}
           fov={70}
           />
+          <Suspense fallback={<Loading/>}>
             <Lights/>
             <Floor/>
-            {gameState === 2 ? <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}><div className={styles.loading}><h1>Loading...</h1></div></Html>}>
-              <People  active={ active} peopleArray={peopleArray} state={state}/>
-            </Suspense>: null}
+              <Table position={[-5, -2, -30]}/>
+              <Table position={[-20, -2, -20]} onClick={()=> dispatch(showInfo('allergens'))}/>
+              <Table position={[-35, -2, -30]}/>
+
+              <BuffetTable position={[10, -2, -15]}/>
+              <BuffetTable position={[30, -2, -15]} onClick={()=> dispatch(showInfo('buffet'))}/>
+              <BuffetTable position={[50, -2, -15]}/>
+
+              <Table position={[70, -2, -20]} onClick={()=> dispatch(showInfo('allergens'))}/>
+              <Table position={[85, -2, -10]}/>
+              <Table position={[100, -2, -20]}/>
+
+              <People dispatch={dispatch} localState={localState} peopleArray={peopleArray}/>
+              
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+              <BackgroundPerson localState={localState}/>
+            </Suspense>
         {/* <OrbitControls/> */}
       </Canvas>
       
@@ -121,10 +167,11 @@ const Allergies = () => {
 
 //UI
 
-  const Timer = ({setActive, active, level}) => {
+  const Timer = ({setLocalState, localState, level, onClick}) => {
 
-    let [countdown, setCountdown] = useState(15);
-    const props = useSpring({transform:  active ? "scale(0)": "scale(1)"});
+    let [countdown, setCountdown] = useState(0);
+
+    const props = useSpring({backgroundColor: localState === 3 ? "rgb(100, 255, 100)" : "rgb(245, 55, 55)" , transform:  localState === 2 ? "scale(0)": localState === 0 ? "scale(0.6)" : "scale(1)"});
     
     console.log(countdown);
 
@@ -132,35 +179,36 @@ const Allergies = () => {
       if (level === 1) {
         setCountdown(15);
       } else if (level === 2) {
-        setCountdown(50);
+        setCountdown(60);
       } else if (level === 3) {
-        setCountdown(90);
+        setCountdown(120);
       }
     },[level])
 
-
     useEffect(() => {
       console.log(countdown);
-      if (countdown > 0 && !active) {
-        const interval = setInterval(() => {
-          console.log(active);
+      if (localState === 1) {
+        if ( countdown > 0) {
+          const interval = setInterval(() => {
+          console.log(localState);
           console.log(countdown);
           console.log("cleanup");
           setCountdown(prevState => prevState -  1);
           console.log(countdown);
           
-        }, 1000);
-        return () => clearInterval(interval);
+          }, 1000);
+          return () => clearInterval(interval);
+        } else {
+          console.log(localState);
+          setLocalState(2);
+        }
+      }
 
-      } else {
-        console.log(active);
-        setActive(true);
-      };
-    }, [active, countdown, setActive])
+    }, [countdown, localState])
 
     return (
-      <animated.div style={props} className={styles.timer}>
-          <h1>{countdown}</h1>
+      <animated.div style={props} onClick={onClick} className={styles.timer}>
+          <h1>{localState === 0 ? "Start":  localState === 3 ? "Finish" : localState === 4 ? "You Lost" : countdown}</h1>
         </animated.div> 
     )
   }
@@ -219,7 +267,7 @@ const Allergies = () => {
     )
   }
 
-  const AllergyCounter = ({dispatch, currentAllergies, displayingUI, mql}) => {
+  const AllergyCounter = ({dispatch, setLocalState, currentAllergies, displayingUI, mql}) => {
 
     const [hidden, setHidden] = useState(false);
 
@@ -251,12 +299,13 @@ const Allergies = () => {
       if (incorrect > 0) {
         alert("incorrect! You got wrote down" + incorrect  + "/" + totalAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people had an averse allergic reaction today...");
         dispatch(addPoints(10*correctPeople));
-        dispatch(finishLevel());
+        dispatch(getBadge('firstLoss'));
+        setLocalState(4)//Finish Level, but Failed
 
       } else {
         alert("correct!");
         dispatch(addPoints(500));
-        dispatch(finishLevel());
+        setLocalState(3)//Finish Level, and Won
       }
     }
 
@@ -309,15 +358,16 @@ const Lights = () => {
       <>
         <directionalLight
           intensity={1.5}
+          color="#f5d7b0"
           position={[0, 10, 5]}
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
-          shadow-camera-far={50}
-          shadow-camera-left={-10}
-          shadow-camera-right={10}
-          shadow-camera-top={10}
-          shadow-camera-bottom={-10}
+          shadow-camera-far={100}
+          shadow-camera-left={-100}
+          shadow-camera-right={100}
+          shadow-camera-top={100}
+          shadow-camera-bottom={-100}
         />
         <ambientLight
           intensity={0.3}
@@ -330,42 +380,45 @@ const Lights = () => {
   
   const Floor = ({onClick}) => {
 
+    const {nodes} = useLoader(GLTFLoader, "../../assets/models/conference-room.glb");
+
+    console.log(nodes)
+
     return (
       <>
         <mesh
           onClick={onClick} 
-          receiveShadow 
-          rotation={[-Math.PI / 2, 0, 0]} 
+          receiveShadow
           position={[0, -3, 0]}
+          geometry={nodes.room.geometry}
         >
-          <planeBufferGeometry attach='geometry' args={[120, 50]}/>
-          <meshStandardMaterial color={"rgb(200, 200, 200)"} opacity={1} attach='material'/>
+          
+          <meshStandardMaterial color={"rgb(200, 200, 200)"} attach='material'/>
         </mesh>
       </>
     )
   }
 
-
-  const People = ({peopleArray,  active}) => {
-
+  const People = ({peopleArray, dispatch, localState}) => {
+    console.log(peopleArray);
     return (
       <>
-      {peopleArray.map((allergy, id)=> (
-        <Person  active={active} key={id} color={allergy.color}/>
+      {peopleArray.map((allergen, id)=> (
+        <Person dispatch={dispatch} localState={localState} key={id} tagName={allergen.tagName} color={allergen.color}/>
         )
       )}
       </>
     )
   }
   
-  const Person = ({ active, color}) => {
+  const Person = ({ localState, color, dispatch, tagName}) => {
 
     const {nodes} = useLoader(GLTFLoader, "../../assets/models/npc.glb");
     
     let person = useRef();
 
     const [bobbing, setBobbing] = useState(true);
-    const [delay, setDelay] = useState(Math.random()* 100);
+    const [delay] = useState((Math.random()* 1000) + 1500);
 
     const [properties] = useState({
       position: [(Math.random()*100) - 50, 1, Math.random() * 25], 
@@ -377,37 +430,26 @@ const Lights = () => {
     setTimeout(
 
     useFrame(()=> {
-      if (person.current) {
-
-      if (delay > 0) {
-        setDelay(delay - 1);
-      }
-
-      if (delay < 0 && person.current) {
-
-        if (person.current.position.y > 1.5) {
-          
-          setBobbing(false);
-        }
+      if (person.current && localState === 1) {
         
-        if (person.current.position.y < 1) {
-          
-          setBobbing(true);
-        }
+        setTimeout(() => {
+          console.log("tick");
+            if (bobbing) {
+              setBobbing(false);
+            } else {
+              setBobbing(true);
+            } 
+        }, delay);
 
 
-
-        if (bobbing && person.current) {
-          person.current.position.y += 0.01;
+        if (bobbing) {
+          //person.current.position.y += 0.01;
           person.current.position.x += 0.1;
         } else {
-          if (!active) {
-            person.current.position.y -= 0.01;
+            //person.current.position.y -= 0.01;
             person.current.position.x -= 0.1;
-          }
           
         }
-      }
     } 
     }), properties.delay) 
   
@@ -417,15 +459,17 @@ const Lights = () => {
           position={properties.position}
           ref={person}
           visible 
+          castShadow
           geometry={nodes.npc.geometry}>
             <Html
                 zIndexRange={[1, 0]}
                 scaleFactor={50}
             >
-                {! active? <p 
+                {localState === 1 ? <p 
                   style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
-                ></p>: null}
+                ></p>: null} 
             </Html>
+            {localState === 3 ? <InfoBubble color={color} scaleFactor={70} sign="!" onClick={()=> dispatch(showInfo(tagName))}/>: null}
             <meshStandardMaterial 
                 attach="material" 
                 cast
@@ -435,5 +479,92 @@ const Lights = () => {
         </mesh>
     )
   }
+
+// Background Objects
+
+const BackgroundPerson = ({ localState }) => {
+
+  const {nodes} = useLoader(GLTFLoader, "../../assets/models/npc.glb");
+  
+  let person = useRef();
+
+  const [bobbing, setBobbing] = useState(true);
+
+  const [delay] = useState((Math.random()* 1000) + 1500);
+
+  const [properties] = useState({
+    position: [(Math.random()*100) - 50, 1, Math.random() * 25], 
+    color: [Math.floor(Math.random()*255), Math.floor(Math.random()*255), Math.floor(Math.random()*255)],
+    popup: false,
+    }
+  );
+
+  setTimeout(
+
+  useFrame(()=> {
+    if (person.current && localState === 1) {
+      
+      setTimeout(() => {
+        console.log("tick");
+          if (bobbing) {
+            setBobbing(false);
+          } else {
+            setBobbing(true);
+          } 
+          
+      }, delay);
+
+
+      if (bobbing) {
+        //person.current.position.y += 0.01;
+        person.current.position.x += 0.1;
+      } else {
+          //person.current.position.y -= 0.01;
+          person.current.position.x -= 0.1;
+        
+      }
+  } 
+  }), properties.delay) 
+
+  return (
+      <mesh 
+        args={[1, 1, 1]}
+        position={properties.position}
+        ref={person}
+        visible
+        castShadow
+        geometry={nodes.npc.geometry}>
+          <meshStandardMaterial 
+              attach="material" 
+              cast
+              color={`rgb(${properties.color})`}
+          />
+          
+      </mesh>
+  )
+}
+
+const Table = ({ position, onClick }) => { 
+
+  return (
+    <mesh  position={position}>
+      <cylinderGeometry attach="geometry" args={[4, 4, 2, 8]}/>
+      <meshLambertMaterial color="#a8130d"/>
+      {onClick ? <InfoBubble scaleFactor={75} sign="?" color="gray" onClick={onClick}/>: null}
+    </mesh>
+  )
+}
+
+const BuffetTable = ({ position, onClick }) => { 
+
+  return (
+    <mesh  position={position}>
+      <boxBufferGeometry attach="geometry" args={[12, 4, 4]}/>
+      <meshLambertMaterial color="#2159a3"/>
+      {onClick ? <InfoBubble scaleFactor={75} sign="?" color="gray"  onClick={onClick}/>: null}
+    </mesh>
+  )
+}
+
 
 export default Allergies;

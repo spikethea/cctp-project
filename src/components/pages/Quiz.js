@@ -8,10 +8,11 @@ const Quiz = () => {
 
     const state = useSelector(state => state.quiz);
     const info = useSelector(state=> state.info);
-
+    
     return (
         <div className={styles.container}>
             <h2>Quizzes</h2>
+            <p>Tokens: {info.tokens}</p>
             <section>
                 <h4 className={styles.subtitle}>Introduction</h4>
                 <Quizzes info={info} state={state}/>
@@ -62,10 +63,16 @@ const Quizzes = ({state, info}) => {
     },[state, dispatch])
 
     const handleClick = (tagName) => {
-        dispatch(toggleQuiz(tagName, "show"))
+        if (info.tokens > 0 ) {
+            dispatch(toggleQuiz(tagName, "show"))
+        } else {
+            alert("Not Enough Tokens! Earn some more by unlocking new Badges and Information Boxes")
+        }
+        
     }
 
     quizArray = quizArray.map((quiz, index)=> {
+        console.log(quiz.completed);
         
         return (
             <article style={{background: quiz.completed ? "grey" : "white"}} key={index} onClick={()=> handleClick(quiz.tagName)} className={styles.quiz}>
@@ -76,7 +83,7 @@ const Quizzes = ({state, info}) => {
                 <aside>
                     <header>
                         <h4>LVL: {quiz.lvl}</h4>
-                        <h4 style={{color: "white"}}>{quiz.completed ? "COMPLETED": ""}</h4>
+                        <h4 style={{color: quiz.completed ? "white": "black"}}>{quiz.completed ? "COMPLETED": `Questions: ${quiz.questions.length}`}</h4>
                     </header>
                     <h3>{quiz.description}</h3>
                 </aside>
