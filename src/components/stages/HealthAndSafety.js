@@ -582,13 +582,11 @@ const FireAlarm = ({position, rotation, dispatch}) => {
 
 const DetergentSpray = ({position, rotation})=> {
 
-  const { nodes } = useLoader(GLTFLoader, "../../assets/models/detergent-spray.glb");
+  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/detergent-spray.glb");
   console.log(nodes);
 
   return (
-    <animated.mesh position={position} rotation={rotation} geometry={nodes.spray.geometry}>
-      <meshStandardMaterial color="gray"/>
-    </animated.mesh>
+    <animated.mesh position={position} rotation={rotation} material={materials["Material.001"]} geometry={nodes.spray.geometry}/>
   )
 }
 
