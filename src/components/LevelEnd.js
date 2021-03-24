@@ -16,7 +16,7 @@ const LevelEnd = () => {
             <>
             <div className={styles.container}>
                 <section>
-                <h1>Well Done! you Completed the Level!</h1>
+                <h1>This level has finished, thanks for playing</h1>
                 <img alt={state.stages[state.activeStage-1].name} src={`${state.stages[state.activeStage-1].img}`}/>
                 </section>
                 

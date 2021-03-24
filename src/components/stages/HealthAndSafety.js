@@ -108,7 +108,7 @@ const HealthAndSafety = () => {
             <polygon points="0,0 50,25 0,50" className="triangle">Right</polygon>
           </svg>
       </div>
-      <Help message="click/tap on the blue teleportation pads around the room, to get a closer view."/>
+      <Help message="click/tap on the blue teleportation pads around the room, to get a closer view. If you can't find all hazards, try looking above and below."/>
         <Canvas
         resize={{ polyfill: ResizeObserver }}
         className={"canvas"}
@@ -388,16 +388,16 @@ const FlickeringLight = ({position, distance}) => {
 
   useFrame(()=> {
     if (light.current) {
-      if (light.current.intensity > 0.25) {
+      if (light.current.intensity > 0.1) {
       setDimming(true);
-    } else if (light.current.intensity < 0.3) {
+    } else if (light.current.intensity < 0.4) {
       setDimming(false);
     }
 
     if (dimming) {
-      light.current.intensity -= 0.05;
+      light.current.intensity -= 0.1;
     } else {
-      light.current.intensity += 0.05;
+      light.current.intensity += 0.1;
     }
     }
     
@@ -433,6 +433,9 @@ const FaultyLightbar = ({ position, rotation, dispatch, setProgress }) => {
   const { nodes } = useLoader(GLTFLoader, "../../assets/models/lightbar-new.glb");
 
   const [found, setFound] = useState(false);
+  const [dimming, setDimming] = useState(true);
+
+  let lightbar = useRef();
 
   const handleClick = () => {
     if(!found) {
@@ -442,8 +445,40 @@ const FaultyLightbar = ({ position, rotation, dispatch, setProgress }) => {
     }
   }
 
+  
+
+  useFrame(()=> {
+    if (lightbar.current) {
+
+    if (!found) {
+      if (lightbar.current.material.emissive.r > 0.2) {
+        setDimming(true);
+      } else if (lightbar.current.material.emissive.r < 8) {
+        setDimming(false);
+      }
+
+      if (dimming) {
+        lightbar.current.material.emissive.r -= 0.05;
+        lightbar.current.material.emissive.g -= 0.05;
+        lightbar.current.material.emissive.b -= 0.05;
+      } else {
+        lightbar.current.material.emissive.r += 0.05;
+        lightbar.current.material.emissive.g += 0.05;
+        lightbar.current.material.emissive.b += 0.05;
+      }
+    } else if (lightbar.current.material.emissive.r < 1){
+      lightbar.current.material.emissive.r = 1;
+      lightbar.current.material.emissive.g = 1;
+      lightbar.current.material.emissive.b = 1;
+    }
+
+    }
+    
+  })
+
   return (
-    <mesh onClick={handleClick} scale={[0.1, 0.1, 1]} color="#000000" position={position} rotation={rotation} geometry={nodes["faulty-lightbar"].geometry} >
+    <mesh ref={lightbar} onClick={handleClick} scale={[0.1, 0.1, 1]}  position={position} rotation={rotation} geometry={nodes["faulty-lightbar"].geometry} >
+      <meshLambertMaterial emissive={[0.6, 0.6, 0.6]} color="#737373"/>
       {!found ? 
       <FlickeringLight distance={10} position={[0, 0, 0]}/>
       : 
@@ -583,7 +618,6 @@ const FireAlarm = ({position, rotation, dispatch}) => {
 const DetergentSpray = ({position, rotation})=> {
 
   const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/detergent-spray.glb");
-  console.log(nodes);
 
   return (
     <animated.mesh position={position} rotation={rotation} material={materials["Material.001"]} geometry={nodes.spray.geometry}/>
@@ -607,7 +641,7 @@ const Meat = ({setProgress, dispatch, position})=> {
 
   return (
     <primitive scale={[0.8, 0.6, 0.8]} onClick={clickBox} position={position} object={gltf.scene} >
-      {found ? <InfoBubble onClick={()=> dispatch(showInfo("puddle"))}/>: null}
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo("dangerZone"))}/>: null}
       </primitive>
   )
 

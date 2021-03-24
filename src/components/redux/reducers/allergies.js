@@ -38,6 +38,42 @@ const allergyReducer = (state = initState, action) => {
                         [action.payload]: infoSelected,
                     }
                 }
+            case 'RESET_ALLERGY_QUANTITIES':
+                
+                return {
+                    ...state,
+                    allergies: {
+                        ...state.allergies,
+                        peanut: {
+                            ...state.allergies.peanut,
+                            inputQuantity: 0,
+                        },
+                        vegan: {
+                            ...state.allergies.vegan,
+                            inputQuantity: 0,
+                        },
+                        dairy: {
+                            ...state.allergies.dairy,
+                            inputQuantity: 0,
+                        },
+                        vegetarian: {
+                            ...state.allergies.vegetarian,
+                            inputQuantity: 0,
+                        },
+                        eggs: {
+                            ...state.allergies.eggs,
+                            inputQuantity: 0,
+                        },
+                        mustard: {
+                            ...state.allergies.mustard,
+                            inputQuantity: 0,
+                        },
+                        other: {
+                            ...state.allergies.other,
+                            inputQuantity: 0,
+                        },
+                    },
+                }
             case 'SWITCH_ALLERGY_LEVEL':
                 infoSelected = action.payload;
 

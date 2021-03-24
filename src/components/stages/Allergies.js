@@ -11,13 +11,10 @@ import { a } from '@react-spring/three';
 import { useSelector, useDispatch } from 'react-redux';
 
 //Redux
-import { allergyQuantity, allergyLevel, allergyRestart, addPoints, finishLevel, showInfo, getBadge } from '../redux/actions';
+import { allergyQuantity, allergyLevel, allergyReset, addPoints, finishLevel, showInfo, getBadge } from '../redux/actions';
 
 //Components
 import InfoBubble from '../InfoBubble';
-
-//SVG
-import egg from '../../assets/svg/egg.svg';
 import Loading from '../Loading';
 import Help from '../Help';
 
@@ -56,7 +53,7 @@ const Allergies = () => {
     //Reset Level by resetting the state
     useEffect(()=> {
       if (gameState === 1) {
-        dispatch(allergyRestart());
+        dispatch(allergyReset());
         setLocalState(0);
       }
     },[gameState, dispatch])
@@ -106,7 +103,7 @@ const Allergies = () => {
         {localState === 2 ? <AllergyCounter setLocalState={setLocalState} currentAllergies={currentAllergies} mql={mql} displayingUI={displayingUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
         {!displayingUI ? <Timer level={level} onClick={handleClick}  localState={localState} setLocalState={setLocalState}/> : null}
         {!displayingUI &&  localState === 2 ? <AllergenChart mql={mql}/>: null}
-        {!displayingUI ? <Help message="Scroll/Drag Horizontally to Move and keep count of the allergenic customers" /> : null}
+        {!displayingUI ? <Help message="Scroll/Drag Horizontally to Move and keep count of the allergenic customers." /> : null}
         <Canvas
         resize={{ polyfill: ResizeObserver }}
         className={"canvas"}
@@ -174,16 +171,20 @@ const Allergies = () => {
     const props = useSpring({backgroundColor: localState === 3 ? "rgb(100, 255, 100)" : "rgb(245, 55, 55)" , transform:  localState === 2 ? "scale(0)": localState === 0 ? "scale(0.6)" : "scale(1)"});
     
     console.log(countdown);
+    console.log(localState);
 
     useEffect (()=> {
-      if (level === 1) {
-        setCountdown(15);
-      } else if (level === 2) {
-        setCountdown(60);
-      } else if (level === 3) {
-        setCountdown(120);
+      if (localState = 1) {
+        if (level === 1) {
+          setCountdown(15);
+        } else if (level === 2) {
+          setCountdown(60);
+        } else if (level === 3) {
+          setCountdown(120);
+        }
       }
-    },[level])
+      
+    },[level, localState])
 
     useEffect(() => {
       console.log(countdown);
@@ -235,31 +236,31 @@ const Allergies = () => {
         <header onClick={handleClick}><h3>{hidden ? <span alt="expandable" style={{writingMode: "vertical-rl"}}>&gt;</span> : <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&lt;</span>} Allergen Chart</h3></header>
         <section >
         <figure style={{ backgroundColor:"#f7be5c"}}>
-            <img alt="peanut" src={egg}/>
+            <img alt="peanut" src="../../assets/svg/egg.svg"/>
             <p>Peanut</p>
           </figure>
           <figure style={{ backgroundColor:"#00ff04"}}>
-          <img alt="Egg" src={egg}/>
+          <img alt="Egg" src="../../assets/svg/egg.svg"/>
             <p>Vegan</p>
           </figure>
           <figure style={{ backgroundColor:"#ede8e1"}}>
-            <img alt="Egg" src={egg}/>
+            <img alt="Egg" src="../../assets/svg/egg.svg"/>
             <p>Dairy</p>
           </figure>
           <figure style={{ backgroundColor:"#006302"}}>
-            <img alt="Egg" src={egg}/>
+            <img alt="Egg" src="../../assets/svg/egg.svg"/>
             <p>Vegetarian</p>
           </figure>
           <figure style={{ backgroundColor:"#ecf233"}}>
-            <img alt="Egg" src={egg}/>
+            <img alt="Egg" src="../../assets/svg/egg.svg"/>
             <p>Eggs</p>
           </figure>
           <figure style={{ backgroundColor:"#f542e9"}}>
-            <img alt="Egg" src={egg}/>
+            <img alt="Egg" src="../../assets/svg/egg.svg"/>
             <p>Mustard</p>
           </figure>
           <figure style={{ backgroundColor:"#000000"}}>
-            <img alt="Egg" src={egg}/>
+            <img alt="Egg" src="../../assets/svg/egg.svg"/>
             <p>Other</p>
           </figure>
         </section>
@@ -274,6 +275,7 @@ const Allergies = () => {
     const props = useSpring({maxHeight: hidden ? "3em": "35em"});
 
     
+
     const totalAllergies = currentAllergies.filter(function(allergy){
       return allergy.quantity > 0
     })

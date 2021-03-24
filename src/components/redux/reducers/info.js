@@ -214,6 +214,13 @@ const initState = {
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
+        dangerZone:{
+            tagname:"dangerZone",
+            title:"Danger Zone!",
+            description:"The Danger zone for food is between 8 and 60 degrees celcius. After two hours, any food left out at between these two temperature is to be thrown away.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
         crossContamination:{
             tagname:"crossContamination",
             title:"Cross Contamination",
@@ -278,7 +285,7 @@ const initState = {
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
         vegetarian:{
-            tagname:"Vegetarian",
+            tagname:"vegetarian",
             title:"Vegetarian Choices",
             description:"A less critical allergen/dietary choice, but nevertheless important. Many Muslim customer may choose to eat vegetarian if there is no Halal available.",
             displayed: false,

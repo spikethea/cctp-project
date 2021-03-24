@@ -146,6 +146,7 @@ const Stadium = ({ dispatch }) => {
       
 
       if (!found) {
+        
         if (material.emissive.r > 0.4) {
           setLight(false);
         }
