@@ -1,0 +1,84 @@
+/* Winning Certificate */
+
+.container {
+    z-index: 15;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    padding: 1em;
+    background-color: var(--third);
+    color: black;
+    width: 1200px;
+    height: 800px;
+
+    max-width: calc(100vw - 50px);
+    max-height: calc(100vh - 50px);
+
+    
+
+}
+
+    .container button {
+        margin: 0.2em;
+    }
+
+    .container header {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .container article {
+        display: flex;
+        justify-content: center;
+        background: white;
+        margin-bottom: 0.5em;
+    }
+
+    .container .exit {
+        transform: rotate(-45deg);
+        border-radius: 5em;
+        width: 1.5em;
+        height: 1.5em;
+        display: flex;
+        font-weight: bold;
+        font-size: 1.5em;
+        justify-content: center;
+        align-items: center;
+        color: var(--third);
+        background: var(--primary);
+    }
+
+    .container h1 {
+        font-size: 8vw;
+        padding: 0.8em;
+    }
+
+    .container h2 {
+        font-size: 1em;
+        padding: 0.5em;
+        font-weight: 100;
+    }
+
+    .container h3 {
+        font-size: 1.em;
+    }
+
+    .container .score {
+        display: flex;
+    }
+
+    .container .score h2 {
+        font-size: 5em;
+    }
+
+    @media only screen and (max-width: 768px) {
+        .container .score {
+          display: block;
+        }
+
+        .container h1 {
+            padding: 0.2em;
+        }
+      }
