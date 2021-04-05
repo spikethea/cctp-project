@@ -3,13 +3,37 @@
     position: fixed;
     bottom: 0;
     border-radius: 0.5em 1em 0em 0em;
-    z-index: 3;
+    z-index: 5;
     width: 100%;
 }
 
 .container header {
     
     background-color: rgb(207, 207, 207);
+}
+
+.arrow {
+    position: fixed;
+    bottom: 20%;
+    right: 60%;
+    z-index: 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: bobbing 1s infinite alternate;
+}
+
+.arrow > div {
+    width: 100px;
+    background-color: white;
+    border-radius: 0.2em;
+    padding: 1em;
+}
+
+.arrow > svg {
+    fill: white;
+    border-radius: 0.2em;
 }
 
 .scrollbar {
@@ -28,7 +52,7 @@
     position: fixed;
     
     top: 10%;
-    left: calc(50% - 2.5em);
+    left: calc(50% - 4em);
     width: 8em;
     height: 8em;
 
@@ -43,7 +67,6 @@
 
   .timer h1 {
       position: relative;
-      filter: drop-shadow();
   }
 
 .title {
@@ -70,13 +93,25 @@ display: flex;
 }
 
 .radioButton {
-    padding: 0 0.5em 0 0.5em;
+    font-size: 1em;
+    background-color: rgb(236, 233, 233);
+
+    width: 25px;
     margin-left: 0.5em;
+    height: 25px;
 }
 
 .submit {
     padding: 1em;
-    margin: 2em;
+    margin: 1em;
+    background: rgb(236, 233, 233);
+    border-radius: 0.5em;
+    border: 1px solid black;
+
+    -webkit-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+
 }
 
 .scrollDown {
@@ -123,7 +158,6 @@ display: flex;
     }
 
     .chart figure {
-        padding: 0.5em;
         border-radius: 2em;
         background-color: rgb(0, 99, 2);
         display: flex;
@@ -142,14 +176,23 @@ display: flex;
         height: 4em;
     }
 
-/* Media Queries */
 
+    @keyframes bobbing {
+        0%   { transform: translate(0, -10%); }
+        100% { transform: translate(0, 10%); }
+      }
+
+/* Media Queries */
 @media only screen and (min-width: 1200px) {
 
     .container {
         right: 60%;
         min-width: 350px;
         width: 30vw;
+    }
+
+    .arrow {
+        right: 60%;
     }
 
     .chart {

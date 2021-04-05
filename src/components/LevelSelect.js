@@ -8,19 +8,16 @@ const LevelSelect = ()=> {
     const state = useSelector(state => state.info);
     const dispatch = useDispatch();
 
-    const activeLevel = state.level;
-
 
     if (state.gameState === 1) {
 
         return (
         <>
         <div className={styles.container}>
-            
-                <header>
-                    <div></div>
-                    <button onClick={()=> dispatch(endStage('home'))} className={styles.open}><p>Return To Home</p></button>
-                </header>
+                <button  onClick={()=> dispatch(endStage('home'))}>
+                    Return To Home
+                </button>
+                
                 <section>
                     <h1>{state.activeStage? state.stages[state.activeStage-1].name: "Stage"}</h1>
                     {state.activeStage ? <img alt={state.stages[state.activeStage-1].name} src={state.stages[state.activeStage-1].img}/>: null}
@@ -39,10 +36,10 @@ const LevelSelect = ()=> {
                 <div className={styles.levels}>
                     <button className={styles.open} onClick={()=>dispatch(selectLevel(1))}>1</button>
                     <button className={styles.open} onClick={()=>dispatch(selectLevel(2))}>2</button>
-                    <button className={styles.locked}>3</button>
-                    <button className={styles.locked}>4</button>
-                    <button className={styles.locked}>5</button>
-                    <button className={styles.locked}>6</button>
+                    <div className={styles.locked}>3</div>
+                    <div className={styles.locked}>4</div>
+                    <div className={styles.locked}>5</div>
+                    <div className={styles.locked}>6</div>
                 </div>
             </section>
         </div>

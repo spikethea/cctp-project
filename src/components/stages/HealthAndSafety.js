@@ -68,8 +68,13 @@ const HealthAndSafety = () => {
     },[gameState])
 
     // Event Listeners
-    const handleClick = (direction) => {
-      setRotationDir(direction)
+    const lookRight = () => {
+      setRotationDir(true)
+      setCameraRotating(true)
+    }
+
+    const lookLeft = () => {
+      setRotationDir(false)
       setCameraRotating(true)
     }
 
@@ -101,16 +106,17 @@ const HealthAndSafety = () => {
       </div> : null}
       
       <div style={{display: showUI && mql ? "none" : "flex"}} className={styles.navigation}>
-          <svg style={{filter: cameraRotating && rotationDir ? "drop-shadow(2px 4px 6px black)": null}} onMouseLeave={()=> handleLeave()} onMouseDown={()=> handleClick(true)} height="50" width="50">
+          <svg style={{filter: cameraRotating && rotationDir ? "drop-shadow(2px 4px 6px black)": null}} onMouseUp={()=> handleLeave()} onMouseDown={()=> lookRight()} onTouchStart={()=> lookRight()} onTouchEnd={()=> handleLeave()} height="50" width="50">
           <polygon points="50,50 50,0 0,25" className="triangle">Left</polygon>
           </svg>
-          <svg style={{filter: cameraRotating && !rotationDir ? "drop-shadow(2px 4px 6px black)": null}} onMouseLeave={()=> handleLeave()} onMouseDown={()=> handleClick(false)} height="50" width="50">
+          <svg style={{filter: cameraRotating && !rotationDir ? "drop-shadow(2px 4px 6px black)": null}} onMouseUp={()=> handleLeave()} onMouseDown={()=> lookLeft()} onTouchStart={()=> lookLeft()} onTouchEnd={()=> handleLeave()} height="50" width="50">
             <polygon points="0,0 50,25 0,50" className="triangle">Right</polygon>
           </svg>
       </div>
       <Help message="click/tap on the blue teleportation pads around the room, to get a closer view. If you can't find all hazards, try looking above and below."/>
         <Canvas
         resize={{ polyfill: ResizeObserver }}
+        pixelRatio={info.performance === 0 ? 0.25 : info.performance === 1 ? 0.5 : 1}
         className={"canvas"}
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('#87ceeb')}
@@ -193,7 +199,7 @@ const Scene1 = ({dispatch, setProgress, setCameraPosition}) => {
         
         
         <FaultyLightbar position={[-2.5, 4, -2]} dispatch={dispatch} setProgress={setProgress}/>
-        <Puddle position={[1, 0.1, -4]} dispatch={dispatch} setProgress={setProgress}/>
+        <Spillage position={[1, 0.1, -4]} dispatch={dispatch} setProgress={setProgress}/>
         <Meat position={[4, 1.25, 2]} dispatch={dispatch} setProgress={setProgress} />
         
         <Lightbar position={[2.5, 4, -2]}/>
@@ -227,7 +233,8 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
         <MainKitchen/>
 
         <FireAlarm position={[0, 2, -4.5]} dispatch={dispatch}/>
-              
+        
+        <Sanitising position={[-4.5, 1.5, 2]}  dispatch={dispatch} />
         <DirtySurface position={[-4.5, 1.15, 4]}  dispatch={dispatch} setProgress={setProgress}/>
         <CrossContamination position={[0.38, 0.8, 0.8]} dispatch={dispatch} setProgress={setProgress}/>
         <ClutteredShelfBox position={[-2.8, 1.9, -4.4]} dispatch={dispatch} setProgress={setProgress}/>
@@ -255,11 +262,39 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
 }
   
 //Meshes
+const Sanitising = ({position, dispatch}) => {// Need to, yknow
+
+  const [found, setFound] = useState(false);
+
+
+  const props = useSpring({
+    from: { position: [0, -0.4 , 0], rotation: [0, 0, 0] },
+    to: { position: [0, 0, 0], rotation: [60*(Math.PI/180), -10*(Math.PI/180), 0] },
+    config: { duration: 500 },
+    reset: true,
+  })
+
+  const handleClick = ()=> {
+    if (!found) {
+      setFound(true);
+      dispatch(addPoints(150));
+    }
+  }
+
+  return (
+    <group position={position}>
+      <InfoBubble scaleFactor={15} sign="?" color="gray" onClick={()=> dispatch(showInfo('cleanSurfaces'))}/>
+      <SanitiserSpray rotation={props.rotation} position={props.position}/>
+    </group>
+  )
+}
+
+
 const CrossContamination = ({position, dispatch, setProgress}) => {// Need to aniamte and add dispatch
 
   const [found, setFound] = useState(false)
   const props = useSpring({ position: found ? [0, 0.03, -1] : [0, 0.03, 0], yRotation: found ? [0, THREE.Math.degToRad(90), 0] : [0, THREE.Math.degToRad(15), 0]})
-  console.log(props);
+
   const handleClick = ()=> {
     if (!found) {
       setFound(true);
@@ -327,7 +362,6 @@ const DirtySurface = ({position, dispatch, setProgress}) => {// Need to, yknow
   const [found, setFound] = useState(false);
 
   const props = useSpring({ position: found ? [0, 0.2, 0] : [0, 0.5, -2], rotation: found ? [60*(Math.PI/180), -10*(Math.PI/180), 0] : [0, 0, 0]})
-  console.log(props.position)
 
   const handleClick = ()=> {
     if (!found) {
@@ -373,10 +407,10 @@ const WetFloorSign = ({found, position}) => {
 
   const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/wet-floor-sign.glb");
 
-  const props = useSpring({position: found ? 0: 3})
+  const props = useSpring({config: { tension: 70 }, position: found ? 0: 3, rotation: found ? 180*(Math.PI/180) : 30*(Math.PI/180)})
 
 return (
-  <animated.mesh visible={found} position={position} position-y={props.position} rotation={[0, 30*(Math.PI/180), 0]} geometry={nodes["wet-floor-sign"].geometry} material={materials["Material.001"]}>
+  <animated.mesh visible={found} position={position} position-y={props.position} rotation={[0, 30*(Math.PI/180), 0]} rotation-y={props.rotation} geometry={nodes["wet-floor-sign"].geometry} material={materials["Material.001"]}>
   </animated.mesh>
 )
 }
@@ -467,9 +501,9 @@ const FaultyLightbar = ({ position, rotation, dispatch, setProgress }) => {
         lightbar.current.material.emissive.b += 0.05;
       }
     } else if (lightbar.current.material.emissive.r < 1){
-      lightbar.current.material.emissive.r = 1;
-      lightbar.current.material.emissive.g = 1;
-      lightbar.current.material.emissive.b = 1;
+      lightbar.current.material.emissive.r += 0.05;
+      lightbar.current.material.emissive.g += 0.05;
+      lightbar.current.material.emissive.b += 0.05;
     }
 
     }
@@ -517,9 +551,7 @@ const MainKitchen = ()=> {
 
 }
 
-const Puddle = ({setProgress, dispatch, position})=> {
-
-  const { renderer } = useThree();
+const Spillage = ({setProgress, dispatch, position})=> {
 
   const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg")
   const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/puddle.glb");
@@ -527,9 +559,6 @@ const Puddle = ({setProgress, dispatch, position})=> {
 
   environment.mapping = THREE.EquirectangularReflectionMapping;
   environment.encoding = THREE.sRGBEncoding;
-
-  console.log(materials);
-  console.log(renderer);
 
   const clickBox = () => {
     if(!found) {
@@ -545,7 +574,7 @@ const Puddle = ({setProgress, dispatch, position})=> {
     <WetFloorSign position={position} found={found}/>
     <mesh geometry={nodes.puddle.geometry} transparent opacity={0.5} onClick={clickBox} position={position}>
       <meshStandardMaterial opacity={0.1} roughness={0} metalness={0.95} envMap={environment} transparent={true} normalMap={materials["Material.003"].normalMap} map={materials["Material.003"].map}/>
-      {found ? <InfoBubble onClick={()=> dispatch(showInfo("puddle"))}/> : null}
+      {found ? <InfoBubble onClick={()=> dispatch(showInfo("spillage"))}/> : null}
       </mesh>
       </>
   )
@@ -574,10 +603,8 @@ const FireAlarm = ({position, rotation, dispatch}) => {
 
   useFrame(()=> {
     if (object.current) {
-      console.log(object.current);
-      let material = object.current.material;
-      
 
+      let material = object.current.material;
       if (!found) {
         if (material.emissive.r > 0.4) {
           setLight(false);
@@ -617,7 +644,16 @@ const FireAlarm = ({position, rotation, dispatch}) => {
 
 const DetergentSpray = ({position, rotation})=> {
 
-  const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/detergent-spray.glb");
+  const { nodes, materials } = useLoader(GLTFLoader, "/assets/models/detergent-spray.glb");
+
+  return (
+    <animated.mesh position={position} rotation={rotation} material={materials["Material.001"]} geometry={nodes.spray.geometry}/>
+  )
+}
+
+const SanitiserSpray = ({position, rotation})=> {
+
+  const { nodes, materials } = useLoader(GLTFLoader, "/assets/models/sanitiser-spray.glb");
 
   return (
     <animated.mesh position={position} rotation={rotation} material={materials["Material.001"]} geometry={nodes.spray.geometry}/>
@@ -626,7 +662,7 @@ const DetergentSpray = ({position, rotation})=> {
 
 const Meat = ({setProgress, dispatch, position})=> {
 
-  const gltf = useLoader(GLTFLoader, "../../assets/models/meat.glb");
+  const gltf = useLoader(GLTFLoader, "/assets/models/meat.glb");
 
   const [found, setFound] = useState(false);  
 

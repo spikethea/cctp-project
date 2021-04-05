@@ -29,7 +29,7 @@ a {
           appearance: none;
 
   /* Get rid of the default border in Firefox/Opera. */
-  border: none;
+  border: 1px solid var(--third);
 
   /* Progress bar container for Firefox/IE10+ */
   background-color: rgb(255, 255, 255, 0.5);
@@ -66,8 +66,9 @@ progress::-moz-progress-bar {
 
 /* Variables */
 :root {
-  --primary: rgba(158, 113, 158, 0.4);
-  --secondary: #77779e;
+  --primary: rgba(143, 102, 143, 0.658);
+  --secondary: #6f6f8c;
+  --third: #F1E4E4;
   --scrollbar: rgb(230, 230, 230);
 }
 
@@ -97,6 +98,8 @@ body,
 p {
   line-height: 1.5;
 }
+
+
 
 h3 {
   padding: 0.4em;
@@ -137,16 +140,17 @@ h3 {
 }
 
 .landing-page h1 {
+  padding: 1em 0em;
   font-weight: bold;
-  padding: 1em;
   font-size: 2.5em;
+  color: white;
+  filter: drop-shadow(2px 4px 6px black);
 }
 
 .landing-page h2 {
   font-weight: bold;
   font-size: 2em;
   line-height: 150%;
-  padding: 2em 2em;
 }
 
 .landing-page h3 {
@@ -168,6 +172,18 @@ h3 {
   -moz-box-shadow: 0px 13px 16px 0px rgba(0,0,0,0.5);
   
 
+}
+
+.landing-page .tagline {
+  background: var(--secondary);
+  color: white;
+}
+
+.landing-page .intro {
+  background-image: url(https://get.pxhere.com/photo/white-flower-petal-rose-relax-clean-care-furniture-pink-material-towel-product-textile-hotel-spa-salon-hospitality-bath-bed-sheet-731641.jpg);
+  width: 100%;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
 }
 
 .landing-page section {
@@ -254,16 +270,20 @@ h3 {
   height: 100%;
 }
 
+.points {
+  position: fixed;
+  z-index: 13;
+  top: 60%;
+  left: calc(50% - 2.5em);
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+}
+
 .badge-container {
   position: fixed;
-  z-index: 6;
+  z-index: 14;
   top: 20%;
   left: calc(50% - 2.5em);
 }
-
-  .badge-container h1 {
-    text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
-  }
 
   .badge-container img {
     height: 5em;
@@ -289,7 +309,7 @@ h3 {
   top: 4.5rem;
   align-items: center;
   justify-content: center;
-  background: rgb(158 113 158 / 40%);
+  background: var(--primary);
   color: rgb(255, 255, 255);
   z-index: 6;
   overflow-y: scroll;
@@ -317,21 +337,31 @@ h3 {
   left: 0%;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.65);
-  z-index: 4;
+  background: rgba(0,0,0,0.75);
+  z-index: 6;
+}
+
+.tutorial-background {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.75);
+  z-index: 10;
 }
 
 .infobox {
   width: 650px;
   max-width: 90vw;
   max-height: 90vh;
-  top:10%;
+  top:5%;
   left:50%;
   transform: translate(-50%, 0);
   
   position:absolute;
   background-color:white;
-  z-index:5;
+  z-index:7;
   border-radius:1em;
   -webkit-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);
@@ -343,7 +373,7 @@ h3 {
   border: 1px solid #d0d0d0;
   margin: 1em 0em;
   padding: 0.3em;
-  max-height: 30vh;
+  max-height: 20vh;
 }
   
   .infobox h2 {

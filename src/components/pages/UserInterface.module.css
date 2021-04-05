@@ -58,12 +58,11 @@
 
 .home {
     pointer-events: all;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.6em;
+    height: 1.6em;
     padding: 0.5em;
     border-radius: 2em;
-    background: rgb(255,220,255,0.2);
-    border: 1px solid white;
+    background: rgb(247, 245, 242);
     box-sizing: content-box;
 }
 
@@ -73,8 +72,8 @@
     left: 100%;
     top: -20%;
     border-radius: 50%;
-    background-color: tomato;
-    color: black;
+    background-color: #ff2700;
+    color: rgb(255, 255, 255);
     width: 1.3em;
     text-align: start;
     height: 1.3em;
@@ -83,7 +82,7 @@
 
 /*Main UI*/
 .container section {
-    border-bottom: 5px rgb(70, 70, 70) dotted;
+    border-bottom: 4px var(--third) double;
     padding: 2em 0em;
     min-height: 10em;
 }
@@ -101,8 +100,15 @@
 .container button {
     display:inline-block;
     width: 100%;
-    background-color: #ebe9e4;
-    border: 5px solid white;
+    background-color: var(--secondary);
+    color: white;
+    font-size: 1em;
+    margin: 1em;
+    border: 2px solid var(--third);
+    
+    -webkit-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
     border-radius: 1em;
     padding: 1em;
 }
@@ -184,7 +190,7 @@
 
 .itemLocked {
     border-radius: 0.6rem;
-    background: #4b4b4b;
+    background: #313131;
     margin-bottom: 1.5rem;
     padding: 1rem;
     margin: 0.5em;
@@ -242,7 +248,7 @@
     }
 
     .archiveBadge h4 {
-        color: rgb(161, 161, 161);
+        color: rgb(235, 235, 235);
         font-weight: 400;
         padding-bottom: 0.25em;
     }
@@ -255,7 +261,7 @@
 .description {
     position: fixed;
     font-weight: bold;
-    z-index: 8;
+    z-index: 10;
     color: whitesmoke;
     background-color: rgb(63, 63, 63);
     border-radius: 1em;
@@ -266,6 +272,7 @@
     background: var(--secondary);
     color: white;
     padding: 1em;
+    border: 1px solid var(--third);
 }
 
 .levelInfo p {
@@ -281,8 +288,8 @@
     .info {
         display: flex;
         flex-direction: row;
-        background: rgb(59, 59, 59);
-        border: solid 2px white;
+        background: var(--secondary);
+        border: solid 1px var(--third);
         color: white;
     }
 
@@ -296,7 +303,7 @@
     }
 
     .info h3 {
-            color: rgb(114, 114, 114);
+            color: var(--third);
             text-align: start;
     }
 
@@ -344,7 +351,7 @@
         color: rgb(39, 39, 39);
         font-size: 0.8em;
         width: 100%;
-        margin: 1em;
+        margin: 0em 1em;
     }
 
     .quiz aside > header {
@@ -354,13 +361,75 @@
         margin-bottom: 1em;
     }
 
+/* Winning Cetificate */
+
+.certificate {
+    z-index: 15;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    padding: 2em;
+    background-color: var(--third);
+    color: black;
+    width: 1200px;
+    height: 800px;
+
+    max-width: calc(100vw - 50px);
+    max-height: calc(100vh - 50px);
+
+    
+
+}
+
+    .certificate button :nth-child(1){
+        background: rgb(153, 24, 67);
+    }
+
+    .certificate header {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .certificate article {
+        display: flex;
+        justify-content: center;
+        background: white;
+    }
+
+    .certificate .exit {
+        transform: rotate(-45deg);
+        border-radius: 2em;
+        color: var(--third);
+        background: var(--primary);
+    }
+
+    .certificate h1 {
+        font-size: 8vw;
+        padding: 0.8em;
+    }
+
+    .certificate h2 {
+        font-size: 0.8em;
+        padding: 0.5em;
+    }
+
+    .certificate h3 {
+        font-size: 0.6em;
+    }
+
+    .certificate .score {
+        font-size: 5em;
+    }
+
 
 /*Media Queries*/
 
 
 @media only screen and (min-width: 1200px) {
     .menushadow {
-        display: none;
+        width: 98%;
     }
 
     .menu {

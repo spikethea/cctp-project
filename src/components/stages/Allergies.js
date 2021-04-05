@@ -39,7 +39,7 @@ const Allergies = () => {
     const [currentAllergies, setCurrentAllergies] = useState([]);
     const [peopleArray, setPeopleArray] = useState([]);
 
-    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 50
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 100
 
     const DisableRender = () => useFrame(() => null, 1000);// Performance Optimisation to pause rendering while the UI is open.
     
@@ -52,11 +52,15 @@ const Allergies = () => {
 
     //Reset Level by resetting the state
     useEffect(()=> {
-      if (gameState === 1) {
+      if (gameState !== 0) {
         dispatch(allergyReset());
         setLocalState(0);
       }
     },[gameState, dispatch])
+
+    useEffect(()=> {
+      dispatch(allergyReset());
+    },[])
     
     //Change Allergy Level/Difficulty
     useEffect(()=> {
@@ -101,12 +105,13 @@ const Allergies = () => {
         </div>: null}
 
         {localState === 2 ? <AllergyCounter setLocalState={setLocalState} currentAllergies={currentAllergies} mql={mql} displayingUI={displayingUI} peopleArray={peopleArray} state={state} dispatch={dispatch}/> : null}
-        {!displayingUI ? <Timer level={level} onClick={handleClick}  localState={localState} setLocalState={setLocalState}/> : null}
+        <Timer level={level} displayingUI={displayingUI} onClick={handleClick}  localState={localState} setLocalState={setLocalState}/>
         {!displayingUI &&  localState === 2 ? <AllergenChart mql={mql}/>: null}
-        {!displayingUI ? <Help message="Scroll/Drag Horizontally to Move and keep count of the allergenic customers." /> : null}
+        {!displayingUI && localState !== 2 ? <Help open message="Scroll/Drag Horizontally to move around the room, and keep count of the allergenic customers to win." /> : null}
         <Canvas
         resize={{ polyfill: ResizeObserver }}
         className={"canvas"}
+        pixelRatio={info.performance === 0 ? 0.25 : info.performance === 1 ? 0.5 : 1}
         shadowMap
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
@@ -164,11 +169,11 @@ const Allergies = () => {
 
 //UI
 
-  const Timer = ({setLocalState, localState, level, onClick}) => {
+  const Timer = ({setLocalState, localState, level, onClick, displayingUI}) => {
 
     let [countdown, setCountdown] = useState(0);
 
-    const props = useSpring({backgroundColor: localState === 3 ? "rgb(100, 255, 100)" : "rgb(245, 55, 55)" , transform:  localState === 2 ? "scale(0)": localState === 0 ? "scale(0.6)" : "scale(1)"});
+    const props = useSpring({backgroundColor: localState === 3 ? "rgb(100, 255, 100)" : "rgb(245, 55, 55)" , transform:  localState === 2 ? "scale(0)": localState === 0 ? "scale(0.6)" : "scale(1)", opacity: displayingUI ? "0" : "1"});
     
     console.log(countdown);
     console.log(localState);
@@ -270,7 +275,7 @@ const Allergies = () => {
 
   const AllergyCounter = ({dispatch, setLocalState, currentAllergies, displayingUI, mql}) => {
 
-    const [hidden, setHidden] = useState(false);
+    const [hidden, setHidden] = useState(true);
 
     const props = useSpring({maxHeight: hidden ? "3em": "35em"});
 
@@ -299,19 +304,20 @@ const Allergies = () => {
       let correctPeople = totalAllergies.length - incorrect;
 
       if (incorrect > 0) {
-        alert("incorrect! You got wrote down" + incorrect  + "/" + totalAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people had an averse allergic reaction today...");
+        alert("incorrect! You got wrote down" + incorrect  + "/" + totalAllergies.length + " of allergies incorrectly. " + incorrectPeople + " people were counted wrong. If you arent sure the count is right, let you manager know!");
         dispatch(addPoints(10*correctPeople));
         dispatch(getBadge('firstLoss'));
         setLocalState(4)//Finish Level, but Failed
 
       } else {
-        alert("correct!");
+        alert("Correct! Every customer with dietary requirements got their correct meal, perfect work.");
         dispatch(addPoints(500));
         setLocalState(3)//Finish Level, and Won
       }
     }
 
     return (
+      <>
       <animated.div style={{display: displayingUI && mql ? "none": "block", maxHeight: props.maxHeight}} className={styles.container}>
         <header>
         <h3 onClick={()=> (hidden ? setHidden(false): setHidden(true))}>Allergen List {hidden ?<span alt="expandable" style={{writingMode: "vertical-rl"}}>&lt;</span> : <span alt="shrinkable" style={{writingMode: "vertical-rl"}}>&gt;</span> }</h3>
@@ -330,8 +336,20 @@ const Allergies = () => {
             </div>
 ))}
           </div>
-        <button onClick={checkCount} className={styles.submit}>Confirm</button>
+        <button onClick={checkCount} className={styles.submit}><h4>Confirm</h4></button>
       </animated.div>
+      {hidden ? 
+      <div className={styles.arrow}>
+        <div>
+          Click the <span style={{fontWeight: "bold"}} >Allergen List </span> below, and fill in the allergen count using the Chart
+        </div>
+        <svg height="150" width="150">
+            <polygon points="0,0 150,0 75,100" class="triangle" />
+            Sorry, your browser does not support inline SVG.
+        </svg>
+      </div>
+      : null}
+      </>
     )
   } 
 
@@ -468,7 +486,7 @@ const Lights = () => {
                 scaleFactor={50}
             >
                 {localState === 1 ? <p 
-                  style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"5px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
+                  style={{transform: "translateY(-50px)",marginBottom:"1em",padding:"10px",borderRadius:"50%", backgroundColor:`${color}`, width:"180%", zIndex:"-3", fontWeight:"bold", color:"green"}}
                 ></p>: null} 
             </Html>
             {localState === 3 ? <InfoBubble color={color} scaleFactor={70} sign="!" onClick={()=> dispatch(showInfo(tagName))}/>: null}

@@ -16,6 +16,8 @@ import correctSound from '../assets/audio/correct.mp3';
 const QuizTemplate = ()=> {
     // Redux
     const state = useSelector(state => state.quiz);
+    const info = useSelector(state => state.info);
+
     const dispatch = useDispatch();
     const quizzes = state.quizzes;
     const quizActive = state.quizActive
@@ -66,12 +68,17 @@ const QuizTemplate = ()=> {
 
         if (currentQuiz.questions[quizPage]) {// Is there another question?
             if (answer === currentQuiz.questions[quizPage].correctAnswer) {// Check if answer is correct
-                playCorrect();
+                if (!info.muted) {
+                    playCorrect();
+                }
                 setMessage("correct!");
                 setQuizPage((prevState) => prevState + 1);
                 setCorrectNum(correctNum + 1);
             } else {
-                playIncorrect();
+                if (!info.muted) {
+                    console.log("sound incorrect");
+                    playIncorrect();
+                }
                 setMessage('Incorrect answer. The correct answer was ' + currentQuiz.questions[quizPage].answers[correctAnswer]);
                 setIncorrect(true);
             }
@@ -105,15 +112,15 @@ const Quiz = ({handleClick, currentQuiz, quizPage, dispatch, correctNum}) => {
             <div className={styles.window}>
                 <div className={styles.container}>
                     <nav>
-                        <button onClick={() =>dispatch(toggleQuiz(currentQuiz.tagName, 'hide'))} alt="Close">X</button>
+                        <button onClick={() =>dispatch(toggleQuiz(currentQuiz.tagName, 'hide'))} alt="Close">+</button>
                     </nav>
                     <div className={styles.inner}>
-                        <section>
-                                    <h2>{currentQuiz.name}</h2>
+                        <section className={styles.question}>
+                                    <h2 style={{paddingBottom: currentQuiz.questions[quizPage].image ? "0em" : "2em"}}>{currentQuiz.name}</h2>
                                     {currentQuiz.questions[quizPage].image ? <img alt={currentQuiz.questions[quizPage].alt} src={currentQuiz.questions[quizPage].image}/>:null}
                                     <p>{currentQuiz.questions[quizPage].question}</p>
                         </section>
-                        <section>
+                        <section className={styles.answers}>
                             <article>
                                     <figure onClick={()=> handleClick('a')}>
                                         <p>{currentQuiz.questions[quizPage].answers.a}</p>
@@ -144,7 +151,7 @@ const Quiz = ({handleClick, currentQuiz, quizPage, dispatch, correctNum}) => {
                 <div className={styles.window}>
                     <div className={styles.container}>
                         <nav>
-                            <button onClick={() =>dispatch(toggleQuiz(currentQuiz.tagName, 'finish'))} alt="Close">X</button>
+                            <button onClick={() =>dispatch(toggleQuiz(currentQuiz.tagName, 'finish'))} alt="Close">+</button>
                         </nav>
                         <header>
                             <h1>Finished</h1>

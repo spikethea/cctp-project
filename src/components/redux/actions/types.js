@@ -10,7 +10,16 @@ export const DECREASE = 'DECREASE';
 export const POPUP_INFO = 'POPUP_INFO';
 export const HIDE_INFO = 'HIDE_INFO';
 
+export const TOGGLE_MUTE = 'TOGGLE_MUTE';
+export const TOGGLE_TUTORIAL = 'TOGGLE_TUTORIAL';
+
 export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
+
+// Reset All the state saved in redux, restarting progress
+export const RESET_STATE = 'RESET_STATE';
+
+//Performance
+export const TOGGLE_PERFORMANCE = 'TOGGLE_PERFORMANCE';
 
 // in-Game Mechanics
 
@@ -19,7 +28,6 @@ export const SHOW_BADGE = 'SHOW_BADGE';
 export const HIDE_BADGE = 'HIDE_BADGE';
 
 export const SELECT_STAGE = 'SELECT_STAGE';
-
 
 export const SELECT_LEVEL = 'SELECT_LEVEL';
 export const FINISH_LEVEL = 'FINISH_LEVEL';
@@ -32,7 +40,6 @@ export const ADD_POINTS = "ADD_POINTS";
 
 export const ADD_TOKENS = "ADD_TOKENS";
 export const REMOVE_TOKENS = "REMOVE_TOKENS";
-
 
 //Allergies Stage
 

@@ -3,15 +3,18 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import styles from  './UserInterface.module.css';
 
-//Level Images
-
 //Redux
-import { selectStage, showUserInterface, switchPage, endStage } from '../redux/actions';
+import { selectStage, showUserInterface, switchPage, endStage, toggleTutorial } from '../redux/actions';
+
+//Components 
+import Certificate from '../Certificate';
 
 const Homepage = () => {
     const [isShown, setIsShown] = useState(null);
+    const [showCertificate, setShowCertificate] = useState(false);
     
     const info = useSelector(state => state.info);
+    const quizzes = useSelector(state => state.quiz)
     const dispatch = useDispatch();
 
     const stages = info.stages;
@@ -29,22 +32,36 @@ const Homepage = () => {
 
     return (
         <div id="ui" className={styles.container}>
+            <article style={{display: "flex", justifyContent:"space-between", alignItems: "center"}}>
+                <p>EXP: {info.exp}</p>
+                <Link style={{ color:"white", border: "1px solid var(--third)", padding: "0.5em"}} to={`quiz`}><p>Quiz Tokens: {info.tokens}</p></Link>
+            </article>
+            {quizzes.completed > 5 ?  
+            <section>
+                <h1>You Won the Game!</h1>
+                <div style={{display: "flex"}}>
+                    <button style={{ padding:"2em", fontWeight: "bold", color: "var(--primary)", background: "var(--third)"}} onClick={()=>setShowCertificate(true)}>Show my Certificate!</button>
+                </div>
+                <Certificate info={info} close={()=> setShowCertificate()} showCertificate={showCertificate}/>
+            </section>
+            : null}
             <section>
                 <article className={styles.levelInfo}>
                     <h4>{info.activeStage? info.stages[info.activeStage-1].name: "Overworld"}</h4>
                     <p>{info.activeStage? info.stages[info.activeStage-1].description: "This is the Overworld Map, Have a look around to see if you can find anything interesting"}</p>
                 </article>
             </section>
-            <p style={{top:`${y}px`, left:`${x}px`, maxWidth:"20em"}} className={styles.description}>{isShown !==null ? stages[isShown].description: null}</p>
-            {info.activeStage > 0 ? <section><button onClick={() =>{
+            <p style={{top:`${y}px`, left:`${x}px`, maxWidth:"20em"}} className={styles.description}>{isShown !==null && info.exp >= stages[isShown].exp ? stages[isShown].description: isShown !==null? "Locked Stage: " + stages[isShown].description : null}</p>
+            <section style={{display: "flex"}}>{info.activeStage > 0 ? <button onClick={() =>{
                 dispatch(endStage('home'))
                 dispatch(showUserInterface("HIDE_UI"))
                 }} className={styles.overworld}>
-                 <h4> Return to Home </h4>
-            </button></section> : null} 
-            
+                  Return to Home
+            </button> : null} 
+            <button onClick={()=> dispatch(toggleTutorial())} style={{backgroundColor: "rgb(112, 64, 94)"}}>Open Tutorial</button>
+            </section>
             <section onMouseLeave={() => setIsShown(null)} className={styles.stageSelect}>
-                <h3 className={styles.subtitle}>Stages</h3>
+                <h3 className={styles.subtitle}>Select a Stage</h3>
                 <div className={styles.menu}>
                     {stageList} 
                 </div>
@@ -97,7 +114,7 @@ const Stage = ({onClick, stagename, exp, id, img, onMouseEnter}) => {
     
 
     return (
-        <div className={styles.itemLocked}>
+        <div onMouseEnter={onMouseEnter}  className={styles.itemLocked}>
             <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
             <div className={styles.inner}>
                 <h4>{id}: {stagename}</h4>

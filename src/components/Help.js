@@ -3,10 +3,10 @@ import styles from './PopUp.module.css';
 
 import { useSpring, animated } from 'react-spring';
 
-const Help = ({message}) => {
+const Help = ({message, open}) => {
 
-    const [expanded, setExpanded] = useState(false);
-    const props = useSpring({width: expanded ? "95vw": "0vw"})
+    const [expanded, setExpanded] = useState(open);
+    const props = useSpring({width: expanded ? "90vw": "0vw"})
 
     const toggleHelp = () => {
         if (expanded) {
@@ -19,11 +19,9 @@ const Help = ({message}) => {
     return (
         <div className={styles.help} onClick={toggleHelp}>
             <div>
-                <h1>
-                    ?
-                </h1>
+                <h1>?</h1>
             </div>
-            <animated.article style={props}>{expanded ? message : null}</animated.article>
+            <animated.article style={props}><p>{expanded ? message : null}</p></animated.article>
         </div>
     )
 }

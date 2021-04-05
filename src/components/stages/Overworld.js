@@ -12,7 +12,7 @@ import InfoBubble from '../InfoBubble';
 import Help from '../Help';
 
 //Redux
-import { getBadge, showInfo, addPoints } from '../redux/actions';
+import { getBadge, showInfo } from '../redux/actions';
 
 
 
@@ -30,10 +30,11 @@ const Overworld = () => {
 
     return (
       <>
-        {!showUI ? <Help message="Click on Landmarks around the Map to reveal important information which could help you in the future"/>: null}
+        {!showUI ? <Help message="Click on Landmarks around the Map to reveal extra information which could help you in the future..."/>: null}
         <Canvas
         resize={{ polyfill: ResizeObserver }}
-        colorManagement 
+        colorManagement
+        pixelRatio={info.performance === 0 ? 0.25 : info.performance === 1 ? 0.5 : 1}
         camera={{position: [0, 100, 150], fov: 30, rotation:[0, 0, 0]}}
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
         shadowMap
@@ -127,7 +128,6 @@ const Stadium = ({ dispatch }) => {
     
     if (!found) {
       setFound(true);
-      dispatch(addPoints(350));
     }
   }
 
@@ -209,7 +209,6 @@ const Building = ({position, rotation, color, args}) => {
   
 const FrontGate = ({dispatch, position, color}) => {
   
-    let [found, setFound] = useState(false);
     let [pressed, setPressed] = useState(false);
 
 
@@ -217,7 +216,6 @@ const FrontGate = ({dispatch, position, color}) => {
       if (!pressed){
         setPressed(true);
       dispatch(getBadge('curiousCat'));
-      dispatch(addPoints(450));
       }
       
     }

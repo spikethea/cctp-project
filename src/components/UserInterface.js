@@ -9,7 +9,7 @@ import { useSpring, animated } from 'react-spring'
 
 //pages
 import Homepage from './pages/Homepage';
-import Leaderboard from './pages/Leaderboard';
+import Options from './pages/Options';
 import Archive from './pages/Archive';
 import Quiz from './pages/Quiz';
 
@@ -46,26 +46,23 @@ const UserInterface = ({app, setApp}) => {
         }
     }, [showUI, info.points]);
 
-
-
-    
-    if (showUI === true && app) {
+    if (showUI === true ) {
 
         return (
             <> 
-            <div className="ui-container">
+            <div style={{backdropFilter: info.performance === 3 ? "blur(20px)" : null}} className="ui-container">
                 <ProgressBar staggeredPoints={staggeredPoints} info={info}/>
                 <ul className="pages">
-                    <Link style={{textDecoration: "none"}} to={`${url}/homepage`}><li style={{backgroundColor: location.pathname === `${url}/homepage` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(0))} className="page-item">Homepage</li></Link>
-                    <Link style={{textDecoration: "none"}} to={`${url}/leaderboard`}><li style={{backgroundColor:activePage === `${url}/leaderboard` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(1))} className="page-item">Leaderboard</li></Link>
-                    <Link style={{textDecoration: "none"}} to={`${url}/archive`}><li style={{backgroundColor:activePage === `${url}/archive` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(2))} className="page-item">Archive</li></Link>
-                    <Link style={{textDecoration: "none"}} to={`${url}/quiz`}><li style={{backgroundColor:activePage === `${url}/quiz` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(3))} className="page-item">Quiz</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/homepage`}><li style={{backgroundColor: location.pathname === `${url}/homepage` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(0))} className="page-item">homepage</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/archive`}><li style={{backgroundColor:activePage === `${url}/archive` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(2))} className="page-item">archive</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/quiz`}><li style={{backgroundColor:activePage === `${url}/quiz` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(3))} className="page-item">quizzes</li></Link>
+                    <Link style={{textDecoration: "none"}} to={`${url}/options`}><li style={{backgroundColor:activePage === `${url}/options` ? "rgb(34, 34, 34, 0.2)" : "rgb(255, 0, 0, 0)"}} onClick={()=> dispatch(switchPage(1))} className="page-item">options</li></Link>
                 </ul>
                 
                 <Switch>
                     <Route exact path={`${path}/`} component={UI}/>
                     <Route path={`${path}/homepage`} component={Homepage}/>
-                    <Route path={`${path}/leaderboard`} component={Leaderboard}/>
+                    <Route path={`${path}/options`} component={Options}/>
                     <Route path={`${path}/archive`} component={Archive}/>
                     <Route path={`${path}/quiz`} component={Quiz}/>
                     <Redirect exact from={`${path}/`} to={`${path}/homepage`}/>
@@ -107,8 +104,6 @@ const ProgressBar = ({info, staggeredPoints})=> {
         <div style={{display:'flex', alignItems: 'center', justifyContent: 'space-around'}}>
                     <h3 style={{fontWeight:"bold", color:"white", padding:"1em", whiteSpace:"nowrap"}}>LVL {info.exp}</h3>
                     <animated.progress className="progress" style={{width:"70%"}} id="file" value={props.value}  max="1000"/>
-                    <p style={{marginLeft:"0.5em", whiteSpace:"nowrap"}}>{points} XP</p>
-
         </div>
     )
 }

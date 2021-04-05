@@ -1,9 +1,14 @@
 const infoReducer = (state = initState, action) => {
     let infoSelected = {};
-    let initialNotifications;
-    let initialDisplaying;
+    let Points = 0;
+    let initialPoints = 0;
+    let expLevel = 0;
+    let initialActivePoints = 0;
+    let initialNotifications = 0;
     let tokens = 0;
-    switch(action.type){
+    let initialPerformance = 0;
+
+    switch(action.type) {
         case 'SHOW_UI':
         return {
             ...state,
@@ -20,17 +25,31 @@ const infoReducer = (state = initState, action) => {
                 page:action.payload
             }
         case 'POPUP_INFO':
-            tokens = state.tokens
+            initialPoints = state.points;
+            initialActivePoints = state.activePoints;
+            expLevel = state.exp;
+            tokens = state.tokens;
             initialNotifications = state.notifications;
-            console.log(initialNotifications);
-            infoSelected = {...state.infoBox[action.payload]}
+            infoSelected = {...state.infoBox[action.payload]};
+
             if (!infoSelected.displayed) {
+                if (1000 > (initialPoints + 200)) {
+                    initialPoints =  state.points + 200
+                } else {
+                    initialNotifications += 1;
+                    expLevel += 1;
+                    initialPoints = (state.points + 200) - 1000;
+                }
+                initialActivePoints = 200;
                 tokens = state.tokens += 1;
                 initialNotifications += 1;
             }
-            console.log(initialNotifications);
+
             return {
                 ...state,
+                exp: expLevel,
+                points: initialPoints,
+                activePoints: initialActivePoints,
                 tokens: tokens,
                 notifications: initialNotifications,
                 displayingInfo: true,
@@ -52,22 +71,35 @@ const infoReducer = (state = initState, action) => {
                 }
             }
         case 'GET_BADGE':
+            Points = action.payload;
+            initialActivePoints = state.activePoints
+            initialPoints = state.points
+            expLevel = state.exp
             tokens = state.tokens
             initialNotifications = state.notifications;
-            initialDisplaying = false;
             infoSelected = {...state.badges[action.payload]};
+            
             if (!infoSelected.isAchieved) {
+                if ((initialPoints + infoSelected.points) < 1000) {
+                    initialPoints =  state.points + infoSelected.points
+                } else {
+                    expLevel += 1;
+                    initialPoints = (state.points + infoSelected.points) - 1000;
+                }
                 tokens += 3
                 infoSelected.isAchieved = true;
-                initialDisplaying = true;
                 initialNotifications += 1;
+                initialActivePoints = infoSelected.points
+                
             }
             return {
                 ...state,
+                exp: expLevel,
                 tokens: tokens,
                 notifications: initialNotifications,
-                displayingBadge: initialDisplaying,
-                activeBadge:infoSelected,
+                activeBadge: infoSelected.tagname,
+                points: initialPoints,
+                activePoints: initialActivePoints,
                 badges: {
                     ...state.badges,
                     [action.payload]:infoSelected
@@ -119,17 +151,20 @@ const infoReducer = (state = initState, action) => {
                 notifications: 0,
             }
         case 'ADD_POINTS':
-            let Points = action.payload;
-            let initalPoints = state.points;
-            let expLevel = state.exp;
-            if ((initalPoints + Points) < 1000) {
+            initialNotifications = state.notifications
+            Points = action.payload;
+            initialPoints = state.points;
+            expLevel = state.exp;
+            if ((initialPoints + Points) < 1000) {
                 Points = state.points + action.payload;
             } else {
+                initialNotifications += 1;
                 expLevel += 1;
                 Points = (state.points + action.payload) - 1000;
             }
             return {
                 ...state,
+                notifications: initialNotifications,
                 points: Points,
                 activePoints: action.payload,
                 exp: expLevel,
@@ -151,31 +186,56 @@ const infoReducer = (state = initState, action) => {
             ...state,
             tokens: tokens,
         }
+        case 'TOGGLE_MUTE':
+            return {
+                ...state,
+                muted: !state.muted
+            }
+        case 'TOGGLE_TUTORIAL': 
+            return {
+                ...state,
+                displayingTutorial: !state.displayingTutorial
+            }
+        case 'TOGGLE_PERFORMANCE':
+            initialPerformance = state.performance;
+            if (initialPerformance < 3) {
+                initialPerformance += 1;
+            } else {
+                initialPerformance = 0;
+            }
+            return {
+                ...state,
+                performance: initialPerformance,
+            }
         default: 
             return state
+        
     }
 }
 
 const initState = {
+    performance: 2,
+    muted: true,
     points: 0,
-    exp: 2,
+    exp: 0,
     tokens:1,
     notifications: 0,
     page:0,
+    displayingTutorial: true,
     displayingUI: false,
     displayingInfo: false,
     displayingBadge: false,
     gameState: 0,
-    activeBox:"Broom",
+    activeBox: "broom",
     activePoints:0,
     activeBadge: null,
     activeStage: 0,
-    level: 1,
+    level: null,
     infoBox:{
         homeButton:{
             tagname:"homeButton",
             title:"Get Started",
-            description:"To get started, press the home button and you can access your first task.",
+            description:"To get started, press the home button and you can access your first stage.",
             displayed: false,
             image:"../assets/images/infobox/home-button.jpg"
         },
@@ -200,10 +260,10 @@ const initState = {
             displayed: false,
             image:"../assets/images/infobox/home-button.jpg"
         },
-        puddle:{
-            tagname:"puddle",
-            title:"Its a Puddle!",
-            description:"This is a Massive safety risk, if you see a puddle, place a yellow warning sign over it immediately!",
+        spillage:{
+            tagname:"spillage",
+            title:"Floor spillage",
+            description:"This is a Massive safety risk, if you see a wet floor, place a yellow warning sign over it, and alert your manager if there isnt time to clean it immedieately",
             displayed: false,
             image:"../assets/images/infobox/puddle.jpg"
         },
@@ -217,14 +277,14 @@ const initState = {
         dangerZone:{
             tagname:"dangerZone",
             title:"Danger Zone!",
-            description:"The Danger zone for food is between 8 and 60 degrees celcius. After two hours, any food left out at between these two temperature is to be thrown away.",
+            description:"The Danger zone for food is between 8 and 60 degrees celcius. After two hours, food between these two temperature is to be thrown away. This is very important at Buffets, where is food left out for longer periods",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
         crossContamination:{
             tagname:"crossContamination",
             title:"Cross Contamination",
-            description:"Watch out for cross-contamination! Coloured chopping boards do not mix! Red is for raw meat, while green for fruit/veg and blue for raw fish.",
+            description:"Watch out for cross-contamination! Coloured chopping boards do not mix! Red is for raw meat, green is for fruit/veg and blue for raw fish.",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
@@ -245,28 +305,35 @@ const initState = {
         cleanSurfaces:{
             tagname:"cleanSurfaces",
             title:"Clean at all Times",
-            description:"As a commercial kitchen, we have to keep our counter surfaces clean at all times. Always use the green detergent spray, for common kitchen counters like this. We'll learn about cleaning chemicals in-depth in Stage 5.",
+            description:"As a commercial kitchen, we need to keep our food preparation surfaces clean at all times. Always use the green detergent spray, for wiping common kitchen counters like this after use.",
+            displayed: false,
+            image:"../assets/images/infobox/faulty-lighting.jpg"
+        },
+        sanitising:{
+            tagname:"sanitising",
+            title:"Clean, then Sanitise",
+            description:"At the end of the day, use a food-safe Blue Sanitiser to clean countertops. First use the detergent to clean the surface, then use the sanitiser to reduce the germs to a safe level. Sanitisers can be corrosive, so be careful",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
         allergens: {
             tagname:"allergens",
             title: "Allergens",
-            description: "Never offer allergen advice to a customer, unless you have been specifically trained in-person to do so. You could be personally viable for it which we do not want for our or me!",
+            description: "Never offer allergen guidance to a customer, unless you have been specifically trained in-person to do so. Always refer to the given allergen chart given out on the day of the event.",
             displayed: false,
             image: "../assets/images/infobox/faulty-lighting.jpg"
         },
         buffet: {
             tagname:"buffet",
             title: "Allergen Signs Facing Forward",
-            description: "At Buffets, all the food MUST have information on allergens clearly placed on/by each item with any of the 14 allergenic ingredients unless there is a member of the catering staff on site who can provide allergen information",
+            description: "At Buffets, all the food MUST have information on allergens clearly placed on/by each item with any of the 14 allergenic ingredients. Unless there is a member of the catering staff on site who can provide allergen information",
             displayed: false,
             image: "../assets/images/infobox/faulty-lighting.jpg"
         },
         peanut:{
             tagname:"peanut",
             title:"Peanuts",
-            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            description:"The Peanut Allergy is a common allergy, which can cause anaphylactic shock. If cooking with allergens such as peanuts, it is difficult to guaruntee the the food as peanut free, so ALL meals must be peanut-free on the day of the event.",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
@@ -280,7 +347,7 @@ const initState = {
         dairy:{
             tagname:"dairy",
             title:"Dairy",
-            description:"Dairy Allergies/Intolerance are common. If a customer ",
+            description:"Dairy Allergies/Intolerance are common. If a customer says they are lactose intolerant, mark them down as dairy as lactose is a ingredient of milk.",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
@@ -294,7 +361,7 @@ const initState = {
         eggs:{
             tagname:"eggs",
             title:"Eggs",
-            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            description:"Between 0.5 and 2.5% of children have an egg allergy. Eggs can be found in foods you don’t expect, including cakes, breads to pasta, mayonnaise and glazes",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
@@ -308,7 +375,7 @@ const initState = {
         other:{
             tagname:"other",
             title:"Other Allergens",
-            description:"The Peanut Allergy is one of the most common allergens in the UK. When at a Buffet",
+            description:"There are 14 named allergens, but alot more allergies than that. Bee stings, tree nuts, and fish can cause Anaphylaxis as well as peanuts",
             displayed: false,
             image:"../assets/images/infobox/faulty-lighting.jpg"
         },
@@ -319,35 +386,40 @@ const initState = {
             title:"Be a Curious Cat",
             description:"Curiosity killed the cat, but satisfaction brough it back. Keep being inquisitive.",
             isAchieved: false,
-            image:"../assets/svg/badges/curious-cat.svg"
+            image:"../assets/svg/badges/curious-cat.svg",
+            points: 550,
         },
         brainiac: {
             tagname:"brainiac",
             title:"Brainiac!",
             description:"You've completed more than 3 quizzes, keep going (you're halfway there)",
             isAchieved: false,
-            image:"../assets/svg/badges/brainiac.svg"
+            image:"../assets/svg/badges/brainiac.svg",
+            points: 750,
         },
         goodEye:{
             tagname:"goodEye",
             title:"Good Eye",
             description:"Nice One, you Spotted the Puddle Underneath",
             isAchieved: false,
-            image:"../assets/svg/badges/good-eye.svg"
+            image:"../assets/svg/badges/good-eye.svg",
+            points: 300,
         },
         oneHundredPercent:{
             tagname:"oneHundredPercent",
             title:"100%",
             description:"You've 100% the first stage!",
             isAchieved: false,
-            image:"../assets/svg/badges/100.svg"
+            image:"../assets/svg/badges/100.svg",
+            points: 300,
         },
         firstLoss: {
             tagname:"firstLoss",
             title:"First Loss",
             description:"Sometimes you win, sometimes you lose. Its the taking part that counts, right?",
             isAchieved: false,
-            image:"../assets/svg/badges/100.svg"
+            image:"../assets/svg/badges/100.svg",
+            points: 200,
         }
     },
     stages: [
@@ -357,7 +429,7 @@ const initState = {
                 id:0,
                 exp:0,
                 img:"../../assets/images/levels/health_and_safety.jpg",
-                description:"This stage is all about using your observational skills to spot all the dangerous hazards around the room, and ensuring the safety of you are others around you.",
+                description:"This stage is all about using your observational skills to spot all the dangerous hazards around the room, and ensuring the safety of you and are others around you.",
                 howToPlay: "Identify and click/tap to find archive information about hazards. Indentify all them to complete!",
                 activeLevel:0,
                 levels: [
@@ -381,10 +453,10 @@ const initState = {
                 name: "Allergen List",
                 tagname:"allergyLists",
                 id:1,
-                exp:2,
+                exp:3,
                 img:"../../assets/images/levels/allergies.jpg",
                 description:"Allergen lists are an important task, where you must the correct details of each customer to essential accuracy, in a tight amount of space. ensuring the customers get their dietal preferences right.",
-                howToPlay: "To play this game, you must use your arithmetic and memory skills to keep count of the amount of each color coded allergic customer. Once the timer is up, you must convert these using the allergen chart and write them down.",
+                howToPlay: "To play this game, you must use your arithmetic and memory skills to keep count of the amount of each color coded allergic customer. Once the timer is up, you must convert these using the allergen chart and submit correctly.",
                 activeLevel:0,
                 levels: [
                     {
@@ -405,10 +477,34 @@ const initState = {
                 name: "Customer Service",
                 tagname:"customerService",
                 id:2,
-                exp:5,
+                exp:6,
                 img:"../../assets/images/levels/customer_service.jpg",
-                description:"Customer Service Skills will be the most frequently used skills on the job.",
-                howToPlay: "To play this game, you must talk to customers and say the right thing.",
+                description:"Customer Service Skills will be the most frequently used skills on the job. This stage will teach you how to handle daily situations which you will come across everyday, and improve your confidence with dealing with innapropriate customers.",
+                howToPlay: "To play this game, you must talk to each customer and pick the most appropriate sentence for each .",
+                activeLevel:0,
+                levels: [
+                    {
+                        name: "Correct Uniform",
+                        tagname:"correctUniform",
+                    },
+                    {
+                        name: "Coffee Machine",
+                        tagname:"coffeeMachine",
+                    },
+                    {
+                        name: "Food Safety",
+                        tagname:"foodSafety",
+                    },
+                ]
+            },
+            {
+                name: "Table Service",
+                tagname:"tableService",
+                id:3,
+                exp:7,
+                img:"../../assets/images/levels/customer_service.jpg",
+                description:"Organizing is paramount to successfully running an event. You will learn how to place tableware correctly and lay linen.",
+                howToPlay: "This stage has a time-limit to correctly place utensils on each table. Use the arrow keys/keyboard to move each utensil to the correct place.",
                 activeLevel:0,
                 levels: [
                     {

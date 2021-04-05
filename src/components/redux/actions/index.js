@@ -1,4 +1,4 @@
-import {SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, RESTART_STAGE, RETURN_TO_HOME, SELECT_LEVEL, FINISH_LEVEL, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, SWITCH_ALLERGY_LEVEL, ADD_POINTS, SHOW_QUIZ, HIDE_QUIZ, SWITCH_QUIZ, FINISH_QUIZ, WIN_QUIZ, ADD_TOKENS, REMOVE_TOKENS, RESET_ALLERGY_QUANTITIES} from './types'
+import {RESET_STATE, SHOW_UI, HIDE_UI, SWITCH_PAGE, POPUP_INFO, HIDE_INFO, GET_BADGE, HIDE_BADGE, SELECT_STAGE, RESTART_STAGE, RETURN_TO_HOME, SELECT_LEVEL, FINISH_LEVEL, CLEAR_NOTIFICATIONS, DECREASE_ALLERGY_QUANITITY, INCREASE_ALLERGY_QUANTITY, SWITCH_ALLERGY_LEVEL, ADD_POINTS, SHOW_QUIZ, HIDE_QUIZ, SWITCH_QUIZ, FINISH_QUIZ, WIN_QUIZ, ADD_TOKENS, REMOVE_TOKENS, RESET_ALLERGY_QUANTITIES, TOGGLE_MUTE, TOGGLE_TUTORIAL, TOGGLE_PERFORMANCE} from './types'
 
 export const showUserInterface = (name) => {
     console.log("inside showUI");
@@ -141,4 +141,31 @@ export const tokens = (quantity, action) => {
         type: action === 'add' ? ADD_TOKENS : REMOVE_TOKENS,
         payload: quantity
     }
-} 
+}
+
+export const toggleMute = (toggle) => {
+    return {
+        type: TOGGLE_MUTE,
+        payload: toggle
+    }
+}
+
+export const toggleTutorial = (toggle) => {
+    return {
+        type: TOGGLE_TUTORIAL,
+        payload: toggle
+    }
+}
+
+// Resseting the Redux state
+export const resetState = (action) => {
+    return {
+        type: RESET_STATE
+    }
+}
+
+export const performance = (action) => {
+    return {
+        type: action === 'toggle' ? TOGGLE_PERFORMANCE : TOGGLE_PERFORMANCE
+    }
+}

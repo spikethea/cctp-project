@@ -8,14 +8,14 @@ const LandingPage = ({setApp}) => {
         <div className="landing-page">
         
           <section className="intro">
-            <div>
-              <img alt="Hospitality Staff" src={Hospitality}/>
+            <div style={{display:"flex", alignItems: "center"}}>
+              <img alt="Hospitality Staff" src="https://freesvg.org/img/publicdomainq-business-drinking-party.png"/>
             </div>
             <div>
               <header>
                 <h1>ServiceLearn</h1>
               </header>
-              <h3>A Interactive Staff Training System <br/> Designed for Hospitality staff, by Hospitality Staff</h3>
+              <h3 className="tagline">A Interactive Staff Training System <br/> Designed for Hospitality staff, by Hospitality Staff</h3>
               <Link to="/training"><button onClick={()=>setApp(true)}>Enter Training</button></Link>
             </div>
           </section>

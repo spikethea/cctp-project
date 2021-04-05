@@ -22,6 +22,7 @@
     "react-three-fiber": "^5.1.0",
     "react-use-gesture": "^8.0.1",
     "redux": "^4.0.5",
+    "redux-persist": "^6.0.0",
     "three": "^0.121.1",
     "use-sound": "^2.0.1"
   },

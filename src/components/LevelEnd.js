@@ -27,7 +27,7 @@ const LevelEnd = () => {
                     </div>
                 </section>
             </div>
-            <div className={styles.background}></div>
+            <div className="background"></div>
             </>
         )} else {
             return null
