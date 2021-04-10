@@ -72,20 +72,20 @@ const Quizzes = ({state, info}) => {
     }
 
     quizArray = quizArray.map((quiz, index)=> {
-
+        console.log(quiz);
         
         return (
-            <article style={{background: quiz.completed ? "grey" : "white"}} key={index} onClick={()=> handleClick(quiz.tagName)} className={styles.quiz}>
+            <article className={ quiz.completed ? styles.quizCompleted : styles.quiz} key={index} onClick={()=> handleClick(quiz.tagName)} >
                 <figure>
-                    <h4>{quiz.name}</h4>
+                    <h2>{quiz.name}</h2>
                     <img alt="Quiz" src="https://upload.wikimedia.org/wikipedia/en/3/34/Students-in-barrons-kitchen.jpg"/>
                 </figure>
                 <aside>
                     <header>
                         <h4>LVL: {quiz.lvl}</h4>
-                        <h4 style={{color: quiz.completed ? "white": "black"}}>{quiz.completed ? "COMPLETED": `Questions: ${quiz.questions.length}`}</h4>
+                        <h4 style={{color: quiz.completed ? "white": "black", filter: quiz.completed ? "drop-shadow(0px 0px 5px white)" : "none"}}>{quiz.completed ? "COMPLETED": `Questions: ${quiz.questions.length}`}</h4>
                     </header>
-                    <p>{quiz.description}</p>
+                    <h3 style={{ fontWeight: "normal" }}>{quiz.description}</h3>
                 </aside>
             </article>
             )

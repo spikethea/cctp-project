@@ -123,7 +123,7 @@ const initState = {
         keepingItClean: {
           tagName:"keepingItClean",
           name: "Keeping it Clean",
-          description:"How to clean the . It is recommended that you play Health & Safety before you play this quiz.",
+          description:"The basics of how to clean the the kitchen. It is recommended that you play level 1 of Health & Safety before attempting this quiz.",
           lvl: 1,
           id: 0,
           completed: false,
@@ -184,7 +184,7 @@ const initState = {
           hazardousSituations: {
             tagName:"hazardousSituations",
             name: "Hazardous Situations",
-            description:"How to clean the . It is recommended that you complete both 'Health & Safety' levels before you play this quiz.",
+            description:" Hazardous situations are all around us, apply your knowledge to find out if you understand the dangers. It is recommended that you complete both 'Health & Safety' levels before attempting this quiz.",
             lvl: 2,
             id: 0,
             completed: false,
@@ -249,7 +249,7 @@ const initState = {
             foodSafety: {
               tagName:"foodSafety",
               name: "Food Safety",
-              description:"How to clean the . It is recommended that you complete both 'Health & Safety' levels before you play this quiz.",
+              description:"Food safety. It is recommended that you complete both 'Health & Safety' levels before attempting this quiz, AND revise the archives heavily before attempting this quiz.",
               lvl: 2,
               id: 0,
               completed: false,
@@ -324,7 +324,7 @@ const initState = {
               allergensBasic: {
                 tagName:"allergensBasic",
                 name: "Allergens - Basic",
-                description:"How to clean the . It is recommended that you complete both 'Health & Safety' levels before you play this quiz.",
+                description:"Allergen Information and situations. It is recommended that you complete at least 1 level in the 'Allergen' stage before attempting this quiz.",
                 lvl: 3,
                 id: 0,
                 completed: false,
@@ -397,7 +397,7 @@ const initState = {
                 allergensInDepth: {
                   tagName:"allergensInDepth",
                   name: "Allergens - In Depth",
-                  description:"How to clean the . It is recommended that you complete both 'Health & Safety' levels before you play this quiz.",
+                  description:"Allergen Information and situations questions in-depth. It is recommended that you complete both levels in the 'Allergen' stage before attempting this quiz. This is the final & hardest quiz",
                   lvl: 4,
                   id: 0,
                   completed: false,

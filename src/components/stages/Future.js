@@ -1,7 +1,7 @@
-import React, {useRef, useState, Suspense} from 'react';
+import React, {useRef,  Suspense} from 'react';
 
 //Packages
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Canvas, useFrame, useLoader } from 'react-three-fiber'
 import { Html } from 'drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
