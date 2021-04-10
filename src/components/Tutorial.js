@@ -82,7 +82,7 @@ const Tutorial = () => {
     useEffect(() => {
       if (inner.current) {
         
-        console.log(pages[currentPage].image)
+        
         inner.current.scrollTo(0, 0);
       }
     }, [currentPage, pages])

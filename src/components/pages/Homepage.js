@@ -34,7 +34,7 @@ const Homepage = () => {
         <div id="ui" className={styles.container}>
             <article style={{display: "flex", justifyContent:"space-between", alignItems: "center"}}>
                 <p>EXP: {info.exp}</p>
-                <Link style={{ color:"white", border: "1px solid var(--third)", padding: "0.5em"}} to={`quiz`}><p>Quiz Tokens: {info.tokens}</p></Link>
+                <Link style={{ cursor:"pointer", color:"white", border: "1px solid var(--third)",borderRadius: "1em", padding: "0.5em", filter: info.tokens > 0 ? "drop-shadow(0px 0px 8px white)" : "none"}} to={`quiz`}><p>Quiz Tokens: {info.tokens}</p></Link>
             </article>
             {quizzes.completed > 5 ?  
             <section>
@@ -62,10 +62,10 @@ const Homepage = () => {
             </section>
             <section onMouseLeave={() => setIsShown(null)} className={styles.stageSelect}>
                 <h3 className={styles.subtitle}>Select a Stage</h3>
-                <div className={styles.menu}>
-                    {stageList} 
-                </div>
-                <div className={styles.menushadow}></div>
+                    <div className={styles.menu}>
+                        {stageList} 
+                        
+                    </div>
             </section>
             <section className={styles.badges}>
                 <h3 className={styles.subtitle}>Achievement Badges</h3>
@@ -102,7 +102,7 @@ const Stage = ({onClick, stagename, exp, id, img, onMouseEnter}) => {
     if (info.exp >= exp) {
         return (
             <div onMouseEnter={onMouseEnter} onClick={onClick} className={styles.item}>
-                <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
+                <img  alt="Map of the Stage" src={img}/>
                 <div className={styles.inner}>
                     <h4>{id}: {stagename}</h4>
                     <p>LVL {exp}</p>
@@ -115,7 +115,7 @@ const Stage = ({onClick, stagename, exp, id, img, onMouseEnter}) => {
 
     return (
         <div onMouseEnter={onMouseEnter}  className={styles.itemLocked}>
-            <img style={{height:"15em"}} alt="Map of the Stage" src={img}/>
+            <img  alt="Map of the Stage" src={img}/>
             <div className={styles.inner}>
                 <h4>{id}: {stagename}</h4>
                 <p>LVL {exp}</p>

@@ -41,7 +41,6 @@ const HealthAndSafety = () => {
     // UseEffect 
     useEffect(()=> {
       if (progress === max) {
-        console.log("Max Progress")
         dispatch(getBadge('oneHundredPercent'));
         setLevelFinished(true);
       }
@@ -83,7 +82,6 @@ const HealthAndSafety = () => {
     }
 
     const handleWin = () => {
-      console.log("clicked Win")
       if (levelFinished) {
         dispatch(finishLevel());
       }
@@ -99,7 +97,7 @@ const HealthAndSafety = () => {
         </svg>
 
         <svg  className={styles.stroke} width="100" height="100" viewBox="50 50 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle style={{stroke: levelFinished ? "rgb(100, 255, 100);" : null}} strokeDashoffset={314 - ((314/max)*progress)} cx="100" cy="100" r="50"/>
+          <circle style={{stroke: levelFinished ? "rgb(100, 255, 100)" : null}} strokeDashoffset={314 - ((314/max)*progress)} cx="100" cy="100" r="50"/>
         </svg>
 
         <h1 style={{filter: levelFinished ? "drop-shadow(0px 0px 4px rgba(0,0,0, 0.8))" : null}}>{!levelFinished ? progress + "/"+ max : "Finish"}</h1>
@@ -139,7 +137,6 @@ const Teleportation = ({setCameraPosition, position}) => {
   const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/teleport.glb");
 
   const handleClick = ()=> {
-    console.log(`teleporting to ${position[0]}, ${position[1] + 2}, ${position[2]}`)
     setCameraPosition([position[0], position[1] + 2, position[2]]);
   }
 
@@ -167,9 +164,9 @@ function Camera({position, direction, rotating}) {
   useFrame(({camera})=> {
     if (rotating) {
       if (direction) {
-        camera.rotation.y += 0.01;
+        camera.rotation.y += 0.03;
       } else {
-        camera.rotation.y -= 0.01;
+        camera.rotation.y -= 0.03;
       }
 
       ref.current.updateMatrixWorld()
@@ -196,7 +193,7 @@ const Scene1 = ({dispatch, setProgress, setCameraPosition}) => {
       <Suspense fallback={<Loading/>}>
         {/* <pointLight position={[0, 3, -2]} intensity={1.55} /> */}
         <SmallKitchen/>
-        
+        <FireAlarm position={[-4.5, 2, -4.5]} dispatch={dispatch}/>
         
         <FaultyLightbar position={[-2.5, 4, -2]} dispatch={dispatch} setProgress={setProgress}/>
         <Spillage position={[1, 0.1, -4]} dispatch={dispatch} setProgress={setProgress}/>
@@ -264,22 +261,12 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
 //Meshes
 const Sanitising = ({position, dispatch}) => {// Need to, yknow
 
-  const [found, setFound] = useState(false);
-
-
   const props = useSpring({
     from: { position: [0, -0.4 , 0], rotation: [0, 0, 0] },
     to: { position: [0, 0, 0], rotation: [60*(Math.PI/180), -10*(Math.PI/180), 0] },
     config: { duration: 500 },
     reset: true,
   })
-
-  const handleClick = ()=> {
-    if (!found) {
-      setFound(true);
-      dispatch(addPoints(150));
-    }
-  }
 
   return (
     <group position={position}>
@@ -298,7 +285,6 @@ const CrossContamination = ({position, dispatch, setProgress}) => {// Need to an
   const handleClick = ()=> {
     if (!found) {
       setFound(true);
-      console.log(props);
       setProgress((prevState)=> prevState + 1);
       dispatch(addPoints(200));
     }

@@ -6,7 +6,12 @@
 }
 
 button {
-  border-style: none
+  border-style: none;
+  cursor: pointer;
+}
+
+button:active {
+  box-shadow: 0px 0px 15px black ;
 }
 
 a {
@@ -180,11 +185,15 @@ h3 {
 }
 
 .landing-page .intro {
-  background-image: url(https://get.pxhere.com/photo/white-flower-petal-rose-relax-clean-care-furniture-pink-material-towel-product-textile-hotel-spa-salon-hospitality-bath-bed-sheet-731641.jpg);
   width: 100%;
   background-size: 100% auto;
   background-repeat: no-repeat;
 }
+
+  .landing-page .svg {
+    height: 20em;
+    max-height: 50vh;
+  }
 
 .landing-page section {
   flex-direction: column;
@@ -291,6 +300,7 @@ h3 {
 
   .badge-container h3 {
     color: white;
+    filter: drop-shadow(0px 0px 6px black);
   }
 
   .badge-container p {
@@ -360,7 +370,9 @@ h3 {
   transform: translate(-50%, 0);
   
   position:absolute;
-  background-color:white;
+  background-color: var(--secondary);
+  color: white;
+  border: 1px solid white;
   z-index:7;
   border-radius:1em;
   -webkit-box-shadow: 0px 0px 28px 0px rgba(0,0,0,0.75);

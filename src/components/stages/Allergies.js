@@ -47,7 +47,6 @@ const Allergies = () => {
     const onScroll = () => {
       const scrollTop = scrollbar.current.scrollLeft
       setScrollPosition((scrollTop/scrollbar.current.scrollWidth)* 1000);
-      console.log("scroll camera " + Math.floor(scrollPosition/10) + " %")
     }
 
     //Reset Level by resetting the state
@@ -65,7 +64,7 @@ const Allergies = () => {
     //Change Allergy Level/Difficulty
     useEffect(()=> {
       if (level) {
-        console.log(level);
+
         dispatch(allergyLevel(level));
       }
 
@@ -115,7 +114,6 @@ const Allergies = () => {
         shadowMap
         colorManagement 
         onCreated={({ gl }) => gl.setClearColor('lightblue')}
-        shadowMap
         style={{filter: displayingUI && mql ? "blur(5px)": "none" }}
         >
           {displayingUI && mql && <DisableRender />} 
@@ -174,43 +172,34 @@ const Allergies = () => {
     let [countdown, setCountdown] = useState(0);
 
     const props = useSpring({backgroundColor: localState === 3 ? "rgb(100, 255, 100)" : "rgb(245, 55, 55)" , transform:  localState === 2 ? "scale(0)": localState === 0 ? "scale(0.6)" : "scale(1)", opacity: displayingUI ? "0" : "1"});
-    
-    console.log(countdown);
-    console.log(localState);
 
     useEffect (()=> {
-      if (localState = 1) {
+      if (localState === 0) {
         if (level === 1) {
           setCountdown(15);
         } else if (level === 2) {
           setCountdown(60);
-        } else if (level === 3) {
+        } else {
           setCountdown(120);
-        }
+        } 
       }
       
     },[level, localState])
 
     useEffect(() => {
-      console.log(countdown);
+
       if (localState === 1) {
         if ( countdown > 0) {
           const interval = setInterval(() => {
-          console.log(localState);
-          console.log(countdown);
-          console.log("cleanup");
           setCountdown(prevState => prevState -  1);
-          console.log(countdown);
-          
           }, 1000);
           return () => clearInterval(interval);
         } else {
-          console.log(localState);
           setLocalState(2);
         }
       }
 
-    }, [countdown, localState])
+    }, [countdown, localState, setLocalState])
 
     return (
       <animated.div style={props} onClick={onClick} className={styles.timer}>
@@ -226,13 +215,12 @@ const Allergies = () => {
     const props = useSpring({maxHeight: hidden ? "40px": "300px"});
 
     const handleClick = () => {
-      console.log("toggled allergen chart");
+
       if (hidden) {
         setHidden(false);
       } else {
         setHidden(true);
       }
-      console.log(hidden);
       
     }
 
@@ -286,17 +274,15 @@ const Allergies = () => {
     })
 
     const checkCount = () => {
-      console.log("checking the count of allergies against the users input");
-      console.log(totalAllergies);
+
       let i = 0;
       let incorrect = 0;
       let incorrectPeople = 0;
       for (i = 0; i < totalAllergies.length; i++) {
         if (totalAllergies[i].inputQuantity === totalAllergies[i].quantity) {
-          console.log(totalAllergies[i].name + " correct!");
+
         } else {
           incorrect++
-          console.log(totalAllergies[i].quantity);
           incorrectPeople += totalAllergies[i].quantity;
         }
       }
@@ -344,7 +330,7 @@ const Allergies = () => {
           Click the <span style={{fontWeight: "bold"}} >Allergen List </span> below, and fill in the allergen count using the Chart
         </div>
         <svg height="150" width="150">
-            <polygon points="0,0 150,0 75,100" class="triangle" />
+            <polygon points="0,0 150,0 75,100" className="triangle" />
             Sorry, your browser does not support inline SVG.
         </svg>
       </div>
@@ -402,7 +388,6 @@ const Lights = () => {
 
     const {nodes} = useLoader(GLTFLoader, "../../assets/models/conference-room.glb");
 
-    console.log(nodes)
 
     return (
       <>
@@ -420,7 +405,7 @@ const Lights = () => {
   }
 
   const People = ({peopleArray, dispatch, localState}) => {
-    console.log(peopleArray);
+
     return (
       <>
       {peopleArray.map((allergen, id)=> (
@@ -453,7 +438,7 @@ const Lights = () => {
       if (person.current && localState === 1) {
         
         setTimeout(() => {
-          console.log("tick");
+          
             if (bobbing) {
               setBobbing(false);
             } else {
@@ -525,7 +510,7 @@ const BackgroundPerson = ({ localState }) => {
     if (person.current && localState === 1) {
       
       setTimeout(() => {
-        console.log("tick");
+        
           if (bobbing) {
             setBobbing(false);
           } else {

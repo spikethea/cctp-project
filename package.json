@@ -12,7 +12,7 @@
     "drei": "^1.5.7",
     "gltfjsx": "^3.1.4",
     "netlify-cli": "^3.13.0",
-    "react": "^17.0.0",
+    "react": "^17.0.2",
     "react-dom": "^17.0.0",
     "react-redux": "^7.2.1",
     "react-router": "^5.2.0",

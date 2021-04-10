@@ -41,7 +41,8 @@
     }
   
   .container img {
-    width: 80%;
+    max-height: 40vh;
+    width: 100%;
   }
 
   .container video {
@@ -106,7 +107,7 @@
     color: white;
     font-weight: bold;
     background: rgb(112, 64, 94);
-    border: 1px solid #252525;
+    border: 1px solid var(--third);
     font-size: 1em;
     
 
@@ -260,11 +261,12 @@
   100% { transform: translate(-40%, 0); }
 }
 
-@media only screen and (max-width: 1199px) {
 
+
+
+@media only screen and (max-width: 1199px) {
   
   .buttonContainer {
-    flex-direction: column-reverse;
-    
+    flex-direction: column-reverse; 
   }
 }

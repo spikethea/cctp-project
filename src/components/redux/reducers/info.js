@@ -4,6 +4,7 @@ const infoReducer = (state = initState, action) => {
     let initialPoints = 0;
     let expLevel = 0;
     let initialActivePoints = 0;
+    let initialActiveBadge = "";
     let initialNotifications = 0;
     let tokens = 0;
     let initialPerformance = 0;
@@ -73,6 +74,7 @@ const infoReducer = (state = initState, action) => {
         case 'GET_BADGE':
             Points = action.payload;
             initialActivePoints = state.activePoints
+            initialActiveBadge = state.activeBadge
             initialPoints = state.points
             expLevel = state.exp
             tokens = state.tokens
@@ -89,6 +91,7 @@ const infoReducer = (state = initState, action) => {
                 tokens += 3
                 infoSelected.isAchieved = true;
                 initialNotifications += 1;
+                initialActiveBadge = infoSelected.tagname
                 initialActivePoints = infoSelected.points
                 
             }
@@ -97,7 +100,7 @@ const infoReducer = (state = initState, action) => {
                 exp: expLevel,
                 tokens: tokens,
                 notifications: initialNotifications,
-                activeBadge: infoSelected.tagname,
+                activeBadge: initialActiveBadge,
                 points: initialPoints,
                 activePoints: initialActivePoints,
                 badges: {
@@ -108,27 +111,23 @@ const infoReducer = (state = initState, action) => {
             case 'HIDE_BADGE':
                 return {
                     ...state,
-                    displayingBadge: false,
+                    activeBadge: null,
                 }
         case 'SELECT_STAGE':
             infoSelected = {...state.stages[action.payload]}
-            // let isLevelSelected;
-            // infoSelected.id ? isLevelSelected = true : isLevelSelected = false
-            console.log(infoSelected.id);
+            
             return {
                 ...state,
                 activeStage: infoSelected.id,
                 gameState: 1,// gameState 1 is the state to select a level 
             }
         case 'SELECT_LEVEL':
-            console.log(action.payload)
             return {
                 ...state,
                 level: action.payload,
                 gameState: 2,// gameState 2 is the state to start the task
             }
         case 'FINISH_LEVEL': 
-        console.log("level finish")
             return {
                 ...state,
                 gameState: 3// GameState 3 finishes the level, bringing up the LevelEnd component
@@ -217,7 +216,7 @@ const initState = {
     performance: 2,
     muted: true,
     points: 0,
-    exp: 0,
+    exp: 6,
     tokens:1,
     notifications: 0,
     page:0,

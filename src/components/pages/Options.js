@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from  './UserInterface.module.css';
 
 import {  useDispatch, useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ const Options = () => {
     return (
     <div className={styles.container}>
         <section>
+            <h3>Leaderboard</h3>
             <table className={styles.leaderboard}>
             <tbody>
                 <tr>

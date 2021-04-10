@@ -18,14 +18,12 @@ const quizReducer = (state = initState, action) => {
             }
         case 'SWITCH_QUIZ':
           quizSelected = {...state.quizzes[action.payload]};
-          console.log(quizSelected);
           return {
             ...state,
             currentQuiz: quizSelected.tagName
           }
           case 'FINISH_QUIZ':
             quizSelected = {...state.quizzes[action.payload]};
-            console.log(quizSelected.tagName + " finished");
             return {
               ...state,
               quizActive: false,
@@ -37,13 +35,11 @@ const quizReducer = (state = initState, action) => {
             case 'WIN_QUIZ':
             initialCompleted = state.completed;
             quizSelected = {...state.quizzes[action.payload]};
-            console.log(action.payload);
-            console.log(quizSelected);
             if (initialCompleted) {
               initialCompleted += 1
             }
             quizSelected.completed = true;
-            console.log("you  won " + quizSelected.name);
+
             return {
               ...state,
               quizActive: false,

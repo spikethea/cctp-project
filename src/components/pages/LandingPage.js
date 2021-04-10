@@ -1,15 +1,13 @@
 import React from 'react';
-import Hospitality from '../../assets/images/hospitality';
-
 import { Link } from 'react-router-dom';
 
 const LandingPage = ({setApp}) => {
     return (
         <div className="landing-page">
         
-          <section className="intro">
+          <section style={{backgroundImage: "url(/assets/images/landing-page/hospitality.jpg)"}} className="intro">
             <div style={{display:"flex", alignItems: "center"}}>
-              <img alt="Hospitality Staff" src="https://freesvg.org/img/publicdomainq-business-drinking-party.png"/>
+              <img className="svg" alt="Hospitality Staff" src="/assets/images/landing-page/intro.svg"/>
             </div>
             <div>
               <header>

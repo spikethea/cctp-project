@@ -35,7 +35,7 @@ const Quizzes = ({state, info}) => {
 
 
 
-        console.log("state")
+
         Object.keys(state.quizzes).forEach(function(item){
             if (lvl >= state.quizzes[item].lvl) {
                 quizArray.push(state.quizzes[item]);
@@ -72,7 +72,7 @@ const Quizzes = ({state, info}) => {
     }
 
     quizArray = quizArray.map((quiz, index)=> {
-        console.log(quiz.completed);
+
         
         return (
             <article style={{background: quiz.completed ? "grey" : "white"}} key={index} onClick={()=> handleClick(quiz.tagName)} className={styles.quiz}>
@@ -85,7 +85,7 @@ const Quizzes = ({state, info}) => {
                         <h4>LVL: {quiz.lvl}</h4>
                         <h4 style={{color: quiz.completed ? "white": "black"}}>{quiz.completed ? "COMPLETED": `Questions: ${quiz.questions.length}`}</h4>
                     </header>
-                    <h3>{quiz.description}</h3>
+                    <p>{quiz.description}</p>
                 </aside>
             </article>
             )

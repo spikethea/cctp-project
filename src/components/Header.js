@@ -8,7 +8,7 @@ import { showUserInterface, clearNotifications } from './redux/actions';
 
 const Header = ({setApp}) => {
     const location = useLocation()
-    console.log(location.pathname);
+    
 
     const info = useSelector(state => state.info);
     const showUI = info.displayingUI;
@@ -28,7 +28,7 @@ const Header = ({setApp}) => {
       }, [showUI])
 
     return (
-        <div style={{backdropFilter: info.performance === 3 ? "blur(20px)" : null}} ref={container} className={styles.headerContainer}>
+        <div style={{backdropFilter: info.performance === 3 && showUI ? "blur(20px)" : null}} ref={container} className={styles.headerContainer}>
             <header  className={styles.header}>
         <h3>ServiceLearn
             {(info.notifications > 0) ? <Link to={location.pathname === "/training" ? "training/archive" : "archive"}><p onClick={()=> {

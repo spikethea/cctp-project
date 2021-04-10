@@ -14,7 +14,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
     if (action.type === 'RESET_STATE') {
-        console.log("Resetting State")
+        console.log("Resetting State...")
         // for all keys defined in your persistConfig(s)
         storage.removeItem('persist:root')
         // storage.removeItem('persist:otherKey')

@@ -10,9 +10,7 @@ const allergyReducer = (state = initState, action) => {
             } else {
                 infoSelected.isCorrect = false
             }
-            console.log(action.payload);
-            console.log(infoSelected);
-            console.log(infoSelected.isCorrect)
+
             return {
                 ...state,
                 allergies: {
@@ -28,9 +26,7 @@ const allergyReducer = (state = initState, action) => {
                 } else {
                     infoSelected.isCorrect = false
                 }
-                console.log(action.payload);
-                console.log(infoSelected);
-                console.log(infoSelected.isCorrect)
+    
                 return {
                     ...state,
                     allergies: {
@@ -85,20 +81,18 @@ const allergyReducer = (state = initState, action) => {
                   }
 
                 if (infoSelected === 1) {
-                    console.log("Level 1: Peanut, Vegetarian, Eggs, and possibly Other");
                     peanut = randomInteger(2, 4);
                     vegetarian = randomInteger(1, 3);
                     eggs = randomInteger(1, 1);
                     other = randomInteger(0, 1);
                 } else if (infoSelected === 2) {
-                    console.log("Level 2: Peanut, Vegetarian, Vegan, Dairy and Other");
                     peanut = randomInteger(1, 2);
                     vegetarian = randomInteger(1, 2);
                     vegan = randomInteger(1, 1);
                     dairy = randomInteger(1, 3);
                     other = randomInteger(1, 1);
                 }
-                console.log(infoSelected);
+
 
                 return {
                     ...state,

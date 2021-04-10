@@ -70,8 +70,8 @@ const UserInterface = ({app, setApp}) => {
             </div>
             </>
         )
-    } else if (!app && !showUI) {
-        console.log("showUI is false")
+    } else if ( !showUI) {
+        
         return (
         <>
             <Redirect from={`${path}/homepage`} to="/training" />

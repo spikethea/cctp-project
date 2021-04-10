@@ -106,9 +106,7 @@
     margin: 1em;
     border: 2px solid var(--third);
     
-    -webkit-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
-    box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+
     border-radius: 1em;
     padding: 1em;
 }
@@ -134,10 +132,12 @@
 .menu {
     position: relative;
     display: flex;
-    max-height: 65vh;
     overflow: auto;
     border-radius: 2rem;
     scroll-snap-type: x mandatory;
+    -webkit-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.4);
+    -moz-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.4);
+    box-shadow: inset 0px 0px 25px 0px rgba(0, 0, 0, 0.4);
 }
 
 .stageSelect {
@@ -147,32 +147,35 @@
 .menushadow {
     position: absolute;
     border-radius: 1rem;
-    width: calc(100vw - 2rem);
-    height: 20em;
-    top: 4.5em;
-    left: -1em;
-    align-items: center;
-    justify-content: center;
+    width:100%;
+    height:100%;
+    top: 0;
+    left: 0;
     
-    
-    -webkit-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.4);
-    -moz-box-shadow: inset 0px 0px 42px 0px rgba(0,0,0,0.4);
-    box-shadow: inset 0px 0px 25px 0px rgba(0, 0, 0, 0.4);
     z-index: 8;
     pointer-events: none;
-    margin-left: 1rem;
     margin-right: 1rem;
 }
 
 .item {
+    cursor: pointer;
     scroll-snap-align: center;
     border-radius: 0.6rem;
-    background:  #ebe9e4;
+    background: #ebe9e4;
     margin-bottom: 1.5rem;
     padding: 1rem;
     margin: 0.5em;
     color: black;
     height: 100%;
+}
+
+.item:active {
+    border: 1px solid white;
+    background-color: #999999;
+    
+    box-shadow:0px 3px 10px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.75);
 }
 
 .inner {
@@ -184,8 +187,10 @@
     color: black;
 }
 
-.item:active img {
-    height: 10em;
+.item img {
+    height: 15em;
+    max-height: 65vh;
+    width: auto;
 }
 
 .itemLocked {
@@ -197,8 +202,15 @@
     height: 100%;
 }
 
+    .itemLocked:active {
+        background: #3c0000;
+    }
+
     .itemLocked img {
         filter: brightness(50%);
+        height: 15em;
+        max-height: 65vh;
+        width: auto;
     }
 
     .itemLocked h4 {
@@ -308,7 +320,7 @@
     }
 
     .info p {
-        font-size: 1em;
+        font-size: 0.8em;
         padding: 0.2em;
     }
 

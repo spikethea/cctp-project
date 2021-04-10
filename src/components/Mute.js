@@ -7,7 +7,6 @@ import { toggleMute } from './redux/actions/index';
 const Mute = ({ onClick }) => {
 
     const state = useSelector(state => state.info)
-    console.log(state.muted);
     const dispatch = useDispatch();
 
     if (!state.displayingUI) {

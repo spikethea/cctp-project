@@ -1,4 +1,4 @@
-import React, {useRef, useState, Suspense, useEffect} from 'react';
+import React, {useRef, useState, Suspense} from 'react';
 
 //Packages
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,7 +19,6 @@ import { getBadge, showInfo } from '../redux/actions';
 const Overworld = () => {
     //Redux
     const dispatch = useDispatch();
-    const counter = useSelector(state => state.counter);
     const info = useSelector(state => state.info);
 
     //Toggle UI
@@ -41,7 +40,7 @@ const Overworld = () => {
         style={{filter: showUI && mql ? "blur(5px)": "none" }}
         >
           <fog attach="fog" args={["lightblue", 100, 500]}/>
-          <Scene counter={counter} dispatch={dispatch}/>
+          <Scene dispatch={dispatch}/>
       </Canvas>
     </>
     )

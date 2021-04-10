@@ -45,15 +45,6 @@ const QuizTemplate = ()=> {
     }, [quizActive])
 
     useEffect(()=> {
-        
-        if (state.currentQuiz) {
-            if (quizPage === currentQuiz.questions.length) {
-                console.log("last page");
-            }
-        }
-    },[quizPage, state.currentQuiz, currentQuiz])
-
-    useEffect(()=> {
         if (state.currentQuiz) {
             if (correctNum === currentQuiz.questions.length) {
                 dispatch(winQuiz(state.currentQuiz))
@@ -76,7 +67,6 @@ const QuizTemplate = ()=> {
                 setCorrectNum(correctNum + 1);
             } else {
                 if (!info.muted) {
-                    console.log("sound incorrect");
                     playIncorrect();
                 }
                 setMessage('Incorrect answer. The correct answer was ' + currentQuiz.questions[quizPage].answers[correctAnswer]);
@@ -105,8 +95,7 @@ const Quiz = ({handleClick, currentQuiz, quizPage, dispatch, correctNum}) => {
         
 
             if (currentQuiz.questions[quizPage]) {
-                console.log(quizPage + "=" + currentQuiz.questions.length);
-                console.log(currentQuiz);
+
             return (
             <>
             <div className={styles.window}>
@@ -182,7 +171,7 @@ const Incorrect = ({message, setQuizPage, setIncorrect, dispatch, currentQuiz})=
         <div className={styles.window}>
                     <div className={styles.container}>
                         <nav>
-                        <button onClick={handleClick} alt="Close Quiz">X</button>
+                        <button onClick={handleClick} alt="Close Quiz">+</button>
                         </nav>
                         <div className={styles.inner}>
                             <h1>Incorrect Answer</h1>

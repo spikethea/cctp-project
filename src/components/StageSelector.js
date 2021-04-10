@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 import Overworld from './stages/Overworld';
 import HealthAndSafety from './stages/HealthAndSafety';
 import Allergies from './stages/Allergies';
+import Future from './stages/Future'
 
 
 const StageSelector = () => {
@@ -18,7 +19,6 @@ const StageSelector = () => {
           <Overworld/>
           )
       case 1:
-        console.log(currentStage);
         return (
               <HealthAndSafety/>
             
@@ -30,7 +30,7 @@ const StageSelector = () => {
           )
       default:
         return (
-          <Overworld/>
+          <Future/>
           )
     }
     

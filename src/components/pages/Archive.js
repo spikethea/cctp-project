@@ -62,7 +62,7 @@ const Badges = ({state}) => {
 
     const badges = state.badges;
 
-    console.log("update");
+    
 
     let acquiredBadges = []
     
@@ -70,11 +70,10 @@ const Badges = ({state}) => {
         if(badges[item].isAchieved) {
             acquiredBadges.push(badges[item]);
         }
-        console.log(acquiredBadges);
     });
 
     const AcquiredBadgesList = acquiredBadges.map ((badge, index)=> {
-        console.log(badge.image);
+
         if(acquiredBadges.length > 0) {
             
             return (
@@ -84,7 +83,7 @@ const Badges = ({state}) => {
                     <p>{badge.description}</p>
                 </div>
         )} else {
-            console.log("no badges")
+
             return (
             <>
                 <p>no badges unlocked yet.</p>
