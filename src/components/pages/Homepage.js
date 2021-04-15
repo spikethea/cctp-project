@@ -23,7 +23,12 @@ const Homepage = () => {
             <Stage key={stage.id} onClick={()=> {
                 dispatch(selectStage(stage.id+1))
                 dispatch(showUserInterface("HIDE_UI"))
-            }} onMouseEnter={()=> setIsShown(stage.id)} img={stage.img} stagename={stage.name} exp={stage.exp} id={stage.id+1}/>
+            }} onMouseEnter={()=> setIsShown(stage.id)} 
+            img={stage.img}
+            stagename={stage.name} 
+            exp={stage.exp} 
+            id={stage.id+1}
+            />
     )
 
     
@@ -34,7 +39,7 @@ const Homepage = () => {
         <div id="ui" className={styles.container}>
             <article style={{display: "flex", justifyContent:"space-between", alignItems: "center"}}>
                 <p>EXP: {info.exp}</p>
-                <Link style={{ cursor:"pointer", color:"white", border: "1px solid var(--third)",borderRadius: "1em", padding: "0.5em", filter: info.tokens > 0 ? "drop-shadow(0px 0px 8px white)" : "none"}} to={`quiz`}><p>Quiz Tokens: {info.tokens}</p></Link>
+                <Link className={styles.tokens} style={{ cursor:"pointer", color:"white", border: "1px solid var(--third)",borderRadius: "1em", padding: "0.5em", animation: info.tokens > 0 ? null : "none", filter: info.tokens > 0 ? "drop-shadow(0px 0px 8px white)" : "none"}} to={`quiz`}><p>Quiz Tokens: {info.tokens}</p></Link>
             </article>
             {quizzes.completed > 5 ?  
             <section>

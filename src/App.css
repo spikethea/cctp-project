@@ -494,3 +494,15 @@ h3 {
 .infobox:active {
   transition: width 2s, height 2s, transform 2s;
 }
+
+/* Media Queries */
+@media (min-aspect-ratio: 8/5) {
+  .infobox .inner {
+    overflow: initial;
+    border: none;
+  }
+
+  .infobox {
+    overflow-y: scroll;
+  }
+}

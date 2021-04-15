@@ -86,6 +86,7 @@ const infoReducer = (state = initState, action) => {
                     initialPoints =  state.points + infoSelected.points
                 } else {
                     expLevel += 1;
+                    initialNotifications += 1;
                     initialPoints = (state.points + infoSelected.points) - 1000;
                 }
                 tokens += 3
@@ -216,7 +217,7 @@ const initState = {
     performance: 2,
     muted: true,
     points: 0,
-    exp: 6,
+    exp: 0,
     tokens:1,
     notifications: 0,
     page:0,

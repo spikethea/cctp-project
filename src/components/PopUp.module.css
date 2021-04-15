@@ -265,6 +265,12 @@
 
 
 @media only screen and (max-width: 1199px) {
+
+  @media (min-aspect-ratio: 8/5) {
+    .container .inner {
+      overflow: initial;
+    }
+  }
   
   .buttonContainer {
     flex-direction: column-reverse; 

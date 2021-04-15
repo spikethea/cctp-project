@@ -229,6 +229,10 @@
         color: white;
     }
 
+    .tokens {
+        animation: flashing 2s infinite;
+    }
+
 /*Archive Page*/
 
 .ArchiveBadgesContainer {
@@ -281,7 +285,7 @@
 
 .infoContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     grid-gap: 0.5em;
 }
 
@@ -457,8 +461,15 @@
         font-size: 5em;
     }
 
+/* Animations */
 
-/*Media Queries*/
+@keyframes flashing {
+    0%   { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+/* Media Queries */
 
 
 @media only screen and (min-width: 1200px) {
