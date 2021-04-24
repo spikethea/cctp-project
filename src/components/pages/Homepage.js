@@ -21,7 +21,7 @@ const Homepage = () => {
 
     const stageList = stages.map ((stage)=> 
             <Stage key={stage.id} onClick={()=> {
-                dispatch(selectStage(stage.id+1))
+                dispatch(selectStage(stage.id + 1))
                 dispatch(showUserInterface("HIDE_UI"))
             }} onMouseEnter={()=> setIsShown(stage.id)} 
             img={stage.img}

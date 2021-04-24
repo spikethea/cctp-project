@@ -105,10 +105,10 @@ const HealthAndSafety = () => {
       
       <div style={{display: showUI && mql ? "none" : "flex"}} className={styles.navigation}>
           <svg style={{filter: cameraRotating && rotationDir ? "drop-shadow(2px 4px 6px black)": null}} onMouseUp={()=> handleLeave()} onMouseDown={()=> lookRight()} onTouchStart={()=> lookRight()} onTouchEnd={()=> handleLeave()} height="50" width="50">
-          <polygon points="50,50 50,0 0,25" className="triangle">Left</polygon>
+          <polygon stroke="#6f6f8c" points="50,50 50,0 0,25" className="triangle">Left</polygon>
           </svg>
           <svg style={{filter: cameraRotating && !rotationDir ? "drop-shadow(2px 4px 6px black)": null}} onMouseUp={()=> handleLeave()} onMouseDown={()=> lookLeft()} onTouchStart={()=> lookLeft()} onTouchEnd={()=> handleLeave()} height="50" width="50">
-            <polygon points="0,0 50,25 0,50" className="triangle">Right</polygon>
+            <polygon stroke="#6f6f8c" points="0,0 50,25 0,50" className="triangle">Right</polygon>
           </svg>
       </div>
       <Help message="click/tap on the blue teleportation pads around the room, to get a closer view. If you can't find all hazards, try looking above and below."/>
@@ -193,11 +193,11 @@ const Scene1 = ({dispatch, setProgress, setCameraPosition}) => {
       <Suspense fallback={<Loading/>}>
         {/* <pointLight position={[0, 3, -2]} intensity={1.55} /> */}
         <SmallKitchen/>
-        <FireAlarm position={[-4.5, 2, -4.5]} dispatch={dispatch}/>
+        <FireAlarm position={[3.5, 2, -4.5]} dispatch={dispatch}/>
         
         <FaultyLightbar position={[-2.5, 4, -2]} dispatch={dispatch} setProgress={setProgress}/>
         <Spillage position={[1, 0.1, -4]} dispatch={dispatch} setProgress={setProgress}/>
-        <Meat position={[4, 1.25, 2]} dispatch={dispatch} setProgress={setProgress} />
+        <Meat position={[4.25, 1.15, 0.5]} dispatch={dispatch} setProgress={setProgress} />
         
         <Lightbar position={[2.5, 4, -2]}/>
         <Lightbar position={[-2.5, 4, 2]} rotation={[0, 90*(Math.PI/180), 0]}/>
@@ -410,14 +410,14 @@ const FlickeringLight = ({position, distance}) => {
     if (light.current) {
       if (light.current.intensity > 0.1) {
       setDimming(true);
-    } else if (light.current.intensity < 0.4) {
+    } else if (light.current.intensity < 0.2) {
       setDimming(false);
     }
 
     if (dimming) {
-      light.current.intensity -= 0.1;
+      light.current.intensity -= 0.05;
     } else {
-      light.current.intensity += 0.1;
+      light.current.intensity += 0.05;
     }
     }
     
@@ -443,7 +443,7 @@ const Lightbar = ({ position, rotation }) => {
 
   return (
     <mesh rotation={rotation} scale={[0.1, 0.1, 1]} position={position} geometry={nodes["faulty-lightbar"].geometry} material={materials["Material.004"]}>
-      <pointLight distance={10} color={"#f7f3eb"} intensity={3} position={[0, -1, 0]} />
+      <pointLight distance={10} color={"#f7f3eb"} intensity={0.7} position={[0, -1, 0]} />
     </mesh>
   )
 }
@@ -539,9 +539,9 @@ const MainKitchen = ()=> {
 
 const Spillage = ({setProgress, dispatch, position})=> {
 
-  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg")
   const { nodes, materials } = useLoader(GLTFLoader, "../../assets/models/puddle.glb");
-  const [found, setFound] = useState(false);  
+  const [found, setFound] = useState(false); 
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg") 
 
   environment.mapping = THREE.EquirectangularReflectionMapping;
   environment.encoding = THREE.sRGBEncoding;

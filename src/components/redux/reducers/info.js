@@ -411,15 +411,15 @@ const initState = {
             description:"You've 100% the first stage!",
             isAchieved: false,
             image:"../assets/svg/badges/100.svg",
-            points: 300,
+            points: 350,
         },
         firstLoss: {
             tagname:"firstLoss",
             title:"First Loss",
             description:"Sometimes you win, sometimes you lose. Its the taking part that counts, right?",
             isAchieved: false,
-            image:"../assets/svg/badges/100.svg",
-            points: 200,
+            image:"../assets/svg/badges/firstloss.svg",
+            points: 100,
         }
     },
     stages: [
@@ -520,7 +520,7 @@ const initState = {
                         tagname:"foodSafety",
                     },
                 ]
-            }
+            },
         ]
     
 }

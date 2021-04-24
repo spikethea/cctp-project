@@ -2,6 +2,7 @@ import React, {useRef, useState, Suspense} from 'react';
 
 //Packages
 import { useSelector, useDispatch } from 'react-redux';
+import * as THREE from 'three';
 import { Canvas, useFrame, useLoader } from 'react-three-fiber'
 import { Box, Html } from 'drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -9,10 +10,12 @@ import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for 
 
 //Components
 import InfoBubble from '../InfoBubble';
+import Loading from '../Loading';
 import Help from '../Help';
 
 //Redux
 import { getBadge, showInfo } from '../redux/actions';
+import { MeshLambertMaterial } from 'three';
 
 
 
@@ -21,11 +24,12 @@ const Overworld = () => {
     const dispatch = useDispatch();
     const info = useSelector(state => state.info);
 
+    const infoBoxAcquired = info.infoBox.homeButton.displayed// Stores the values of whether the infoBox for stadium has been clicked yet
     //Toggle UI
     const showUI = info.displayingUI
     let mql = window.matchMedia('(max-width: 1200px)').matches;
 
-    
+    console.log(infoBoxAcquired);
 
     return (
       <>
@@ -39,8 +43,8 @@ const Overworld = () => {
         shadowMap
         style={{filter: showUI && mql ? "blur(5px)": "none" }}
         >
-          <fog attach="fog" args={["lightblue", 100, 500]}/>
-          <Scene dispatch={dispatch}/>
+          <fog attach="fog" args={["lightblue", 50, 500]}/>
+          <Scene infoBoxAcquired={infoBoxAcquired} dispatch={dispatch}/>
       </Canvas>
     </>
     )
@@ -48,7 +52,7 @@ const Overworld = () => {
 
 
 
-const Scene = ({dispatch})=> {
+const Scene = ({dispatch, infoBoxAcquired})=> {
 
   const mesh = useRef();
 
@@ -61,27 +65,44 @@ const Scene = ({dispatch})=> {
 
 
   return (
+    <>
+    
     <group ref={mesh} position={[2, 0, -10]}>
-      <Lights/>
-      <FrontGate dispatch={dispatch} position={[1, -1, 20]} color={[200, 200, 200]} />
-      <Suspense fallback={<Html style={{position:"absolute", left:"50%", top:"50%"}}>Loading...</Html>}>
-        <Stadium dispatch={dispatch}/>
-        <Floor/>
-        <Grass/>
-        <Building args={[5, 15, 20]} color={'#a3917c'} position={[20, 0, -30]} rotation={[0, Math.PI/4, 0]}/>
-
-        <Building args={[5, 15, 20]} color={'#807167'} position={[-5, 0, -35]} rotation={[0, Math.PI/2, 0]}/>
-        <Building args={[5, 15, 20]} color={'#807167'} position={[-5, 0, -50]} rotation={[0, Math.PI/2, 0]}/>
-
-        <Building args={[5, 15, 20]} color={'#969696'} position={[28  , 0, -5]} rotation={[0, 0, 0]}/>
-
-        <Building args={[15, 60, 15]} color={'#969696'} position={[-28  , 0, -5]} rotation={[0, 0, 0]}/>
-        <Building args={[15, 60, 15]} color={'#969696'} position={[28  , 0, 20]} rotation={[0, 0, 0]}/>
+    <Lights/>
+      
+      <Suspense fallback={<Loading/>}>
+        <FrontGate dispatch={dispatch} position={[20, -1, 15]} color={[100, 100, 200]} />
+        <Stadium infoBoxAcquired={infoBoxAcquired} dispatch={dispatch} position={[0, 0, -10]}/>
         
-        <Building args={[25, 10, 50]} color={'#969696'} position={[-28  , 0, 30]} rotation={[0, 0, 0]}/>
-        <Building args={[25, 15, 25]} color={'#969696'} position={[-30  , 0, -40]} rotation={[0, 0, 0]}/>
+        <TowerBlock position={[20, 0, 30]}/>
+        <TowerBlock position={[30, 0, 40]}/>
+
+        {/* Circle around Stadium */}
+        <LCCBlock position={[-40, -1, 0]} rotation={[0,-80*(Math.PI/180), 0]}/>
+        <LCCBlock position={[-25, -1, 23]} rotation={[0,-40*(Math.PI/180), 0]}/>
+        <LCCBlock position={[0, -1, 30]}/>
+
+        {/* Estate */}
+        <group position={[40, -1, -30]}>
+          <LCCBlock position={[5, 0, 0]} rotation={[0,180*(Math.PI/180), 0]}/>
+          <LCCBlock position={[0, 0, 15]} />
+          <LCCBlock position={[5, 0, 25]} rotation={[0,180*(Math.PI/180), 0]}/>
+          <LCCBlock position={[20, 0, 15]} rotation={[0, 90*(Math.PI/180), 0]}/>
+          <LCCBlock position={[30, 0, 15]} rotation={[0, 90*(Math.PI/180), 0]}/>
+        </group>
+
+      {/* Estate */}
+      <group position={[0, -1, 30]}>
+          <LCCBlock position={[5, 0, 0]} rotation={[0,180*(Math.PI/180), 0]}/>
+          <LCCBlock position={[0, 0, 15]} />
+          <LCCBlock position={[5, 0, 25]} rotation={[0,180*(Math.PI/180), 0]}/>
+        </group>
+
+        <Floor/>
       </Suspense>
     </group>
+    
+  </>
   )
 }
 
@@ -92,16 +113,17 @@ const Lights = () => {
     return (
       <>
         <directionalLight
-          intensity={1.5}
-          position={[0, 10, 5]}
+          color="#fae9b1"
+          intensity={0.9}
+          position={[-30, 30, 50]}
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
-          shadow-camera-far={50}
-          shadow-camera-left={-10}
-          shadow-camera-right={10}
-          shadow-camera-top={10}
-          shadow-camera-bottom={-10}
+          shadow-camera-far={500}
+          shadow-camera-left={-100}
+          shadow-camera-right={100}
+          shadow-camera-top={100}
+          shadow-camera-bottom={-100}
         />
         <ambientLight
           intensity={0.3}
@@ -112,9 +134,10 @@ const Lights = () => {
   
 //Meshes
 
-const Stadium = ({ dispatch }) => {
-
-  const gltf = useLoader(GLTFLoader, "../assets/models/stadium.glb");
+const Stadium = ({ dispatch, infoBoxAcquired, position }) => {
+  
+  console.log(infoBoxAcquired);
+  const {nodes, materials} = useLoader(GLTFLoader, "../assets/models/stadium.glb");
 
   let [found, setFound] = useState(false)
   let [pressed, setPressed] = useState(false);
@@ -140,8 +163,8 @@ const Stadium = ({ dispatch }) => {
 
 
   useFrame(()=> {
-    if (object.current) {
-      let material = object.current.children[0].children[0].material;
+    if (object.current && infoBoxAcquired === false) {// If the stadium hasnt been clicked before, then flash the stage
+      let material = object.current.material;
       
 
       if (!found) {
@@ -173,63 +196,91 @@ const Stadium = ({ dispatch }) => {
   })
 
   return (
-        <primitive castShadow ref={object} onClick={handleClick} position={[0, -2, -10]} object={gltf.scene} >{found ? <InfoBubble sign="?" scaleFactor={100} onClick={handleInfoClick}/>: null}</primitive>
+        <mesh castShadow geometry={nodes.Stadium.geometry} attach="geometry" receiveShadow ref={object} castShadow onClick={handleClick} position={position}>
+          <meshLambertMaterial  map={materials.stadium.map} attach="material"/>
+          {found ? <InfoBubble sign="?" scaleFactor={100} onClick={handleInfoClick}/>: null}
+        </mesh>
   )
 }
 
-const Grass = () => {
+const Background = () => {
+
+  const gltf = useLoader(GLTFLoader, "../assets/models/background.glb");
 
   return (
-    <mesh receiveShadow rotation-x={-Math.PI/2} position={[0, -4.9, 15]}>
-      <planeBufferGeometry  attach="geometry" args={[20, 20]} />
-      <meshStandardMaterial attach="material" color="green" />
-    </mesh>
+    <primitive receiveShadow object={gltf.scene} receiveShadow position={[0, -4, -10]}/>
   )
 }
 
 const Floor = () => {
 
   return (
-    <mesh receiveShadow rotation-x={-Math.PI/2} position={[0, -5, 0]}>
+    <mesh receiveShadow rotation-x={-Math.PI/2} position={[0, -1, 0]}>
       <planeBufferGeometry  attach="geometry" args={[5000, 5000]} />
       <meshStandardMaterial attach="material" color="grey" />
     </mesh>
   )
 }
 
-const Building = ({position, rotation, color, args}) => {
+const LCCBlock = ({position, rotation, color, args}) => {
+
+  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/lccblock.glb");
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg") 
+
+  environment.mapping = THREE.EquirectangularReflectionMapping;
+  environment.encoding = THREE.sRGBEncoding;
+
   return (
-    <mesh rotation={rotation} position={position}>
-      <boxBufferGeometry args={args} />
-      <meshStandardMaterial color={color} />
+    <mesh geometry={nodes["LCC_Block"].geometry} receiveShadow castShadow rotation={rotation} position={position}>
+      <meshStandardMaterial envMap={environment} map={materials.lcc_block.map} normalMap={materials.lcc_block.normalMap} roughnessMap={materials.lcc_block.roughnessMap}/>
     </mesh>
   )
 }
   
+
+const TowerBlock = ({position, rotation, color, args}) => {
+
+  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/tower-block.glb");
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg") 
+
+  environment.mapping = THREE.EquirectangularReflectionMapping;
+  environment.encoding = THREE.sRGBEncoding;
+
+  console.log(materials);
+  console.log(nodes);
+  return (
+    <mesh geometry={nodes["tower_block"].children[0].geometry} material={nodes["tower_block"].children[0].material} receiveShadow castShadow rotation={rotation} position={position}/>
+  )
+}
+
 const FrontGate = ({dispatch, position, color}) => {
   
-    let [pressed, setPressed] = useState(false);
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg") 
+  let [pressed, setPressed] = useState(false);
 
+  environment.mapping = THREE.EquirectangularReflectionMapping;
+  environment.encoding = THREE.sRGBEncoding;
 
-    const handleClick = () => {
-      if (!pressed){
-        setPressed(true);
-      dispatch(getBadge('curiousCat'));
-      }
-      
+  const handleClick = () => {
+    if (!pressed){
+      setPressed(true);
+    dispatch(getBadge('curiousCat'));
     }
-      
+    
+  }
+
   
     return (
-      <mesh onClick={handleClick}>
+      <mesh castShadows receiveShadows onClick={handleClick}>
           <Box
-            args={[8, 4, 8]}
+            args={[5, 50, 5]}
             position={position}
           >
             {pressed? <InfoBubble sign="?" scaleFactor={100} onClick={()=> dispatch(showInfo("gettingAround"))}/> : null}
             <meshStandardMaterial 
-              
-              cast
+              roughness={0}
+              metalness={0.7}
+              envMap={environment}
               attach="material" 
               color={`rgb(${color})`}
             />

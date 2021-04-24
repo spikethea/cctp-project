@@ -57,7 +57,6 @@ const Scene = ()=> {
 
   useFrame(()=> {
     if (mesh.current) {
-        console.log(mesh.current);
         mesh.current.rotation.y += 0.01;
     }
 
@@ -69,7 +68,7 @@ const Scene = ()=> {
     <group  position={[2, -10, -10]}>
       <Lights/>    
        <mesh rotation-z={12*(Math.PI/180)} ref={mesh} scale={[10, 10, 10]} geometry={nodes.Cone.geometry} attach="geometry">
-        <meshLambertMaterial map={materials["Material.001"].map} attach="material"/>
+        <meshStandardMaterial map={materials["Material.001"].map} attach="material"/>
        </mesh>
     </group>
     </Suspense>
