@@ -400,10 +400,10 @@ const initState = {
         goodEye:{
             tagname:"goodEye",
             title:"Good Eye",
-            description:"Nice One, you Spotted the Puddle Underneath",
+            description:"Nice One, you Spotted the hidden Bin Bag. Attention to detail in hospitality is  a key skill.",
             isAchieved: false,
             image:"../assets/svg/badges/good-eye.svg",
-            points: 300,
+            points: 500,
         },
         oneHundredPercent:{
             tagname:"oneHundredPercent",

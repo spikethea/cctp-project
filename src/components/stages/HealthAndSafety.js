@@ -117,14 +117,15 @@ const HealthAndSafety = () => {
         pixelRatio={info.performance === 0 ? 0.25 : info.performance === 1 ? 0.5 : 1}
         className={"canvas"}
         colorManagement 
-        onCreated={({ gl }) => gl.setClearColor('#87ceeb')}
+        onCreated={({ gl }) => gl.setClearColor('black')}
         shadowMap
         style={{position:"fixed", left:"0%", top:"0%", filter: showUI && mql ? "blur(5px)":"none" }}
         >
+          <fog attach="fog" args={["black", 15, 50]}/>
           {showUI && mql && <DisableRender />} 
           <Camera direction={rotationDir} rotating={cameraRotating} position={cameraPosition}/>
           {gameState === 2 && level === 1 ? <Scene1 setCameraPosition={setCameraPosition} progress={progress} setProgress={setProgress} dispatch={dispatch}/>: null}
-          {gameState === 2 && level === 2 ? <Scene2 setCameraPosition={setCameraPosition} progress={progress} setProgress={setProgress} dispatch={dispatch}/> : null}
+          {gameState === 2 && level === 2 ? <Scene2 cameraPosition={cameraPosition} setCameraPosition={setCameraPosition} progress={progress} setProgress={setProgress} dispatch={dispatch}/> : null}
         </Canvas>
       </>
     )
@@ -213,7 +214,7 @@ const Scene1 = ({dispatch, setProgress, setCameraPosition}) => {
   )
 }
 
-const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
+const Scene2 = ({cameraPosition, dispatch, setProgress, progress, setCameraPosition}) => {
 
   useEffect(()=>{
     setCameraPosition([0, 2, 8]);
@@ -229,7 +230,11 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
         {/* <pointLight position={[0, 3, -2]} intensity={1.55} /> */}
         <MainKitchen/>
 
+        <BinBag cameraPosition={cameraPosition} position={[6, 0, -4]} dispatch={dispatch}/>
+
         <FireAlarm position={[0, 2, -4.5]} dispatch={dispatch}/>
+
+        <FireAlarm rotation={[0, 90*(Math.PI/180), 0]} position={[-4.8, 2.4, -1.6]} dispatch={dispatch}/>
         
         <Sanitising position={[-4.5, 1.5, 2]}  dispatch={dispatch} />
         <DirtySurface position={[-4.5, 1.15, 4]}  dispatch={dispatch} setProgress={setProgress}/>
@@ -261,17 +266,10 @@ const Scene2 = ({dispatch, setProgress, progress, setCameraPosition}) => {
 //Meshes
 const Sanitising = ({position, dispatch}) => {// Need to, yknow
 
-  const props = useSpring({
-    from: { position: [0, -0.4 , 0], rotation: [0, 0, 0] },
-    to: { position: [0, 0, 0], rotation: [60*(Math.PI/180), -10*(Math.PI/180), 0] },
-    config: { duration: 500 },
-    reset: true,
-  })
-
   return (
     <group position={position}>
       <InfoBubble scaleFactor={15} sign="?" color="gray" onClick={()=> dispatch(showInfo('cleanSurfaces'))}/>
-      <SanitiserSpray rotation={props.rotation} position={props.position}/>
+      <SanitiserSpray rotation={[0, 0, 0]} position={[0, -0.4 , 0]}/>
     </group>
   )
 }
@@ -622,7 +620,68 @@ const FireAlarm = ({position, rotation, dispatch}) => {
     <>
     <mesh ref={object} scale={[0.6, 0.6, 0.6]} geometry={nodes.Cube013.geometry} rotation={rotation} onClick={clickBox} position={position}>
       <meshStandardMaterial  roughness={0.8} metalness={0.7} envMap={environment} color="red"/>
-      {found ? <InfoBubble sign="?" onClick={()=> dispatch(showInfo("fireAlarm"))}/> : null}
+      {found ? <InfoBubble scaleFactor={15} sign="?" color="gray" onClick={()=> dispatch(showInfo("fireAlarm"))}/> : null}
+      </mesh>
+    </>
+  )
+}
+
+const BinBag = ({position, rotation, dispatch, cameraPosition}) => {
+
+  const { nodes } = useLoader(GLTFLoader, "../../assets/models/binbag.glb");
+  const [found, setFound] = useState(false);  
+  const [light, setLight] = useState(false);
+
+  let object = useRef();
+
+  const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg")
+  environment.mapping = THREE.EquirectangularReflectionMapping;
+  environment.encoding = THREE.sRGBEncoding;
+
+  const clickBox = () => {
+    if(!found && cameraPosition[0] === 12.2) {// Double Checking that the player is in the right position to see the secret, in-case they click through the wall
+      setFound(true);
+      dispatch(getBadge("goodEye"))
+    }
+  }
+
+  
+
+  useFrame(()=> {
+    if (object.current) {
+
+      let material = object.current.material;
+      if (!found) {
+        if (material.emissive.r > 0.4) {
+          setLight(false);
+        }
+
+        if (material.emissive.r < 0) {
+          setLight(true);
+        }
+
+        if (light) {
+          material.emissive.r += 0.01;
+          material.emissive.g += 0.01;
+          material.emissive.b += 0.01;
+        } else {
+          material.emissive.r -= 0.01;
+          material.emissive.g -= 0.01;
+          material.emissive.b -= 0.01;
+        }
+
+      } else if (material.emissive.r > 0) {
+        material.emissive.r = 0;
+        material.emissive.g = 0;
+        material.emissive.b = 0;
+      }
+    }
+  })
+
+  return (
+    <>
+    <mesh ref={object} scale={[1, 1, 1]} geometry={nodes.binbag.geometry} rotation={rotation} onClick={clickBox} position={position}>
+      <meshStandardMaterial  roughness={0.8} metalness={0.7} envMap={environment} color="black"/>
       </mesh>
     </>
   )
