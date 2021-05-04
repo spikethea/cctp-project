@@ -10,7 +10,7 @@ const LevelSelect = ()=> {
 
 
     if (state.gameState === 1) {
-        console.log(state.activeStage);
+    
         return (
         <>
         <div className={styles.container}>

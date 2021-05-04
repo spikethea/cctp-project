@@ -85,7 +85,7 @@ const Tutorial = () => {
         
         inner.current.scrollTo(0, 0);
       }
-    }, [currentPage, pages])
+    }, [currentPage])
 
     //Rest the page and scroll the infomration to the top when reopening the tutorial
     useEffect(()=>{
@@ -94,7 +94,7 @@ const Tutorial = () => {
         inner.current.scrollTo(0, 0);
       }
       
-    }, [state.displayingTutorial, setCurrentPage, pages])
+    }, [state.displayingTutorial, setCurrentPage])
 
     if (currentPage < pages.length) {
       return (

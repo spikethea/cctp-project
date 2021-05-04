@@ -4,7 +4,7 @@ import React, {useRef, useState, Suspense} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as THREE from 'three';
 import { Canvas, useFrame, useLoader } from 'react-three-fiber'
-import { Box, Html } from 'drei';
+import { Box } from 'drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { ResizeObserver } from '@juggle/resize-observer';// Resize Observer for safari compatibility
 
@@ -15,7 +15,6 @@ import Help from '../Help';
 
 //Redux
 import { getBadge, showInfo } from '../redux/actions';
-import { MeshLambertMaterial } from 'three';
 
 
 
@@ -28,8 +27,6 @@ const Overworld = () => {
     //Toggle UI
     const showUI = info.displayingUI
     let mql = window.matchMedia('(max-width: 1200px)').matches;
-
-    console.log(infoBoxAcquired);
 
     return (
       <>
@@ -135,8 +132,7 @@ const Lights = () => {
 //Meshes
 
 const Stadium = ({ dispatch, infoBoxAcquired, position }) => {
-  
-  console.log(infoBoxAcquired);
+
   const {nodes, materials} = useLoader(GLTFLoader, "../assets/models/stadium.glb");
 
   let [found, setFound] = useState(false)
@@ -196,19 +192,10 @@ const Stadium = ({ dispatch, infoBoxAcquired, position }) => {
   })
 
   return (
-        <mesh castShadow geometry={nodes.Stadium.geometry} attach="geometry" receiveShadow ref={object} castShadow onClick={handleClick} position={position}>
+        <mesh castShadow geometry={nodes.Stadium.geometry} attach="geometry" receiveShadow ref={object}  onClick={handleClick} position={position}>
           <meshLambertMaterial  map={materials.stadium.map} attach="material"/>
           {found ? <InfoBubble sign="?" scaleFactor={100} onClick={handleInfoClick}/>: null}
         </mesh>
-  )
-}
-
-const Background = () => {
-
-  const gltf = useLoader(GLTFLoader, "../assets/models/background.glb");
-
-  return (
-    <primitive receiveShadow object={gltf.scene} receiveShadow position={[0, -4, -10]}/>
   )
 }
 
@@ -222,7 +209,7 @@ const Floor = () => {
   )
 }
 
-const LCCBlock = ({position, rotation, color, args}) => {
+const LCCBlock = ({position, rotation }) => {
 
   const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/lccblock.glb");
   const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg") 
@@ -238,16 +225,14 @@ const LCCBlock = ({position, rotation, color, args}) => {
 }
   
 
-const TowerBlock = ({position, rotation, color, args}) => {
+const TowerBlock = ({position, rotation }) => {
 
-  const { nodes, materials } = useLoader(GLTFLoader, "../assets/models/tower-block.glb");
+  const { nodes } = useLoader(GLTFLoader, "../assets/models/tower-block.glb");
   const environment = useLoader(THREE.TextureLoader, "../../assets/images/textures/equirectangular.jpg") 
 
   environment.mapping = THREE.EquirectangularReflectionMapping;
   environment.encoding = THREE.sRGBEncoding;
 
-  console.log(materials);
-  console.log(nodes);
   return (
     <mesh geometry={nodes["tower_block"].children[0].geometry} material={nodes["tower_block"].children[0].material} receiveShadow castShadow rotation={rotation} position={position}/>
   )

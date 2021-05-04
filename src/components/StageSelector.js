@@ -12,7 +12,7 @@ import Future from './stages/Future'
 const StageSelector = () => {
 
     const currentStage = useSelector(state => state.info.activeStage);
-    console.log(currentStage);
+    
     switch(currentStage) {
       case 0:
         return (

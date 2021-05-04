@@ -70,6 +70,7 @@ const initState = {
           questions: [
               {
                 question: "How do I access tasks?",
+                image: "/assets/images/infobox/home-button.jpg",
                 answers: {
                   a: "Click a stage and play",
                   b: "Select a stage in the Homepage and choose a difficult level",
@@ -80,6 +81,7 @@ const initState = {
               },
               {
                 question: "What is the most important thing to do in ServiceLearn",
+                image: "/assets/svg/publicdomainq-business-man-and-woman-laughing.svg",
                 answers: {
                   a: "Complete stages to level up",
                   b: "Check the Archive page to recite information before starting quizzes",
@@ -100,6 +102,7 @@ const initState = {
               },
               {
                 question: "What is the Hospitality Industry?",
+                image:"/assets/images/quizzes/dining-hall.jpg",
                 answers: {
                   a: "A collection of Venues where you will work at",
                   b: "relationship between a guest and a host",
@@ -131,6 +134,7 @@ const initState = {
               
               {
                 question: "What chemical should you use for general cleaning purposes?",
+                image: "/assets/images/quizzes/cleaning.jpg",
                 answers: {
                   a: "Soap",
                   b: "Disenfectant",
@@ -151,6 +155,7 @@ const initState = {
               },
               {
                 question: "When should kitchen surfaces be cleaned?",
+                image: "/assets/images/infobox/faulty-lighting.jpg",
                 answers: {
                   a: "Clean as you go",
                   b: "Every 2 hours",
@@ -192,6 +197,7 @@ const initState = {
                 
                 {
                   question: "If you see a puddle in the Kitchen what should you do?",
+                  image:"/assets/images/infobox/puddle.jpg",
                   answers: {
                     a: "Place a yellow wet floor sign over it then continue with work.",
                     b: "Place a yellow wet floor sign over it, then alert a manager.",
@@ -222,7 +228,7 @@ const initState = {
                 },
                 {
                   question: "What is the problem with this picture?",
-                  image: "https://www.rosehillwinecellars.com/blog/wp-content/uploads/2010/08/wine-stored-imporperly.jpg",
+                  image: "/assets/images/quizzes/overstacked.jpg",
                   alt: "Overstacked Boxes in room",
                   answers: {
                     a: "The storage is overstacked",
@@ -234,7 +240,7 @@ const initState = {
                 },
                 {
                   question: "What is the problem with this picture?",
-                  image: "https://lh3.googleusercontent.com/proxy/V_-BADjyIl8Z0UVwiqA9DB8YCSeRnvqQGW-2dm0PYAYEu7gNE9WhsLR_THos7uf_ij8GfLfqsDBjiaPovr1u1remOCbcqE83MsChj5BAT4DDPrCZlFoNgBfAK-y3i-BltZeNXuIiVWA",
+                  image: "/assets/images/infobox/faulty-lighting.jpg",
                   alt: "Bad lighting",
                   answers: {
                     a: "The kitchen hasnt got enough thing",
@@ -296,7 +302,7 @@ const initState = {
                     correctAnswer: "d"
                   },
                   {
-                    question: "What type of cutting board should be used to prepare this? ",
+                    question: "What type of chopping board should be used to prepare this? ",
                     image: "/assets/images/quizzes/beach-sea-silhouette-cold-abstract-wine-1048440-pxhere.com.jpg",
                     alt: "photo of raw fish",
                     answers: {
@@ -308,7 +314,7 @@ const initState = {
                     correctAnswer: "a"
                   },
                   {
-                    question: "What is this coloured cutting board used for (picture of green cutting board)?",
+                    question: "What is this coloured chopping board used for (picture of green cutting board)?",
                     image: "/assets/images/quizzes/beach-sea-silhouette-cold-abstract-wine-1048440-pxhere.com.jpg",
                     alt: "photo of raw fish",
                     answers: {
@@ -352,7 +358,7 @@ const initState = {
                     },
                     {
                       question: "Identify the issue with this Buffet Display (picture of Buffet without any allergen information cards)",
-                      image:"https://www.tg-woodware.com/imagprod/categories/buffet-counter-display2.jpg",
+                      image:"",
                       alt: "Catering Display on table, without any labels",
                       answers: {
                         a: "Its not completely full",

@@ -72,7 +72,6 @@ const Quizzes = ({state, info}) => {
     }
 
     quizArray = quizArray.map((quiz, index)=> {
-        console.log(quiz);
         
         return (
             <article className={ quiz.completed ? styles.quizCompleted : styles.quiz} key={index} onClick={()=> handleClick(quiz.tagName)} >
